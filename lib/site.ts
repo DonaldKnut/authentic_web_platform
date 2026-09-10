@@ -3,9 +3,21 @@ export const SITE_TAGLINE = "The digital identity and trust infrastructure for p
 export const SITE_DESCRIPTION =
   "AUTHENTIC helps manufacturers give products secure digital identities and enables anyone to verify what a product is, where it came from, and whether it can be trusted.";
 
+function originFrom(value: string | undefined) {
+  const raw = value?.trim().replace(/\/$/, "");
+  if (!raw) return null;
+  try {
+    return new URL(raw.includes("://") ? raw : `https://${raw}`).origin;
+  } catch {
+    return null;
+  }
+}
+
 export function siteUrl() {
   return (
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ??
+    originFrom(process.env.NEXT_PUBLIC_APP_URL) ??
+    originFrom(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+    originFrom(process.env.VERCEL_URL) ??
     "https://authentic.ng"
   );
 }
