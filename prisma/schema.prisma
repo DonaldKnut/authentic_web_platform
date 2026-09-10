@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  phone          String?
+  name           String
+  passwordHash   String
+  role           String   @default("CONSUMER")
+  organizationId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization?        @relation(fields: [organizationId], references: [id])
+  scans        VerificationEvent[]
+  reports      ProductReport[]
+  wallet       WalletItem[]
+  auditLogs    AuditLog[]
+
+  @@index([organizationId])
+}
+
+model Organization {
+  id                 String   @id @default(cuid())
+  name               String
+  slug               String   @unique
+  type               String   @default("MANUFACTURER")
+  country            String   @default("NG")
+  city               String?
+  brandVerified      Boolean  @default(false)
+  legalName          String?
+  registrationNumber String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  users    User[]
+  products Product[]
+}
+
+model Product {
+  id                    String   @id @default(cuid())
+  authenticPrefix       String
+  name                  String
+  brand                 String
+  sku                   String
+  gtin                  String?
+  isbn                  String?
+  category              String
+  description           String?
+  countryOfManufacture  String
+  securityLevel         Int      @default(2)
+  imageHue              String   @default("40")
+  organizationId        String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  batches      Batch[]
+  units        ProductUnit[]
+
+  @@index([organizationId])
+  @@index([gtin])
+  @@index([isbn])
+  @@index([sku])
+}
+
+model Batch {
+  id             String    @id @default(cuid())
+  lotNumber      String
+  manufacturedAt DateTime
+  expiresAt      DateTime?
+  quantity       Int
+  recalled       Boolean   @default(false)
+  recallReason   String?
+  productId      String
+  createdAt      DateTime  @default(now())
+
+  product Product       @relation(fields: [productId], references: [id])
+  units   ProductUnit[]
+
+  @@unique([productId, lotNumber])
+}
+
+model ProductUnit {
+  id          String   @id @default(cuid())
+  serial      String
+  authenticId String   @unique
+  securityCode String?
+  signature   String
+  status      String   @default("ACTIVE")
+  productId   String
+  batchId     String
+  issuedAt    DateTime @default(now())
+
+  product Product              @relation(fields: [productId], references: [id])
+  batch   Batch                @relation(fields: [batchId], references: [id])
+  scans   VerificationEvent[]
+  reports ProductReport[]
+  wallet  WalletItem[]
+
+  @@unique([productId, serial])
+  @@index([serial])
+  @@index([securityCode])
+}
+
+model VerificationEvent {
+  id             String   @id @default(cuid())
+  identifier     String
+  identifierType String
+  source         String   @default("MANUAL")
+  status         String
+  trustScore     Int
+  riskLevel      String
+  reasonsJson    String   @default("[]")
+  checksJson     String   @default("[]")
+  city           String?
+  country        String?
+  latitude       Float?
+  longitude      Float?
+  userAgent      String?
+  unitId         String?
+  userId         String?
+  createdAt      DateTime @default(now())
+
+  unit ProductUnit? @relation(fields: [unitId], references: [id])
+  user User?        @relation(fields: [userId], references: [id])
+
+  @@index([unitId, createdAt])
+  @@index([identifier])
+  @@index([createdAt])
+}
+
+model ProductReport {
+  id        String   @id @default(cuid())
+  type      String
+  notes     String?
+  city      String?
+  country   String?
+  unitId    String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  unit ProductUnit? @relation(fields: [unitId], references: [id])
+  user User?        @relation(fields: [userId], references: [id])
+}
+
+model WalletItem {
+  id        String   @id @default(cuid())
+  userId    String
+  unitId    String
+  createdAt DateTime @default(now())
+
+  user User        @relation(fields: [userId], references: [id])
+  unit ProductUnit @relation(fields: [unitId], references: [id])
+
+  @@unique([userId, unitId])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  action         String
+  entity         String
+  entityId       String?
+  metaJson       String   @default("{}")
+  userId         String?
+  organizationId String?
+  createdAt      DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}
