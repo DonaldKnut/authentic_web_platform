@@ -9,8 +9,7 @@ export function SiteFooter() {
         <div>
           <BrandMark inverted />
           <p className="mt-4 max-w-xs text-sm leading-6 text-white/65">
-            The digital identity and trust infrastructure for physical products.
-            Built in Nigeria. Designed for everywhere.
+            Check if a product is real. Built in Nigeria. Made for everyone.
           </p>
         </div>
         <FooterColumn title="Product" items={footerNav.product} />
@@ -20,7 +19,15 @@ export function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} AUTHENTIC. All rights reserved.</p>
-          <p>Verification reduces risk. It does not make physical counterfeiting impossible.</p>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/privacy" className="hover:text-white">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-white">
+              Terms
+            </Link>
+            <p>A check lowers risk. It cannot make fakes disappear.</p>
+          </div>
         </div>
       </div>
     </footer>

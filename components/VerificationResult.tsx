@@ -87,6 +87,17 @@ export function VerificationResult({
         </Card>
       ) : null}
 
+      {result.guidance?.nextSteps?.length ? (
+        <Card>
+          <h2 className="display text-2xl">What to do next</h2>
+          <ul className="mt-4 grid gap-2 text-sm text-muted">
+            {result.guidance.nextSteps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
+
       <div className="flex flex-wrap gap-3">
         <Button
           href={`/report?code=${encodeURIComponent(result.authenticId ?? result.identifier)}`}

@@ -23,14 +23,39 @@ type NestError = {
   message?: string;
 };
 
+export function unwrapNestPayload<T>(json: unknown): T {
+  if (
+    json &&
+    typeof json === "object" &&
+    "success" in json &&
+    (json as { success: unknown }).success === true &&
+    "data" in json
+  ) {
+    return (json as { data: T }).data;
+  }
+  return json as T;
+}
+
+export function asList<T>(json: unknown): T[] {
+  if (Array.isArray(json)) return json as T[];
+  if (json && typeof json === "object") {
+    const record = json as Record<string, unknown>;
+    for (const key of Object.keys(record)) {
+      if (Array.isArray(record[key])) return record[key] as T[];
+    }
+  }
+  return [];
+}
+
 export function nestErrorMessage(json: unknown, fallback = "Request failed.") {
   if (!json || typeof json !== "object") return fallback;
   const body = json as {
     error?: { code?: string; message?: string } | string;
     message?: string;
+    data?: { message?: string };
   };
   if (typeof body.error === "string") return body.error;
-  return body.error?.message ?? body.message ?? fallback;
+  return body.error?.message ?? body.message ?? body.data?.message ?? fallback;
 }
 
 export async function nestFetch(path: string, init: RequestInit = {}) {
@@ -82,7 +107,9 @@ export function clearAuthCookies(response: NextResponse) {
 export async function nestJson<T = unknown>(path: string, init: RequestInit = {}) {
   try {
     const response = await nestFetch(path, init);
-    const json = (await response.json().catch(() => null)) as T & NestError;
+    const json = unwrapNestPayload<T & NestError>(
+      await response.json().catch(() => null),
+    );
     return { response, json, ok: response.ok };
   } catch {
     return {

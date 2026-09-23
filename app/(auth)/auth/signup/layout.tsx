@@ -2,8 +2,8 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Create account",
-  description: "Create an AUTHENTIC consumer or business account.",
-  path: "/signup",
+  description: "Create a free AUTHENTIC account to save checks, or open a business workspace.",
+  path: "/auth/signup",
   noIndex: true,
 });
 

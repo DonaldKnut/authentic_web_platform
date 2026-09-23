@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { applyAuthCookies, apiBase, nestErrorMessage } from "@/lib/nest";
+import { applyAuthCookies, apiBase, nestErrorMessage, unwrapNestPayload } from "@/lib/nest";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -48,7 +48,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const json = await upstream.json().catch(() => null);
+  const json = unwrapNestPayload<{
+    user: { id: string; email: string; firstName: string; lastName: string };
+    organizations?: Array<{ id: string }>;
+    accessToken: string;
+    refreshToken: string;
+  }>(await upstream.json().catch(() => null));
   if (!upstream.ok) {
     return NextResponse.json(
       { error: nestErrorMessage(json, "Could not create that account.") },

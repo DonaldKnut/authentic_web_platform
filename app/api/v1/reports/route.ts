@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { nestErrorMessage, nestJson } from "@/lib/nest";
+import { proxyList, proxyPost } from "@/lib/api-route";
 
 const schema = z.object({
   type: z.enum([
@@ -20,27 +20,24 @@ const schema = z.object({
   country: z.string().optional(),
 });
 
+export async function GET() {
+  return proxyList("/reports", "reports", "Could not load reports.");
+}
+
 export async function POST(request: NextRequest) {
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "Choose a report type." }, { status: 400 });
   }
 
-  const { ok, json, response } = await nestJson("/reports", {
-    method: "POST",
-    body: JSON.stringify({
-      reason: parsed.data.type,
-      description: parsed.data.notes,
-      code: parsed.data.identifier,
-      city: parsed.data.city,
-      country: parsed.data.country,
-    }),
+  const response = await proxyPost("/reports", "Could not submit report.", {
+    reason: parsed.data.type,
+    description: parsed.data.notes,
+    code: parsed.data.identifier,
+    city: parsed.data.city,
+    country: parsed.data.country,
   });
-  if (!ok) {
-    return NextResponse.json(
-      { error: nestErrorMessage(json, "Could not submit report.") },
-      { status: response?.status ?? 503 },
-    );
-  }
+  if (!response.ok) return response;
+  const json = await response.json();
   return NextResponse.json({ report: json });
 }

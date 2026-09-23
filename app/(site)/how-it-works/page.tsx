@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "How it works",
   description:
-    "Manufacturers create identities, bind them to physical credentials, and anyone can verify what a product is and whether it can be trusted.",
+    "See how a product gets a digital ID, how the code gets on the pack, and how anyone can check if it is real.",
   path: "/how-it-works",
 });
 
@@ -15,8 +15,8 @@ export default function HowItWorksPage() {
     <>
       <PageHero
         eyebrow="How it works"
-        title="From factory identity to a public verification result."
-        description="Four steps. No theatre. AUTHENTIC issues an identity, binds it to a product, evaluates evidence, and returns a status people can understand."
+        title="From the factory to a simple yes or no."
+        description="The maker creates an ID. It goes on the pack. You scan it. We tell you what we found, in plain words."
       />
       <HowItWorks />
       <VerificationDemo />

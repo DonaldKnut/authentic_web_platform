@@ -12,6 +12,11 @@ import {
   SecurityBand,
 } from "@/components/home/Rest";
 import { PublicVerifyBand } from "@/components/home/PublicVerifyBand";
+import {
+  BrandProtectionAd,
+  ConsumerPerksAd,
+  GlobalComplianceTicker,
+} from "@/components/home/AdvertisingBanners";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_DESCRIPTION } from "@/lib/site";
 
@@ -25,12 +30,15 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <GlobalComplianceTicker />
       <ProblemSection />
       <HowItWorks />
       <VerificationDemo />
+      <BrandProtectionAd />
       <TrustAndPassport />
       <BusinessSolutions />
       <EnterprisePreview />
+      <ConsumerPerksAd />
       <IntelligenceAndApi />
       <PublicVerifyBand />
       <AppAndAfrica />

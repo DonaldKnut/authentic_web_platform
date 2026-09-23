@@ -1,33 +1,39 @@
+import Image from "next/image";
 import Link from "next/link";
+import { LOGO_URL } from "@/lib/brand";
 import { cn } from "@/lib/format";
+
+const heights = {
+  sm: "h-14",
+  md: "h-[4.25rem]",
+  lg: "h-24",
+} as const;
 
 export function BrandMark({
   size = "md",
   inverted = false,
+  onLight = false,
 }: {
   size?: "sm" | "md" | "lg";
   inverted?: boolean;
+  onLight?: boolean;
 }) {
-  const scale = size === "lg" ? "text-[15px]" : size === "sm" ? "text-[12px]" : "text-[13px]";
   return (
-    <Link
-      href="/"
-      className={cn(
-        "inline-flex items-center gap-2.5 font-medium tracking-[0.22em]",
-        scale,
-        inverted ? "text-white" : "text-ink",
-      )}
-    >
-      <span
+    <Link href="/" className="inline-flex items-center" aria-label="AUTHENTIC home">
+      <Image
+        src={LOGO_URL}
+        alt="AUTHENTIC — Know What's Real."
+        width={320}
+        height={320}
+        priority={size !== "sm"}
+        unoptimized
         className={cn(
-          "relative grid h-7 w-7 place-items-center rounded-full border",
-          inverted ? "border-white/35" : "border-blue/35",
+          "brand-logo w-auto object-contain",
+          heights[size],
+          inverted && "brand-logo-inverted",
+          onLight && "brand-logo-on-light",
         )}
-        aria-hidden
-      >
-        <span className={cn("h-2 w-2 rounded-full", inverted ? "bg-white" : "bg-blue")} />
-      </span>
-      AUTHENTIC
+      />
     </Link>
   );
 }

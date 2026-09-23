@@ -2,6 +2,7 @@ import { PageHero } from "@/components/PageHero";
 import { ProductPassport } from "@/components/ProductPassport";
 import { TrustScoreLegend } from "@/components/TrustScore";
 import { Container, Section } from "@/components/ui/Card";
+import { BrandProtectionAd } from "@/components/home/AdvertisingBanners";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -53,6 +54,7 @@ export default function ProductPage() {
           <ProductPassport demo />
         </Container>
       </Section>
+      <BrandProtectionAd />
       <Section id="verification">
         <Container>
           <h2 className="display text-4xl">Public verification</h2>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { BrandSpinner } from "@/components/BrandSpinner";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Card } from "@/components/ui/Card";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { formatDateTime } from "@/lib/format";
 
 type Dashboard = {
@@ -25,21 +26,15 @@ type Dashboard = {
   error?: string;
 };
 
-async function loadDashboard(): Promise<Dashboard> {
-  const response = await fetch("/api/v1/dashboard");
-  const json = await response.json();
-  if (!response.ok) throw new Error(json.error ?? "Could not load dashboard.");
-  return json;
-}
-
 export default function DashboardOverviewPage() {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["dashboard"],
-    queryFn: loadDashboard,
-  });
+  const { data, error, isLoading } = useApiQuery<Dashboard>(
+    "dashboard",
+    "/api/v1/dashboard",
+    "Could not load dashboard.",
+  );
 
   if (isLoading) {
-    return <p className="text-muted">Loading organization overview…</p>;
+    return <BrandSpinner className="py-16" label="Loading organization overview" />;
   }
   if (error || data?.error) {
     return (

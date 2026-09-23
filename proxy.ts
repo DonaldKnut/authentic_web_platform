@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
   }
   const token = request.cookies.get(ACCESS_COOKIE)?.value;
   if (!token) {
-    const login = new URL("/login", request.url);
+    const login = new URL("/auth/login", request.url);
     login.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(login);
   }

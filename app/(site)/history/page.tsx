@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { BrandSpinner } from "@/components/BrandSpinner";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Container } from "@/components/ui/Card";
 import { formatDateTime } from "@/lib/format";
@@ -9,6 +10,7 @@ import { formatDateTime } from "@/lib/format";
 export default function HistoryPage() {
   const [scans, setScans] = useState<Array<Record<string, unknown>>>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/v1/history")
@@ -17,7 +19,8 @@ export default function HistoryPage() {
         if (!res.ok) throw new Error(json.error);
         setScans(json.scans);
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -26,10 +29,11 @@ export default function HistoryPage() {
       <p className="mt-3 text-muted">
         Your verification events, kept according to AUTHENTIC privacy rules.
       </p>
+      {loading ? <BrandSpinner className="mt-12" label="Loading history" /> : null}
       {error ? (
         <p className="mt-6 text-sm text-attention">
           {error}{" "}
-          <Link href="/login" className="text-blue">
+          <Link href="/auth/login" className="text-blue">
             Sign in
           </Link>
         </p>

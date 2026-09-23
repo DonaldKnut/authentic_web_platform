@@ -47,6 +47,11 @@ type NestVerify = {
     createdAt: string;
     source: string;
   }>;
+  guidance?: {
+    reportRecommended: boolean;
+    saveToWallet: boolean;
+    nextSteps: string[];
+  };
 };
 
 export function mapVerifyResult(payload: NestVerify, identifier: string) {
@@ -99,5 +104,6 @@ export function mapVerifyResult(payload: NestVerify, identifier: string) {
     scanId: payload.verificationId ?? identifier,
     unitId: payload.identity?.id,
     previousScans: payload.previousScans ?? [],
+    guidance: payload.guidance,
   };
 }

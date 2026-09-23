@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { LOGO_URL } from "@/lib/brand";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
@@ -10,33 +11,13 @@ export default function Icon() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#0a2540",
+          background: "#ffffff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 16,
         }}
       >
-        <div
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: 999,
-            border: "2px solid #60a5fa",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: 999,
-              background: "#3b82f6",
-            }}
-          />
-        </div>
+        <img src={LOGO_URL} width={28} height={28} alt="" style={{ objectFit: "contain" }} />
       </div>
     ),
     { ...size },

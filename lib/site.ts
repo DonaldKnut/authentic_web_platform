@@ -1,7 +1,9 @@
+import { routes } from "./routes";
+
 export const SITE_NAME = "AUTHENTIC";
-export const SITE_TAGLINE = "The digital identity and trust infrastructure for physical products.";
+export const SITE_TAGLINE = "Know if a product is real.";
 export const SITE_DESCRIPTION =
-  "AUTHENTIC helps manufacturers give products secure digital identities and enables anyone to verify what a product is, where it came from, and whether it can be trusted.";
+  "AUTHENTIC lets you scan a product and see who made it, where it came from, and whether it looks safe to trust.";
 
 function originFrom(value: string | undefined) {
   const raw = value?.trim().replace(/\/$/, "");
@@ -25,38 +27,39 @@ export function siteUrl() {
 export const nav = {
   primary: [
     {
-      href: "/product",
+      href: routes.product,
       label: "Product",
       items: [
-        { href: "/product", label: "Overview", description: "Digital identity for physical products" },
-        { href: "/product#passport", label: "Product passport", description: "Origin, batch, warranty, lifecycle" },
-        { href: "/product#trust-score", label: "Trust Score", description: "Evidence, not a guess" },
-        { href: "/security", label: "Security", description: "Identity, credentials, audit trails" },
+        { href: routes.product, label: "Overview", description: "Digital identity for physical products" },
+        { href: `${routes.product}#passport`, label: "Product passport", description: "Origin, batch, warranty, lifecycle" },
+        { href: `${routes.product}#trust-score`, label: "Trust Score", description: "Evidence, not a guess" },
+        { href: routes.security, label: "Security", description: "Identity, credentials, audit trails" },
       ],
     },
     {
-      href: "/solutions",
+      href: routes.solutions,
       label: "Solutions",
       items: [
-        { href: "/solutions#manufacturers", label: "Manufacturers", description: "Serialization and brand protection" },
-        { href: "/solutions#retailers", label: "Retailers", description: "Inventory and product verification" },
-        { href: "/solutions#distributors", label: "Distributors", description: "Chain of custody" },
-        { href: "/solutions#marketplaces", label: "Marketplaces", description: "Verification API and seller trust" },
-        { href: "/solutions#regulators", label: "Regulators", description: "Traceability and reporting" },
+        { href: `${routes.solutions}#manufacturers`, label: "Manufacturers", description: "Serialization and brand protection" },
+        { href: `${routes.solutions}#retailers`, label: "Retailers", description: "Inventory and product verification" },
+        { href: `${routes.solutions}#distributors`, label: "Distributors", description: "Chain of custody" },
+        { href: `${routes.solutions}#marketplaces`, label: "Marketplaces", description: "Verification API and seller trust" },
+        { href: `${routes.solutions}#regulators`, label: "Regulators", description: "Traceability and reporting" },
       ],
     },
-    { href: "/business", label: "For Businesses" },
-    { href: "/how-it-works", label: "How It Works" },
+    { href: routes.business, label: "For Businesses" },
+    { href: routes.pricing, label: "Pricing" },
+    { href: routes.howItWorks, label: "How It Works" },
     {
-      href: "/resources",
+      href: routes.resources,
       label: "Resources",
       items: [
-        { href: "/resources", label: "Overview", description: "Guides, docs, and the help center" },
-        { href: "/resources/docs", label: "Documentation", description: "Platform architecture" },
-        { href: "/platform", label: "API docs", description: "Integrate verification" },
-        { href: "/resources/guides", label: "Product guides", description: "How to verify and issue identities" },
-        { href: "/resources/help", label: "Help center", description: "Answers for consumers and brands" },
-        { href: "/resources/blog", label: "Blog", description: "Notes on product trust" },
+        { href: routes.resources, label: "Overview", description: "Guides, docs, and the help center" },
+        { href: routes.docs, label: "Documentation", description: "Platform architecture" },
+        { href: routes.platform, label: "API docs", description: "Integrate verification" },
+        { href: routes.guides, label: "Product guides", description: "How to verify and issue identities" },
+        { href: routes.help, label: "Help center", description: "Answers for consumers and brands" },
+        { href: routes.blog, label: "Blog", description: "Notes on product trust" },
       ],
     },
   ],
@@ -64,43 +67,50 @@ export const nav = {
 
 export const footerNav = {
   product: [
-    { href: "/product", label: "Product" },
-    { href: "/how-it-works", label: "How it works" },
-    { href: "/verify", label: "Verify a product" },
-    { href: "/security", label: "Security" },
-    { href: "/platform", label: "API" },
+    { href: routes.product, label: "Product" },
+    { href: routes.howItWorks, label: "How it works" },
+    { href: routes.verify, label: "Verify a product" },
+    { href: routes.security, label: "Security" },
+    { href: routes.platform, label: "API" },
   ],
   solutions: [
-    { href: "/business", label: "For businesses" },
-    { href: "/solutions", label: "Solutions" },
-    { href: "/get-started", label: "Get started" },
-    { href: "/dashboard", label: "Enterprise dashboard" },
+    { href: routes.business, label: "For businesses" },
+    { href: routes.solutions, label: "Solutions" },
+    { href: routes.getStarted, label: "Get started" },
+    { href: routes.pricing, label: "Pricing" },
+    { href: routes.dashboard, label: "Enterprise dashboard" },
   ],
   company: [
-    { href: "/about", label: "About" },
-    { href: "/resources", label: "Resources" },
-    { href: "/resources/blog", label: "Blog" },
-    { href: "/resources/help", label: "Help center" },
+    { href: routes.about, label: "About" },
+    { href: routes.resources, label: "Resources" },
+    { href: routes.blog, label: "Blog" },
+    { href: routes.help, label: "Help center" },
+    { href: routes.pricing, label: "Pricing" },
+    { href: routes.terms, label: "Terms" },
+    { href: routes.privacy, label: "Privacy" },
   ],
 } as const;
 
 export const publicRoutes = [
-  "/",
-  "/product",
-  "/solutions",
-  "/business",
-  "/how-it-works",
-  "/resources",
-  "/resources/docs",
-  "/resources/guides",
-  "/resources/help",
-  "/resources/blog",
-  "/platform",
-  "/about",
-  "/security",
-  "/verify",
-  "/get-started",
-  "/login",
-  "/signup",
-  "/scan",
+  routes.home,
+  routes.product,
+  routes.solutions,
+  routes.business,
+  routes.howItWorks,
+  routes.resources,
+  routes.docs,
+  routes.guides,
+  routes.help,
+  routes.blog,
+  routes.platform,
+  routes.about,
+  routes.security,
+  routes.verify,
+  routes.getStarted,
+  routes.pricing,
+  routes.terms,
+  routes.privacy,
+  routes.login,
+  routes.signup,
+  routes.scan,
 ] as const;

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { LOGO_URL } from "@/lib/brand";
 
 export const alt = "AUTHENTIC — the trust layer for physical products";
 export const size = { width: 1200, height: 630 };
@@ -19,28 +20,14 @@ export default function OpenGraphImage() {
           padding: 72,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 999,
-              border: "2px solid #60a5fa",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 999,
-                background: "#60a5fa",
-              }}
-            />
-          </div>
-          <div style={{ fontSize: 28, letterSpacing: 8 }}>AUTHENTIC</div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={LOGO_URL}
+            width={92}
+            height={92}
+            alt="AUTHENTIC"
+            style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }}
+          />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ fontSize: 22, letterSpacing: 6, color: "#93c5fd" }}>

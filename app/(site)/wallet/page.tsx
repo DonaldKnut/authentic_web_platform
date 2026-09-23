@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BrandSpinner } from "@/components/BrandSpinner";
 import { ProductCard } from "@/components/ProductPassport";
 import { Container } from "@/components/ui/Card";
 
 export default function WalletPage() {
+  const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<
     Array<{
       id: string;
@@ -25,7 +27,8 @@ export default function WalletPage() {
   useEffect(() => {
     fetch("/api/v1/wallet")
       .then((res) => res.json())
-      .then((json) => setItems(json.items ?? []));
+      .then((json) => setItems(json.items ?? []))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -35,6 +38,7 @@ export default function WalletPage() {
         A vault for physical possessions you have verified — authenticity, serial,
         and product identity in one place.
       </p>
+      {loading ? <BrandSpinner className="mt-12" label="Loading wallet" /> : null}
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           const id = item.unit?.authenticId ?? item.identity?.id ?? item.id;

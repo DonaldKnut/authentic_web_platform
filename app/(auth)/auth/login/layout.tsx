@@ -2,8 +2,8 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Sign in",
-  description: "Sign in to AUTHENTIC to verify products or open your organization workspace.",
-  path: "/login",
+  description: "Sign in to AUTHENTIC to check products or open your business workspace.",
+  path: "/auth/login",
   noIndex: true,
 });
 

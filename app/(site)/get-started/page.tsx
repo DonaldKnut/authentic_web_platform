@@ -15,36 +15,35 @@ export default function GetStartedPage() {
     <>
       <PageHero
         eyebrow="Get started"
-        title="Start with identity."
-        description="Manufacturers and brands create an organization account. Consumers can verify immediately — no account required."
+        title="Start in two minutes."
+        description="Shoppers can check a product right away. Brands create an account to give their products an ID."
       />
       <Section>
         <Container className="grid gap-6 md:grid-cols-2">
           <article className="rounded-2xl border border-line p-8">
             <p className="text-xs uppercase tracking-[0.16em] text-muted">Business</p>
-            <h2 className="mt-3 font-serif text-3xl">Issue product identities</h2>
+            <h2 className="mt-3 font-serif text-3xl">I make or sell products</h2>
             <p className="mt-3 text-sm leading-6 text-muted">
-              Create an organization, register products, serialize units, and open
-              the enterprise workspace. You will only see data for organizations
-              you are authorized to access.
+              Create a company account, add your products, and give each item its
+              own ID. You will only see your own company&apos;s data.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button href="/signup">Create business account</Button>
-              <Button href="/login?next=/dashboard" variant="secondary">
+              <Button href="/auth/signup">Create business account</Button>
+              <Button href="/auth/login?next=/dashboard" variant="secondary">
                 Sign in
               </Button>
             </div>
           </article>
           <article className="rounded-2xl border border-line p-8">
             <p className="text-xs uppercase tracking-[0.16em] text-muted">Consumer</p>
-            <h2 className="mt-3 font-serif text-3xl">Verify a product now</h2>
+            <h2 className="mt-3 font-serif text-3xl">I just want to check a product</h2>
             <p className="mt-3 text-sm leading-6 text-muted">
-              Public verification does not require an account. Sign in only if you
-              want history, wallet, or reporting tied to your profile.
+              You do not need an account to scan. Sign in only if you want to keep
+              a history of what you checked.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button href="/verify">Verify product</Button>
-              <Button href="/signup" variant="secondary">
+              <Button href="/auth/signup" variant="secondary">
                 Consumer account
               </Button>
             </div>

@@ -1,9 +1,9 @@
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Verify a product",
+  title: "Check a product",
   description:
-    "Verify a physical product identity with AUTHENTIC. Enter a QR code, serial, or AUTHENTIC ID to receive a live verification result.",
+    "Type the code on a pack to see who made it and whether it looks real. The result comes from a live check.",
   path: "/verify",
 });
 

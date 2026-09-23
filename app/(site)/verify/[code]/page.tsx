@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BrandSpinner } from "@/components/BrandSpinner";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { VerificationResult } from "@/components/VerificationResult";
 import { VerifyReveal } from "@/components/VerifyReveal";
@@ -79,7 +80,9 @@ function VerifyInner() {
     return (
       <div className="relative isolate grid min-h-[50vh] place-items-center overflow-hidden bg-bg text-muted">
         <div className="page-wash pointer-events-none absolute inset-0" aria-hidden />
-        <p className="relative">Establishing identity…</p>
+        <div className="relative">
+          <BrandSpinner size="lg" label="Establishing identity" />
+        </div>
       </div>
     );
   }

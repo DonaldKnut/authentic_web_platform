@@ -91,4 +91,9 @@ export type VerifyResult = {
     createdAt: string;
     source: string;
   }[];
+  guidance?: {
+    reportRecommended: boolean;
+    saveToWallet: boolean;
+    nextSteps: string[];
+  };
 };

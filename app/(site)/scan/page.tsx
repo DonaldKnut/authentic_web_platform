@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import { BrandSpinner } from "@/components/BrandSpinner";
 import { PageHero } from "@/components/PageHero";
 import { Scanner } from "@/components/Scanner";
 import { Button } from "@/components/ui/Button";
@@ -47,7 +48,14 @@ export default function ScanPage() {
               placeholder="AF-NG-…"
             />
             <Button type="submit" disabled={busy}>
-              {busy ? "Checking identity…" : "Verify"}
+              {busy ? (
+                <>
+                  <BrandSpinner size="sm" label="Checking identity" />
+                  Checking identity…
+                </>
+              ) : (
+                "Verify"
+              )}
             </Button>
           </form>
         </Container>

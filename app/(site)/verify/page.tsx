@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { ScanLine } from "lucide-react";
+import { BrandSpinner } from "@/components/BrandSpinner";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { Card, Container } from "@/components/ui/Card";
@@ -12,22 +13,22 @@ import { Input } from "@/components/ui/Input";
 const demoCodes = [
   {
     code: "AF-NG-AURELIA-2026-R8K2M19X",
-    label: "Authenticated serum",
+    label: "A real serum",
     status: "AUTHENTICATED",
   },
   {
     code: "A7X82K19",
-    label: "Impossible identity (pharma)",
+    label: "A code that should not exist",
     status: "HIGH_RISK",
   },
   {
     code: "AF-NG-AURELIA-2026-G4L91Q2C",
-    label: "Needs attention",
+    label: "Something looks off",
     status: "NEEDS_ATTENTION",
   },
   {
     code: "AF-NG-NAIJAAUTO-2026-BRK22419",
-    label: "Recalled spare part",
+    label: "A recalled spare part",
     status: "HIGH_RISK",
   },
   {
@@ -56,11 +57,10 @@ function VerifyForm() {
       <Container className="relative py-12 md:py-16 lg:py-20">
         <div className="max-w-2xl">
           <p className="eyebrow">Verify</p>
-          <h1 className="display mt-4 text-4xl text-ink md:text-6xl">Verify a product</h1>
+          <h1 className="display mt-4 text-4xl text-ink md:text-6xl">Check a product</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-muted">
-            Enter a QR payload, AUTHENTIC ID, serial, barcode, ISBN, or security
-            code. AUTHENTIC queries the live verification API — this page never
-            simulates a result.
+            Type the code on the pack — QR, serial, barcode, or AUTHENTIC ID.
+            We look it up live. This page never makes up a result.
           </p>
         </div>
 
@@ -74,14 +74,21 @@ function VerifyForm() {
               className="grid gap-4"
             >
               <Input
-                label="QR, code, or serial"
+                label="Code on the pack"
                 value={code}
                 onChange={(event) => setCode(event.target.value)}
                 placeholder="AF-NG-… or serial"
                 autoComplete="off"
               />
               <Button type="submit" disabled={busy}>
-                {busy ? "Opening verification…" : "Verify"}
+                {busy ? (
+                  <>
+                    <BrandSpinner size="sm" label="Opening verification" />
+                    Opening verification…
+                  </>
+                ) : (
+                  "Verify"
+                )}
               </Button>
             </form>
             <p className="mt-5 text-sm text-muted">
@@ -95,10 +102,9 @@ function VerifyForm() {
 
           <Card className="bg-elev/90">
             <p className="eyebrow">Demo identities</p>
-            <h2 className="display mt-3 text-2xl text-ink md:text-3xl">Try the engine</h2>
+            <h2 className="display mt-3 text-2xl text-ink md:text-3xl">Try a sample code</h2>
             <p className="mt-2 text-sm leading-6 text-muted">
-              Seeded codes open a live verification. They are not simulated
-              results — each one hits the AUTHENTIC API.
+              These practice codes run a real check. They are not pretend results.
             </p>
             <div className="mt-6 grid gap-2">
               {demoCodes.map((item) => (

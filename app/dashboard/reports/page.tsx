@@ -1,11 +1,51 @@
-import { ModulePlaceholder } from "@/components/dashboard/ModulePlaceholder";
+"use client";
+
+import { QueryState } from "@/components/dashboard/QueryState";
+import { useApiQuery } from "@/hooks/useApiQuery";
+import { formatDateTime } from "@/lib/format";
+
+type Report = {
+  id: string;
+  reason: string;
+  description?: string | null;
+  city?: string | null;
+  status: string;
+  createdAt: string;
+  productName?: string;
+};
 
 export default function ReportsPage() {
+  const { data, error, isLoading } = useApiQuery<{ reports: Report[] }>(
+    "reports",
+    "/api/v1/reports",
+    "Could not load reports.",
+  );
+  const reports = data?.reports ?? [];
+
   return (
-    <ModulePlaceholder
-      title="Reports"
-      description="Consumer and partner product reports will be listed here when the reporting inbox is enabled for your organization."
-      capabilities={["Counterfeit reports", "Packaging issues", "Duplicate codes"]}
-    />
+    <div>
+      <h1 className="display text-4xl">Reports</h1>
+      <p className="mt-2 text-muted">Consumer reports of suspicious products.</p>
+      <QueryState
+        isLoading={isLoading}
+        error={error}
+        loadingLabel="Loading reports"
+        isEmpty={reports.length === 0}
+        empty="No consumer reports yet."
+      >
+        <div className="mt-8 grid gap-3">
+          {reports.map((report) => (
+            <div key={report.id} className="rounded-2xl border border-line bg-elev p-5">
+              <p className="font-medium">{report.productName ?? report.reason}</p>
+              <p className="mt-2 text-sm text-muted">{report.description ?? report.reason}</p>
+              <p className="mt-2 text-xs uppercase tracking-wider text-muted">
+                {report.status} · {report.reason} · {report.city ?? "Unknown"} ·{" "}
+                {formatDateTime(report.createdAt)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </QueryState>
+    </div>
   );
 }

@@ -1,24 +1,23 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { QueryState } from "@/components/dashboard/QueryState";
 import { Card } from "@/components/ui/Card";
+import { useApiQuery } from "@/hooks/useApiQuery";
+
+type RiskData = {
+  alerts?: number;
+  suspicious?: number;
+  verified?: number;
+  units?: number;
+  cities?: Record<string, { total: number; risk: number }>;
+};
 
 export default function RiskPage() {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["dashboard"],
-    queryFn: async () => {
-      const response = await fetch("/api/v1/dashboard");
-      const json = await response.json();
-      if (!response.ok) throw new Error(json.error ?? "Could not load risk.");
-      return json as {
-        alerts?: number;
-        suspicious?: number;
-        verified?: number;
-        units?: number;
-        cities?: Record<string, { total: number; risk: number }>;
-      };
-    },
-  });
+  const { data, error, isLoading } = useApiQuery<RiskData>(
+    "dashboard",
+    "/api/v1/dashboard",
+    "Could not load risk.",
+  );
 
   return (
     <div>
@@ -28,8 +27,7 @@ export default function RiskPage() {
         AUTHENTIC looks for cloned identities, impossible movement, and unusual
         activity. These figures come from your organization&apos;s verification API.
       </p>
-      {isLoading ? <p className="mt-6 text-muted">Loading…</p> : null}
-      {error ? <p className="mt-6 text-risk">{(error as Error).message}</p> : null}
+      <QueryState isLoading={isLoading} error={error} loadingLabel="Loading risk">
       <div className="mt-8 grid gap-4 md:grid-cols-4">
         {[
           ["Protected identities", data?.units],
@@ -66,6 +64,7 @@ export default function RiskPage() {
           ))}
         </div>
       </section>
+      </QueryState>
     </div>
   );
 }

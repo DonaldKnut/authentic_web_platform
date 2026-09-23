@@ -1,12 +1,14 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { QueryState } from "@/components/dashboard/QueryState";
 import { ProductCard } from "@/components/ProductPassport";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Overlay";
 import { useToast } from "@/components/ui/Toast";
+import { useApiQuery } from "@/hooks/useApiQuery";
 
 type Product = {
   id: string;
@@ -21,15 +23,11 @@ export default function DashboardProductsPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const response = await fetch("/api/v1/products");
-      const json = await response.json();
-      if (!response.ok) throw new Error(json.error ?? "Could not load products.");
-      return json.products as Product[];
-    },
-  });
+  const { data, error, isLoading } = useApiQuery<{ products: Product[] }>(
+    "products",
+    "/api/v1/products",
+    "Could not load products.",
+  );
 
   async function create(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,10 +65,9 @@ export default function DashboardProductsPage() {
         </div>
         <Button onClick={() => setOpen(true)}>Register product</Button>
       </div>
-      {isLoading ? <p className="mt-8 text-muted">Loading products…</p> : null}
-      {error ? <p className="mt-8 text-risk">{(error as Error).message}</p> : null}
+      <QueryState isLoading={isLoading} error={error} loadingLabel="Loading products">
       <div className="mt-8 grid gap-4 md:grid-cols-2">
-        {(data ?? []).map((product) => (
+        {(data?.products ?? []).map((product) => (
           <ProductCard
             key={product.id}
             brand={product.brand}
@@ -80,6 +77,7 @@ export default function DashboardProductsPage() {
           />
         ))}
       </div>
+      </QueryState>
       <Modal open={open} title="Register product" onClose={() => setOpen(false)}>
         <form onSubmit={create} className="grid gap-3">
           <Input name="name" label="Product name" required />

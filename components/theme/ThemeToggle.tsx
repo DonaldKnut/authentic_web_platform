@@ -11,10 +11,15 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     <button
       type="button"
       onClick={toggle}
-      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-soft transition hover:border-line-strong hover:bg-soft hover:text-ink ${className}`}
+      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-200 ${
+        dark
+          ? "border-white/20 bg-white/5 text-white hover:border-white/40 hover:bg-white/10"
+          : "border-slate-300 bg-white text-slate-900 hover:border-slate-400 hover:bg-slate-100 shadow-sm"
+      } ${className}`}
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      {dark ? <Sun className="h-4 w-4 text-amber-300" /> : <Moon className="h-4 w-4 text-slate-900" />}
     </button>
   );
 }
+
