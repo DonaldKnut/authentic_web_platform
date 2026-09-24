@@ -72,8 +72,9 @@ html.dark {
   --color-paper: var(--ink);
   --color-header: var(--header-bg);
   --color-panel: var(--panel);
-  --font-sans: var(--font-inter-tight);
-  --font-serif: var(--font-cabin);
+  --font-sans: var(--font-plus-jakarta);
+  --font-serif: var(--font-bricolage);
+  --font-display: var(--font-bricolage);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -91,7 +92,7 @@ body {
   min-height: 100%;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.015em;
 }
 
@@ -132,18 +133,25 @@ a {
 }
 
 .eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: var(--font-bricolage), var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--blue);
 }
 
 .display {
-  font-family: var(--font-cabin), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-bricolage), var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.03em;
-  line-height: 1.08;
-  font-weight: 600;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+h1.display,
+h2.display,
+h3.display {
+  font-weight: 800;
 }
 
 .site-header {
@@ -168,6 +176,39 @@ a {
     linear-gradient(90deg, color-mix(in srgb, var(--line) 55%, transparent) 1px, transparent 1px);
   background-size: auto, auto, 52px 52px, 52px 52px;
   mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+}
+
+.page-wash-glow {
+  background-image:
+    radial-gradient(
+      ellipse 90% 50% at 50% -12%,
+      color-mix(in srgb, var(--blue) 14%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 40% 30% at 100% 6%,
+      color-mix(in srgb, var(--navy) 10%, transparent),
+      transparent 70%
+    );
+}
+
+.scan-stage #authentic-scanner {
+  min-height: 280px;
+}
+
+.scan-stage #authentic-scanner img,
+.scan-stage #qr-shaded-region {
+  display: none !important;
+}
+
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-panel[data-open="true"] {
+  grid-template-rows: 1fr;
 }
 
 .grid-fade {
@@ -476,8 +517,10 @@ html.dark .brand-logo:not(.brand-logo-on-light),
   .brand-spinner-glow,
   .hologram-sheen-effect,
   .radar-rotate,
-  .glow-drift-bg {
+  .glow-drift-bg,
+  .faq-panel {
     animation: none !important;
+    transition: none !important;
   }
 }
 

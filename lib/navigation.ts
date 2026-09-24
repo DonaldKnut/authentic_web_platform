@@ -20,6 +20,7 @@ export type MegaItemData = {
 
 export const productItems: MegaItemData[] = [
   { href: routes.product, title: "Overview", body: "Digital identity for physical products", icon: Layers },
+  { href: routes.howItWorks, title: "How It Works", body: "Step-by-step verification workflow", icon: ScanLine },
   { href: `${routes.product}#passport`, title: "Product passport", body: "Origin, batch, warranty, lifecycle", icon: BookOpen },
   { href: `${routes.product}#trust-score`, title: "Trust Score", body: "Evidence, not a guess", icon: ShieldCheck },
   { href: routes.security, title: "Security", body: "Credentials, verification, audit trails", icon: ShieldCheck },

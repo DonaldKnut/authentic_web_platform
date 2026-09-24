@@ -4,9 +4,11 @@ import { LOGO_URL } from "@/lib/brand";
 import { cn } from "@/lib/format";
 
 const heights = {
-  sm: "h-14",
-  md: "h-[4.25rem]",
-  lg: "h-24",
+  sm: "h-14 md:h-16",
+  md: "h-20 md:h-[4.25rem]",
+  lg: "h-26 md:h-28",
+  xl: "h-26 sm:h-28 md:h-28 lg:h-32 max-h-32",
+  header: "h-26 sm:h-28 md:h-28 lg:h-32 max-h-32",
 } as const;
 
 export function BrandMark({
@@ -14,7 +16,7 @@ export function BrandMark({
   inverted = false,
   onLight = false,
 }: {
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl" | "header";
   inverted?: boolean;
   onLight?: boolean;
 }) {
@@ -23,12 +25,12 @@ export function BrandMark({
       <Image
         src={LOGO_URL}
         alt="AUTHENTIC — Know What's Real."
-        width={320}
-        height={320}
+        width={360}
+        height={360}
         priority={size !== "sm"}
         unoptimized
         className={cn(
-          "brand-logo w-auto object-contain",
+          "brand-logo w-auto object-contain transition-all duration-200",
           heights[size],
           inverted && "brand-logo-inverted",
           onLight && "brand-logo-on-light",

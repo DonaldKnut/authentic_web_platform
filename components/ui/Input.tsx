@@ -6,6 +6,7 @@ type FieldProps = {
   hint?: string;
   error?: string;
   className?: string;
+  icon?: React.ReactNode;
 };
 
 export function Input({
@@ -14,24 +15,33 @@ export function Input({
   error,
   className,
   id,
+  icon,
   ...props
 }: FieldProps & InputHTMLAttributes<HTMLInputElement>) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
   return (
     <div className={cn("grid gap-1.5", className)}>
-      <label htmlFor={inputId} className="text-sm font-medium text-ink">
+      <label htmlFor={inputId} className="text-sm font-semibold text-ink">
         {label}
       </label>
-      <input
-        id={inputId}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
-        className={cn(
-          "h-11 w-full rounded-xl border bg-elev px-3.5 text-ink outline-none transition placeholder:text-muted",
-          error ? "border-risk" : "border-line focus:border-blue",
-        )}
-        {...props}
-      />
+      <div className="relative group">
+        {icon ? (
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted transition-colors group-focus-within:text-blue">
+            {icon}
+          </div>
+        ) : null}
+        <input
+          id={inputId}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
+          className={cn(
+            "h-12 w-full rounded-2xl border bg-elev text-ink outline-none transition-all placeholder:text-muted/60 focus:border-blue focus:ring-4 focus:ring-blue/10",
+            icon ? "pl-11 pr-4" : "px-4",
+            error ? "border-risk focus:ring-risk/10" : "border-line focus:border-blue",
+          )}
+          {...props}
+        />
+      </div>
       {hint && !error ? (
         <p id={`${inputId}-hint`} className="text-xs text-muted">
           {hint}
@@ -57,7 +67,7 @@ export function Textarea({
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
   return (
     <div className={cn("grid gap-1.5", className)}>
-      <label htmlFor={inputId} className="text-sm font-medium text-ink">
+      <label htmlFor={inputId} className="text-sm font-semibold text-ink">
         {label}
       </label>
       <textarea
@@ -65,8 +75,8 @@ export function Textarea({
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
         className={cn(
-          "min-h-28 w-full rounded-xl border bg-elev px-3.5 py-3 text-ink outline-none transition placeholder:text-muted",
-          error ? "border-risk" : "border-line focus:border-blue",
+          "min-h-28 w-full rounded-2xl border bg-elev px-4 py-3 text-ink outline-none transition-all placeholder:text-muted/60 focus:border-blue focus:ring-4 focus:ring-blue/10",
+          error ? "border-risk focus:ring-risk/10" : "border-line focus:border-blue",
         )}
         {...props}
       />
@@ -90,24 +100,33 @@ export function Select({
   className,
   id,
   children,
+  icon,
   ...props
 }: FieldProps & SelectHTMLAttributes<HTMLSelectElement>) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
   return (
     <div className={cn("grid gap-1.5", className)}>
-      <label htmlFor={inputId} className="text-sm font-medium text-ink">
+      <label htmlFor={inputId} className="text-sm font-semibold text-ink">
         {label}
       </label>
-      <select
-        id={inputId}
-        className={cn(
-          "h-11 w-full rounded-xl border bg-elev px-3.5 text-ink outline-none",
-          error ? "border-risk" : "border-line focus:border-blue",
-        )}
-        {...props}
-      >
-        {children}
-      </select>
+      <div className="relative group">
+        {icon ? (
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted transition-colors group-focus-within:text-blue">
+            {icon}
+          </div>
+        ) : null}
+        <select
+          id={inputId}
+          className={cn(
+            "h-12 w-full rounded-2xl border bg-elev text-ink outline-none transition-all focus:border-blue focus:ring-4 focus:ring-blue/10",
+            icon ? "pl-11 pr-4" : "px-4",
+            error ? "border-risk focus:ring-risk/10" : "border-line focus:border-blue",
+          )}
+          {...props}
+        >
+          {children}
+        </select>
+      </div>
     </div>
   );
 }

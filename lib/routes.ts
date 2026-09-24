@@ -21,6 +21,12 @@ export const routes = {
   dashboard: "/dashboard",
   privacy: "/privacy",
   terms: "/terms",
+  risks: "/risks",
+  counterfeitInundation: "/risks/counterfeit-inundation",
+  lostSupplyChain: "/risks/lost-supply-chain-story",
+  unverifiableWarranties: "/risks/unverifiable-warranties",
+  delayedRecallAlerts: "/risks/delayed-recall-alerts",
+  opaqueProductOrigin: "/risks/opaque-product-origin",
 } as const;
 
 export type AppRoute = (typeof routes)[keyof typeof routes];

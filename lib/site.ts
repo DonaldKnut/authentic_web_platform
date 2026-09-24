@@ -113,4 +113,10 @@ export const publicRoutes = [
   routes.login,
   routes.signup,
   routes.scan,
+  routes.risks,
+  routes.counterfeitInundation,
+  routes.lostSupplyChain,
+  routes.unverifiableWarranties,
+  routes.delayedRecallAlerts,
+  routes.opaqueProductOrigin,
 ] as const;

@@ -1,10 +1,10 @@
 import { PageHero } from "@/components/PageHero";
-import { Container, Section } from "@/components/ui/Card";
+import { BlogHub } from "@/components/blog/BlogHub";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Blog",
-  description: "Writing from AUTHENTIC on product identity, verification, and physical-world trust.",
+  title: "Blog & Technical Insights",
+  description: "Essays and research on physical product identity, supply chain integrity, EU Digital Product Passport mandates, and anti-counterfeit cryptography.",
   path: "/resources/blog",
 });
 
@@ -12,17 +12,11 @@ export default function BlogPage() {
   return (
     <>
       <PageHero
-        eyebrow="Blog"
-        title="Notes on product trust"
-        description="No posts have been published yet. This is the home for future essays — not placeholder articles."
+        eyebrow="Blog & Insights"
+        title="Notes on physical-world product trust."
+        description="Deep dives into zero-latency verification, supply chain cryptography, return fraud prevention, and global trade compliance."
       />
-      <Section>
-        <Container>
-          <div className="rounded-2xl border border-dashed border-line p-10 text-center text-muted">
-            The blog is ready. Articles will appear here when they are written.
-          </div>
-        </Container>
-      </Section>
+      <BlogHub />
     </>
   );
 }

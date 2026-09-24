@@ -2,14 +2,39 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { Container, Section } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { ScanLine, Search, ShieldCheck, ArrowRight } from "lucide-react";
+import { ScanLine, ArrowRight, AlertCircle } from "lucide-react";
+
+const publicCodeSchema = z
+  .string({ error: "Please enter a serial code" })
+  .trim()
+  .min(3, "Serial code must be at least 3 characters")
+  .max(120, "Serial code cannot exceed 120 characters")
+  .regex(
+    /^[A-Za-z0-9\-._:\/]+$/,
+    "Invalid code format. Use letters, numbers, hyphens or colons."
+  );
 
 export function PublicVerifyBand() {
   const router = useRouter();
   const [code, setCode] = useState("");
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setValidationError(null);
+
+    const result = publicCodeSchema.safeParse(code);
+    if (!result.success) {
+      setValidationError(result.error.issues[0].message);
+      return;
+    }
+
+    router.push(`/verify/${encodeURIComponent(result.data)}`);
+  };
 
   return (
     <Section className="py-20">
@@ -30,20 +55,20 @@ export function PublicVerifyBand() {
 
         <form
           className="mt-8 flex flex-col gap-3.5 sm:flex-row sm:items-end max-w-2xl"
-          onSubmit={(event) => {
-            event.preventDefault();
-            const next = code.trim();
-            if (!next) return;
-            router.push(`/verify/${encodeURIComponent(next)}`);
-          }}
+          onSubmit={handleSubmit}
+          noValidate
         >
           <div className="relative flex-1">
             <Input
               label="Product Serial Code or Hash"
               value={code}
-              onChange={(event) => setCode(event.target.value)}
+              onChange={(event) => {
+                setCode(event.target.value);
+                if (validationError) setValidationError(null);
+              }}
               placeholder="e.g. SN-2026-8894-AUTH or LOT-014"
               className="w-full rounded-2xl border-line bg-elev py-3.5 pl-4 pr-10 text-sm shadow-sm"
+              error={validationError ?? undefined}
             />
           </div>
           <Button type="submit" size="lg" className="shimmer-bg group gap-2.5 rounded-2xl bg-blue px-7 font-medium text-white shadow-lg shadow-blue/20">
@@ -55,4 +80,3 @@ export function PublicVerifyBand() {
     </Section>
   );
 }
-

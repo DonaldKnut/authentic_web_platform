@@ -93,7 +93,7 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
 
         <p className="mt-4 text-center text-[11px] text-slate-400">
           Interactive demo simulating live scan of{" "}
-          <span className="font-medium text-slate-300">Indomie Super Pack</span> (Batch LOT-OTA-014).
+          <span className="font-medium text-slate-300">{heroCredential.productName}</span> (Batch {heroCredential.batch}).
         </p>
       </div>
     </div>

@@ -1,10 +1,10 @@
 import { PageHero } from "@/components/PageHero";
-import { Container, Section } from "@/components/ui/Card";
+import { GuidesLibrary } from "@/components/guides/GuidesLibrary";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Product guides",
-  description: "Guides for verifying products, issuing identities, and reporting suspicious goods.",
+  title: "Product Guides & Standard Operating Procedures",
+  description: "Operational guides for verifying packaging, issuing cryptographic serials, retail checkout fraud prevention, and regulatory audits.",
   path: "/resources/guides",
 });
 
@@ -12,25 +12,11 @@ export default function GuidesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Guides"
-        title="Product guides"
-        description="Short operational guides. Full articles will be published here as the platform ships."
+        eyebrow="Product Guides"
+        title="Clear operational guides for every stakeholder."
+        description="Step-by-step instructions for consumers, manufacturers, warehouse distributors, retail checkout POS, and regulatory inspectors."
       />
-      <Section>
-        <Container className="grid gap-4">
-          {[
-            "How to verify a product",
-            "How manufacturers issue identities",
-            "How to read a Trust Score",
-            "How to report a suspicious product",
-          ].map((title) => (
-            <article key={title} className="rounded-2xl border border-dashed border-line p-6">
-              <h2 className="font-semibold">{title}</h2>
-              <p className="mt-2 text-xs uppercase tracking-[0.16em] text-blue">Coming soon</p>
-            </article>
-          ))}
-        </Container>
-      </Section>
+      <GuidesLibrary />
     </>
   );
 }

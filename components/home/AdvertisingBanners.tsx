@@ -261,7 +261,7 @@ export function ConsumerPerksAd() {
                   </div>
                   <div>
                     <p className="text-xs text-muted uppercase tracking-wider">Product Authenticated</p>
-                    <p className="text-sm font-bold text-ink">Night Repair Serum · SN-2026-8894</p>
+                    <p className="text-sm font-bold text-ink">Indomie Super Pack · SN-2026-8894</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-emerald-500/10 px-3 py-1 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
@@ -306,7 +306,7 @@ export function ConsumerPerksAd() {
                 </div>
                 <div className="flex justify-between rounded-lg bg-soft p-3 text-ink">
                   <span className="text-muted">Batch Status</span>
-                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">LOT-014 · ACTIVE</span>
+                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">LOT-OTA-014 · ACTIVE</span>
                 </div>
               </div>
             </div>

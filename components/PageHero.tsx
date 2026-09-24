@@ -11,9 +11,9 @@ export function PageHero({
 }) {
   return (
     <div className="border-b border-line bg-soft">
-      <Container className="py-16 md:py-24">
+      <Container className="py-16 md:py-24 w-[90%] max-w-[90%] mx-auto">
         <p className="eyebrow">{eyebrow}</p>
-        <h1 className="display mt-4 max-w-3xl text-4xl text-ink md:text-6xl">{title}</h1>
+        <h1 className="display mt-4 max-w-3xl text-4xl font-extrabold text-ink md:text-6xl">{title}</h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">{description}</p>
       </Container>
     </div>

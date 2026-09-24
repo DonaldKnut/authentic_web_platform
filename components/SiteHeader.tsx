@@ -30,6 +30,18 @@ export function SiteHeader({
     setActive(null);
   }, [pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   function open(menu: MenuId) {
     if (closeTimer.current) window.clearTimeout(closeTimer.current);
     setActive(menu);
@@ -75,14 +87,14 @@ export function SiteHeader({
           : "site-header bg-elev/95 text-ink shadow-md backdrop-blur-xl border-b border-line",
       )}
     >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:h-24">
-        <BrandMark inverted={isDarkTop} />
+      <div className="mx-auto flex h-24 w-[90%] max-w-[90%] items-center justify-between px-2 md:h-28">
+        <BrandMark inverted={isDarkTop} size="xl" />
 
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
           <MegaTrigger
             label="Product"
             open={active === "product"}
-            current={pathname.startsWith(routes.product) || pathname === routes.security}
+            current={pathname.startsWith(routes.product) || pathname === routes.security || pathname === routes.howItWorks}
             onEnter={() => open("product")}
             onLeave={delayClose}
             isDark={isDarkTop}
@@ -97,9 +109,6 @@ export function SiteHeader({
           />
           <NavLink href={routes.business} current={pathname === routes.business} isDark={isDarkTop}>
             For Businesses
-          </NavLink>
-          <NavLink href={routes.howItWorks} current={pathname === routes.howItWorks} isDark={isDarkTop}>
-            How It Works
           </NavLink>
           <MegaTrigger
             label="Resources"
@@ -122,7 +131,7 @@ export function SiteHeader({
           <Link
             href={routes.verify}
             className={cn(
-              "hidden h-10 items-center rounded-full px-4 text-sm font-medium transition md:inline-flex",
+              "hidden h-10 items-center rounded-full px-4 text-sm font-bold transition md:inline-flex",
               isDarkTop
                 ? "border border-white/20 bg-white/10 text-white hover:bg-white/20"
                 : "border border-line bg-elev text-ink-soft hover:border-line-strong hover:bg-soft hover:text-ink",
@@ -137,7 +146,7 @@ export function SiteHeader({
                   href={routes.dashboard}
                   className={cn(
                     "hidden h-10 items-center rounded-full px-3 text-sm transition lg:inline-flex",
-                    isDarkTop ? "text-slate-300 hover:text-white" : "text-slate-900 font-medium hover:text-black",
+                    isDarkTop ? "text-slate-300 hover:text-white" : "text-slate-900 font-bold hover:text-black",
                   )}
                 >
                   Dashboard
@@ -148,7 +157,7 @@ export function SiteHeader({
                 onClick={logout}
                 className={cn(
                   "hidden h-10 px-3 text-sm transition lg:inline-flex",
-                  isDarkTop ? "text-slate-400 hover:text-white" : "text-slate-700 font-medium hover:text-black",
+                  isDarkTop ? "text-slate-400 hover:text-white" : "text-slate-700 font-bold hover:text-black",
                 )}
               >
                 Sign out
@@ -158,7 +167,7 @@ export function SiteHeader({
             <Link
               href={routes.getStarted}
               className={cn(
-                "hidden h-10 items-center rounded-full px-5 text-sm font-medium text-white transition sm:inline-flex shadow-lg",
+                "hidden h-10 items-center rounded-full px-5 text-sm font-bold text-white transition sm:inline-flex shadow-lg",
                 isDarkTop
                   ? "bg-blue-600 hover:bg-blue-500 shadow-blue-600/30"
                   : "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20",
