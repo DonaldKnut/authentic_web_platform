@@ -80,6 +80,7 @@ export function SiteHeader({
       ref={rootRef}
       className={cn(
         "relative sticky top-0 z-50 transition-all duration-300",
+        mobileOpen && "z-[80]",
         isTopHeader
           ? theme === "dark"
             ? "bg-[#070d19] border-b border-white/10 text-white shadow-none"
@@ -242,7 +243,7 @@ export function SiteHeader({
         </MegaPanel>
       ) : null}
 
-      {mobileOpen ? <MobileNav user={user} onClose={() => setMobileOpen(false)} onLogout={logout} /> : null}
+      <MobileNav open={mobileOpen} user={user} onClose={() => setMobileOpen(false)} onLogout={logout} />
     </header>
   );
 }

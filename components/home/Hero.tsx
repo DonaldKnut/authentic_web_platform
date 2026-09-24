@@ -17,8 +17,9 @@ export function Hero() {
       <div className="glow-drift-bg pointer-events-none absolute -right-32 top-32 h-[30rem] w-[30rem] rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 blur-[140px]" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-indigo-500/10 dark:bg-indigo-600/10 blur-[160px]" />
 
-      <Container width="wide" className="relative grid items-center gap-6 pt-4 pb-12 sm:gap-10 sm:pt-6 md:pt-8 lg:pt-8 lg:pb-16 w-[90%] max-w-[90%] mx-auto">
-        <div className="flex flex-col items-start">
+      <Container width="wide" className="relative grid grid-cols-1 lg:grid-cols-12 items-center gap-8 pt-4 pb-12 sm:gap-10 sm:pt-6 md:pt-8 lg:gap-12 lg:pt-8 lg:pb-16 w-[90%] max-w-[90%] mx-auto">
+        {/* Left Headline & Action Column (50% Width) */}
+        <div className="flex flex-col items-start lg:col-span-6">
           <div className="rise inline-flex items-center gap-2.5 rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1.5 backdrop-blur-md dark:border-emerald-500/30 dark:bg-emerald-950/40">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 dark:bg-emerald-400 opacity-75" />
@@ -29,14 +30,14 @@ export function Hero() {
             </span>
           </div>
 
-          <h1 className="rise-delay-1 display mt-4 sm:mt-5 max-w-2xl text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-[4.3rem] lg:leading-[1.08]">
+          <h1 className="rise-delay-1 display mt-4 sm:mt-5 max-w-xl text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-5xl xl:text-[3.6rem] lg:leading-[1.1]">
             Is this product real?
             <span className="mt-1.5 block bg-gradient-to-r from-blue-700 via-indigo-600 to-slate-900 bg-clip-text text-transparent dark:from-blue-200 dark:via-indigo-100 dark:to-white">
               Scan it and know instantly.
             </span>
           </h1>
 
-          <p className="rise-delay-2 mt-4 sm:mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+          <p className="rise-delay-2 mt-4 sm:mt-5 max-w-lg text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300">
             Point your phone at the secure NFC chip or code on the pack.{" "}
             <span className="font-bold text-slate-900 dark:text-white">AUTHENTIC</span> instantly verifies manufacturer signatures, lot recall registers, and serialized credential history.
           </p>
@@ -62,7 +63,7 @@ export function Hero() {
             </Button>
           </div>
 
-          <div className="rise-delay-3 mt-8 sm:mt-10 grid w-full max-w-xl grid-cols-3 gap-3 sm:gap-4 border-t border-slate-200 dark:border-white/10 pt-6">
+          <div className="rise-delay-3 mt-8 sm:mt-10 grid w-full max-w-lg grid-cols-3 gap-3 sm:gap-4 border-t border-slate-200 dark:border-white/10 pt-6">
             <div>
               <div className="flex items-center gap-1.5 text-[11px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
@@ -87,7 +88,10 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroVisual key={demoKey} onReplay={() => setDemoKey((k) => k + 1)} />
+        {/* Right Interactive Live Scan Demo Column (50% Width — No Shrinking) */}
+        <div className="w-full lg:col-span-6">
+          <HeroVisual key={demoKey} onReplay={() => setDemoKey((k) => k + 1)} />
+        </div>
       </Container>
     </section>
   );

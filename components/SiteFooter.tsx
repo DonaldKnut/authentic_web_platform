@@ -13,7 +13,27 @@ import {
   ArrowRight,
   Mail,
   Sparkles,
+  Layers,
+  Cpu
 } from "lucide-react";
+
+function FooterLink({ href, children, isBold = false, isHighlight = false }: { href: string; children: React.ReactNode; isBold?: boolean; isHighlight?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`group inline-flex items-center gap-1.5 transition-all duration-200 ${
+        isHighlight
+          ? "text-emerald-400 font-bold hover:text-emerald-300"
+          : isBold
+          ? "text-white font-bold hover:text-blue-300"
+          : "text-slate-300 hover:text-white font-medium"
+      }`}
+    >
+      <span className="transition-transform duration-200 group-hover:translate-x-1">{children}</span>
+      <ArrowRight className="h-3 w-3 text-blue-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
+    </Link>
+  );
+}
 
 export function SiteFooter() {
   const [email, setEmail] = useState("");
@@ -28,16 +48,16 @@ export function SiteFooter() {
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-gradient-to-b from-[#080e1b] via-[#050914] to-[#020409] text-white">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-gradient-to-b from-slate-900/90 via-[#070d18] to-[#040810] text-white">
       {/* Background ambient lighting effects */}
-      <div className="pointer-events-none absolute -left-20 top-0 h-96 w-96 rounded-full bg-blue/10 blur-[130px]" />
+      <div className="pointer-events-none absolute -left-20 top-0 h-96 w-96 rounded-full bg-blue-600/10 blur-[130px]" />
       <div className="pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-emerald-500/10 blur-[140px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:36px_36px]" />
 
       {/* Top Banner: Newsletter & Brand Hero */}
-      <div className="border-b border-white/10 bg-white/[0.02] backdrop-blur-md py-14">
+      <div className="border-b border-white/10 bg-white/[0.02] backdrop-blur-md py-12">
         <div className="mx-auto w-[90%] max-w-[90%] grid gap-10 lg:grid-cols-12 lg:items-center">
-          {/* Brand Info */}
+          {/* Brand Info - Matching header logo size */}
           <div className="lg:col-span-6 space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -45,10 +65,10 @@ export function SiteFooter() {
             </div>
 
             <div className="mt-2">
-              <BrandMark size="xl" inverted />
+              <BrandMark size="header" inverted />
             </div>
 
-            <p className="max-w-lg text-base text-white/70 leading-relaxed font-sans">
+            <p className="max-w-lg text-sm text-slate-300 leading-relaxed font-sans">
               The cryptographic trust layer behind physical goods. Binding genuine products to immutable digital passports from factory floor to end consumer.
             </p>
           </div>
@@ -60,7 +80,7 @@ export function SiteFooter() {
               <span>Product Intelligence Dispatch</span>
             </div>
             <h4 className="mt-1 text-lg font-bold text-white">Subscribe to Anti-Counterfeit Telemetry Reports</h4>
-            <p className="mt-1 text-xs text-white/60">
+            <p className="mt-1 text-xs text-slate-300">
               Get monthly updates on global supply chain security, EU DPP standards, and counterfeit threat intelligence.
             </p>
 
@@ -71,11 +91,11 @@ export function SiteFooter() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your corporate email address..."
-                className="flex-1 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-xs text-white placeholder-white/40 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
+                className="flex-1 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
               />
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-hover transition-all shadow-md shrink-0"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-500 transition-all shadow-md shrink-0"
               >
                 {subscribed ? (
                   <>
@@ -94,198 +114,143 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Main 5-Column Navigation Grid */}
-      <div className="mx-auto w-[90%] max-w-[90%] grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-5">
+      {/* Main 5-Column Navigation Grid with Animated Arrows */}
+      <div className="mx-auto w-[90%] max-w-[90%] grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-5">
         {/* Column 1: Product */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300 mb-4 flex items-center gap-1.5">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4 flex items-center gap-1.5">
             <ShieldCheck className="h-4 w-4 text-blue-400" />
             <span>Product</span>
           </p>
-          <ul className="space-y-2.5 text-xs text-white/70">
+          <ul className="space-y-3 text-xs">
             <li>
-              <Link href={routes.product} className="hover:text-white transition-colors">
-                Product Infrastructure
-              </Link>
+              <FooterLink href={routes.product}>Product Infrastructure</FooterLink>
             </li>
             <li>
-              <Link href={routes.howItWorks} className="hover:text-white transition-colors flex items-center gap-1.5">
-                <span>How It Works</span>
+              <Link href={routes.howItWorks} className="group inline-flex items-center gap-1.5 text-slate-300 hover:text-white transition-all duration-200">
+                <span className="group-hover:translate-x-1 transition-transform duration-200">How It Works</span>
                 <span className="rounded bg-blue-500/20 px-1.5 py-0.5 text-[9px] font-bold text-blue-300">NEW</span>
+                <ArrowRight className="h-3 w-3 text-blue-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
               </Link>
             </li>
             <li>
-              <Link href={`${routes.product}#passport`} className="hover:text-white transition-colors">
-                Product Passport
-              </Link>
+              <FooterLink href={`${routes.product}#passport`}>Product Passport</FooterLink>
             </li>
             <li>
-              <Link href={`${routes.product}#trust-score`} className="hover:text-white transition-colors">
-                Trust Score Engine
-              </Link>
+              <FooterLink href={`${routes.product}#trust-score`}>Trust Score Engine</FooterLink>
             </li>
             <li>
-              <Link href={routes.security} className="hover:text-white transition-colors">
-                Security & Encryption
-              </Link>
+              <FooterLink href={routes.security}>Security & Encryption</FooterLink>
             </li>
             <li>
-              <Link href={routes.verify} className="hover:text-white transition-colors text-emerald-400 font-semibold">
-                Verify a Product →
-              </Link>
+              <FooterLink href={routes.verify} isHighlight>Verify a Product →</FooterLink>
             </li>
           </ul>
         </div>
 
         {/* Column 2: Solutions */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300 mb-4 flex items-center gap-1.5">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4 flex items-center gap-1.5">
             <Globe className="h-4 w-4 text-emerald-400" />
             <span>Solutions</span>
           </p>
-          <ul className="space-y-2.5 text-xs text-white/70">
+          <ul className="space-y-3 text-xs">
             <li>
-              <Link href={routes.business} className="hover:text-white transition-colors font-semibold text-white">
-                For Businesses & Issuers
-              </Link>
+              <FooterLink href={routes.business} isBold>For Businesses & Issuers</FooterLink>
             </li>
             <li>
-              <Link href={`${routes.solutions}#manufacturers`} className="hover:text-white transition-colors">
-                Manufacturers
-              </Link>
+              <FooterLink href={`${routes.solutions}#manufacturers`}>Manufacturers</FooterLink>
             </li>
             <li>
-              <Link href={`${routes.solutions}#retailers`} className="hover:text-white transition-colors">
-                Retailers & Point-of-Sale
-              </Link>
+              <FooterLink href={`${routes.solutions}#retailers`}>Retailers & Point-of-Sale</FooterLink>
             </li>
             <li>
-              <Link href={`${routes.solutions}#distributors`} className="hover:text-white transition-colors">
-                Distributors & Custody
-              </Link>
+              <FooterLink href={`${routes.solutions}#distributors`}>Distributors & Custody</FooterLink>
             </li>
             <li>
-              <Link href={`${routes.solutions}#marketplaces`} className="hover:text-white transition-colors">
-                Marketplaces & E-Commerce
-              </Link>
+              <FooterLink href={`${routes.solutions}#marketplaces`}>Marketplaces & E-Commerce</FooterLink>
             </li>
             <li>
-              <Link href={`${routes.solutions}#regulators`} className="hover:text-white transition-colors">
-                Regulators & Compliance
-              </Link>
+              <FooterLink href={`${routes.solutions}#regulators`}>Regulators & Compliance</FooterLink>
             </li>
           </ul>
         </div>
 
         {/* Column 3: Risk Signals */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300 mb-4 flex items-center gap-1.5">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4 flex items-center gap-1.5">
             <Lock className="h-4 w-4 text-rose-400" />
             <span>Risk Signals</span>
           </p>
-          <ul className="space-y-2.5 text-xs text-white/70">
+          <ul className="space-y-3 text-xs">
             <li>
-              <Link href={routes.risks} className="hover:text-white transition-colors font-semibold text-amber-400">
-                All Risk Signals Index
-              </Link>
+              <FooterLink href={routes.risks} isBold>All Risk Signals Index</FooterLink>
             </li>
             <li>
-              <Link href={routes.counterfeitInundation} className="hover:text-white transition-colors">
-                Counterfeit Protection
-              </Link>
+              <FooterLink href={routes.counterfeitInundation}>Counterfeit Protection</FooterLink>
             </li>
             <li>
-              <Link href={routes.lostSupplyChain} className="hover:text-white transition-colors">
-                Chain of Custody
-              </Link>
+              <FooterLink href={routes.lostSupplyChain}>Chain of Custody</FooterLink>
             </li>
             <li>
-              <Link href={routes.unverifiableWarranties} className="hover:text-white transition-colors">
-                Digital Warranties
-              </Link>
+              <FooterLink href={routes.unverifiableWarranties}>Digital Warranties</FooterLink>
             </li>
             <li>
-              <Link href={routes.delayedRecallAlerts} className="hover:text-white transition-colors">
-                Instant Recalls
-              </Link>
+              <FooterLink href={routes.delayedRecallAlerts}>Instant Recalls</FooterLink>
             </li>
             <li>
-              <Link href={routes.opaqueProductOrigin} className="hover:text-white transition-colors">
-                Verified Origin
-              </Link>
+              <FooterLink href={routes.opaqueProductOrigin}>Verified Origin</FooterLink>
             </li>
           </ul>
         </div>
 
         {/* Column 4: Resources */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300 mb-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4">
             Resources
           </p>
-          <ul className="space-y-2.5 text-xs text-white/70">
+          <ul className="space-y-3 text-xs">
             <li>
-              <Link href={routes.resources} className="hover:text-white transition-colors">
-                Resource Center
-              </Link>
+              <FooterLink href={routes.resources}>Resource Center</FooterLink>
             </li>
             <li>
-              <Link href={routes.docs} className="hover:text-white transition-colors">
-                Documentation
-              </Link>
+              <FooterLink href={routes.docs}>Documentation</FooterLink>
             </li>
             <li>
-              <Link href={routes.platform} className="hover:text-white transition-colors font-mono text-blue-300">
-                Verification API Docs
-              </Link>
+              <FooterLink href={routes.platform} isBold>Verification API Docs</FooterLink>
             </li>
             <li>
-              <Link href={routes.guides} className="hover:text-white transition-colors">
-                Product Guides
-              </Link>
+              <FooterLink href={routes.guides}>Product Guides</FooterLink>
             </li>
             <li>
-              <Link href={routes.help} className="hover:text-white transition-colors">
-                Help Center
-              </Link>
+              <FooterLink href={routes.help}>Help Center</FooterLink>
             </li>
             <li>
-              <Link href={routes.blog} className="hover:text-white transition-colors">
-                Engineering Blog
-              </Link>
+              <FooterLink href={routes.blog}>Engineering Blog</FooterLink>
             </li>
           </ul>
         </div>
 
         {/* Column 5: Company */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300 mb-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4">
             Company
           </p>
-          <ul className="space-y-2.5 text-xs text-white/70">
+          <ul className="space-y-3 text-xs">
             <li>
-              <Link href={routes.about} className="hover:text-white transition-colors">
-                About AUTHENTIC
-              </Link>
+              <FooterLink href={routes.about}>About AUTHENTIC</FooterLink>
             </li>
             <li>
-              <Link href={routes.getStarted} className="hover:text-white transition-colors font-semibold text-white">
-                Get Started
-              </Link>
+              <FooterLink href={routes.getStarted} isBold>Get Started</FooterLink>
             </li>
             <li>
-              <Link href={routes.pricing} className="hover:text-white transition-colors">
-                Pricing & Enterprise
-              </Link>
+              <FooterLink href={routes.pricing}>Pricing & Enterprise</FooterLink>
             </li>
             <li>
-              <Link href={routes.privacy} className="hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
+              <FooterLink href={routes.privacy}>Privacy Policy</FooterLink>
             </li>
             <li>
-              <Link href={routes.terms} className="hover:text-white transition-colors">
-                Terms of Service
-              </Link>
+              <FooterLink href={routes.terms}>Terms of Service</FooterLink>
             </li>
           </ul>
         </div>
@@ -293,23 +258,23 @@ export function SiteFooter() {
 
       {/* Compliance Standard Badges Bar */}
       <div className="border-t border-white/10 bg-white/[0.01] py-6">
-        <div className="mx-auto w-[90%] max-w-[90%] flex flex-wrap items-center justify-between gap-4 text-xs text-white/50">
+        <div className="mx-auto w-[90%] max-w-[90%] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-white/80 border border-white/10">
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
               NAFDAC Standard Compliant
             </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-white/80 border border-white/10">
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
               EU DPP 2026/2027 Ready
             </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-white/80 border border-white/10">
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
               GS1 Digital Link Standard
             </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-white/80 border border-white/10">
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
               ECC-256 Cryptographic Signature
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-white/70 font-medium">
+          <div className="flex items-center gap-2 text-slate-300 font-medium">
             <span>Built with pride in Lagos & Abuja, Nigeria 🇳🇬</span>
           </div>
         </div>
@@ -317,33 +282,27 @@ export function SiteFooter() {
 
       {/* Bottom Bar: Copyright & Social Links */}
       <div className="border-t border-white/10 bg-black/40 py-6">
-        <div className="mx-auto w-[90%] max-w-[90%] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/50">
+        <div className="mx-auto w-[90%] max-w-[90%] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <p>© {new Date().getFullYear()} AUTHENTIC Technologies Ltd. All rights reserved.</p>
           </div>
 
           <div className="flex items-center gap-6">
-            <Link href={routes.privacy} className="hover:text-white transition-colors">
-              Privacy
-            </Link>
-            <Link href={routes.terms} className="hover:text-white transition-colors">
-              Terms
-            </Link>
-            <Link href={routes.security} className="hover:text-white transition-colors">
-              Security
-            </Link>
+            <FooterLink href={routes.privacy}>Privacy</FooterLink>
+            <FooterLink href={routes.terms}>Terms</FooterLink>
+            <FooterLink href={routes.security}>Security</FooterLink>
 
             <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="text-white/60 hover:text-white transition-colors">
+              <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="text-slate-400 hover:text-white transition-colors">
                 <XIcon className="h-4 w-4" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-white/60 hover:text-white transition-colors">
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-slate-400 hover:text-white transition-colors">
                 <LinkedinIcon className="h-4 w-4" />
               </a>
-              <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-white/60 hover:text-white transition-colors">
+              <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-slate-400 hover:text-white transition-colors">
                 <GithubIcon className="h-4 w-4" />
               </a>
-              <a href="mailto:support@authentic.ng" aria-label="Email" className="text-white/60 hover:text-white transition-colors">
+              <a href="mailto:support@authentic.ng" aria-label="Email" className="text-slate-400 hover:text-white transition-colors">
                 <Mail className="h-4 w-4" />
               </a>
             </div>

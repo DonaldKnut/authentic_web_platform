@@ -50,17 +50,17 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-xl">
+    <div className="relative mx-auto w-full max-w-none lg:max-w-2xl">
       <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-r from-blue-500/20 via-indigo-500/15 to-emerald-500/20 blur-2xl transition-all duration-700" />
 
-      <div className="relative rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-2xl backdrop-blur-xl dark:border-white/15 dark:bg-[#0e1726]/85 sm:p-6 transition-colors duration-300">
+      <div className="relative rounded-3xl border border-slate-200/80 bg-white/95 p-5 shadow-2xl backdrop-blur-xl dark:border-white/15 dark:bg-[#0e1726]/90 sm:p-6 transition-colors duration-300">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab("visual")}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold tracking-wide transition ${
+              className={`rounded-xl px-4 py-2 font-syne text-xs sm:text-sm font-extrabold tracking-tight transition-all ${
                 activeTab === "visual"
-                  ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-600/30 dark:text-blue-300 dark:border-blue-500/40"
+                  ? "bg-blue-50 text-blue-700 border border-blue-200/90 shadow-sm dark:bg-blue-600/30 dark:text-blue-300 dark:border-blue-500/50"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
@@ -68,9 +68,9 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
             </button>
             <button
               onClick={() => setActiveTab("credential")}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold tracking-wide transition ${
+              className={`rounded-xl px-4 py-2 font-syne text-xs sm:text-sm font-extrabold tracking-tight transition-all ${
                 activeTab === "credential"
-                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-600/30 dark:text-emerald-300 dark:border-emerald-500/40"
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200/90 shadow-sm dark:bg-emerald-600/30 dark:text-emerald-300 dark:border-emerald-500/50"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
@@ -78,12 +78,13 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
             </button>
           </div>
 
+          {/* Leaner compact Simulate Scan button */}
           <button
             onClick={onReplay}
             title="Re-run scan simulation"
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1.2 text-xs font-medium text-slate-700 hover:bg-slate-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white transition"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-100/60 px-2.5 py-1 text-[11px] font-medium text-slate-500 hover:bg-slate-200/80 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white transition-all shrink-0"
           >
-            <RefreshCw className="h-3.5 w-3.5" />
+            <RefreshCw className="h-3 w-3" />
             <span className="hidden sm:inline">Simulate Scan</span>
           </button>
         </div>
@@ -93,7 +94,7 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
 
         <p className="mt-4 text-center text-[11px] text-slate-400">
           Interactive demo simulating live scan of{" "}
-          <span className="font-medium text-slate-300">{heroCredential.productName}</span> (Batch {heroCredential.batch}).
+          <span className="font-semibold text-slate-700 dark:text-slate-300">{heroCredential.productName}</span> (Batch {heroCredential.batch}).
         </p>
       </div>
     </div>
@@ -109,8 +110,8 @@ function ScanPreview({
 }) {
   return (
     <div className="mt-4 grid gap-5 sm:grid-cols-2">
-      <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-slate-900/90 to-black/90 p-4">
-        <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+      <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-slate-900/90 to-black/90 p-4 shadow-md">
+        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
           <span className="flex items-center gap-1">
             <Lock className="h-3 w-3 text-blue-400" /> Physical Pack
           </span>
@@ -148,7 +149,7 @@ function ScanPreview({
         <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-2.5">
           <div className="flex items-center justify-between text-[11px]">
             <span className="text-slate-400">Scan Status</span>
-            <span className="font-mono text-xs font-semibold text-blue-300">
+            <span className="font-mono text-xs font-bold text-blue-300">
               {scanState === "scanning" && "Scanning optical NFC tag..."}
               {scanState === "verifying" && "Checking crypto proof..."}
               {scanState === "authenticated" && "Identity Confirmed"}
@@ -163,41 +164,41 @@ function ScanPreview({
         </div>
       </div>
 
-      <div className="hologram-sheen-effect relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white/95 to-slate-100 p-4 text-slate-900 shadow-xl">
+      <div className="hologram-sheen-effect relative overflow-hidden rounded-2xl border border-slate-300/80 bg-gradient-to-br from-white via-slate-50 to-slate-100 p-4 text-slate-900 shadow-xl dark:border-white/20 dark:from-slate-900/90 dark:via-slate-900 dark:to-slate-950 dark:text-white">
         <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700">
+          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">
             Product Check
           </span>
-          <span className="font-mono text-[10px] text-slate-500">{heroCredential.serialCode}</span>
+          <span className="font-mono text-[10px] text-slate-500 dark:text-slate-400">{heroCredential.serialCode}</span>
         </div>
 
         <div className="mt-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Product Identity</p>
-          <h3 className="font-serif text-2xl font-bold text-slate-900 leading-tight">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Product Identity</p>
+          <h3 className="font-syne text-xl font-bold text-slate-900 dark:text-white leading-tight">
             {heroCredential.productName}
           </h3>
         </div>
 
-        <dl className="mt-4 grid gap-2 border-t border-slate-200/80 pt-3 text-xs">
+        <dl className="mt-4 grid gap-2 border-t border-slate-200 dark:border-white/10 pt-3 text-xs">
           <div className="flex justify-between items-center">
-            <dt className="text-slate-500 flex items-center gap-1">
+            <dt className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
               <Building2 className="h-3 w-3 text-slate-400" /> Issuer
             </dt>
-            <dd className="font-semibold text-slate-800">{heroCredential.issuer}</dd>
+            <dd className="font-bold text-slate-800 dark:text-white">{heroCredential.issuer}</dd>
           </div>
           <div className="flex justify-between items-center">
-            <dt className="text-slate-500 flex items-center gap-1">
+            <dt className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
               <Layers className="h-3 w-3 text-slate-400" /> Batch
             </dt>
-            <dd className="font-mono font-bold text-slate-900 bg-slate-200/70 px-1.5 py-0.5 rounded text-[11px]">
+            <dd className="font-mono font-bold text-slate-900 dark:text-white bg-slate-200/80 dark:bg-white/10 px-1.5 py-0.5 rounded text-[11px]">
               {heroCredential.batch}
             </dd>
           </div>
           <div className="flex justify-between items-center">
-            <dt className="text-slate-500 flex items-center gap-1">
+            <dt className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
               <AlertTriangle className="h-3 w-3 text-slate-400" /> Recall
             </dt>
-            <dd className="font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            <dd className="font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/30">
               {heroCredential.recall}
             </dd>
           </div>
@@ -209,14 +210,14 @@ function ScanPreview({
               ✓
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-slate-400">Scan Result</p>
+              <p className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Scan Result</p>
               <p className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
                 {heroCredential.status}
               </p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[9px] uppercase tracking-wider text-slate-400">Trust Score</p>
+            <p className="text-[9px] uppercase tracking-wider text-slate-400 font-medium">Trust Score</p>
             <p className="font-mono text-base font-extrabold text-blue-400">
               {heroCredential.trustScore}
               <span className="text-xs text-slate-400">/100</span>
@@ -238,10 +239,10 @@ function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => voi
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">
+              <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">
                 AUTHENTICATED CREDENTIAL
               </span>
-              <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[10px] text-emerald-300 border border-emerald-500/30">
+              <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-300 border border-emerald-500/30">
                 LIVE PASSPORT
               </span>
             </div>
@@ -251,7 +252,7 @@ function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => voi
 
         <button
           onClick={onCopy}
-          className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-xs text-slate-200 transition hover:bg-white/10"
+          className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-xs text-slate-200 transition hover:bg-white/10 font-bold"
         >
           <span>{heroCredential.serialCode}</span>
           {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-slate-400" />}
@@ -260,25 +261,25 @@ function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => voi
 
       <div className="mt-5 grid gap-4 text-xs sm:grid-cols-2">
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Product Identity</span>
-          <p className="mt-1 font-serif text-lg font-bold text-white">{heroCredential.productName}</p>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Product Identity</span>
+          <p className="mt-1 font-syne text-base font-bold text-white">{heroCredential.productName}</p>
           <p className="text-slate-400 text-[11px]">{heroCredential.category}</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Issuer Verification</span>
-          <p className="mt-1 font-semibold text-emerald-300 flex items-center gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Issuer Verification</span>
+          <p className="mt-1 font-bold text-emerald-300 flex items-center gap-1">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" /> {heroCredential.issuer}
           </p>
           <p className="text-slate-400 text-[11px]">Origin: {heroCredential.manufacturedCountry}</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Batch Inspection</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Batch Inspection</span>
           <p className="mt-1 font-mono text-base font-bold text-blue-300">{heroCredential.batch}</p>
           <p className="text-slate-400 text-[11px]">Quality Clearance Passed</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Recall Registry</span>
-          <p className="mt-1 font-semibold text-emerald-400 flex items-center gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Recall Registry</span>
+          <p className="mt-1 font-bold text-emerald-400 flex items-center gap-1">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> {heroCredential.recall} (Clear)
           </p>
           <p className="text-slate-400 text-[11px]">0 Active Safety Notices</p>
@@ -289,7 +290,7 @@ function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => voi
         <span className="flex items-center gap-1.5 font-mono">
           <Sparkles className="h-3.5 w-3.5 text-amber-400" /> Ledger Hash: {heroCredential.cryptographicHash}
         </span>
-        <span className="font-semibold text-emerald-400">Verified & Immutable</span>
+        <span className="font-bold text-emerald-400">Verified & Immutable</span>
       </div>
     </div>
   );
