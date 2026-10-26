@@ -10,7 +10,7 @@ npm run db:setup
 npm run dev
 ```
 
-Set `API_URL` (see `.env.example`) to the Nest API, default `http://localhost:3001/api/v1`.
+Set `API_URL` (see `.env.example`) to the Nest API. Default production backend: `https://theauthenticapp-backend.onrender.com/api/v1` ([health](https://theauthenticapp-backend.onrender.com/health)).
 
 Open [http://localhost:3000](http://localhost:3000).
 

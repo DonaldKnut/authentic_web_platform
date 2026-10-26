@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { nestErrorMessage, nestJson } from "@/lib/nest";
+import { asList, nestErrorMessage, nestJson } from "@/lib/nest";
 
 const schema = z.object({
   unitId: z.string().optional(),
@@ -31,9 +31,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const { ok, json } = await nestJson<Array<Record<string, unknown>>>("/me/wallet");
+  const { ok, json } = await nestJson("/me/wallet");
   if (!ok) {
     return NextResponse.json({ items: [] });
   }
-  return NextResponse.json({ items: Array.isArray(json) ? json : [] });
+  return NextResponse.json({ items: asList(json) });
 }

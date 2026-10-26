@@ -13,7 +13,7 @@ export function VerifyReveal({
   children: React.ReactNode;
 }) {
   const [phase, setPhase] = useState<"pause" | "mark" | "done">("pause");
-  const copy = STATUS_COPY[status];
+  const copy = STATUS_COPY[status] ?? STATUS_COPY.UNVERIFIED;
 
   useEffect(() => {
     const a = window.setTimeout(() => setPhase("mark"), 700);

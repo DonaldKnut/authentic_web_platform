@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     });
   } catch {
     return NextResponse.json(
-      { error: "AUTHENTIC API is unreachable. Start the Nest backend on port 3001." },
+      { error: "AUTHENTIC API is unreachable. Check the backend at theauthenticapp-backend.onrender.com." },
       { status: 503 },
     );
   }

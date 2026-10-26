@@ -49,15 +49,23 @@ function scoreToStatus(
   flags: { highRisk: boolean; attention: boolean; found: boolean },
 ): TrustStatus {
   if (!flags.found) return "UNVERIFIED";
-  if (flags.highRisk || score < 50) return "HIGH_RISK";
-  if (flags.attention || score < 85) return "NEEDS_ATTENTION";
+  if (flags.highRisk || score < 50) return "COMPROMISED";
+  if (flags.attention || score < 85) return "SUSPICIOUS";
   return "AUTHENTICATED";
 }
 
 function scoreToRisk(status: TrustStatus, score: number): RiskLevel {
-  if (status === "UNVERIFIED") return "UNKNOWN";
-  if (status === "HIGH_RISK" || score < 50) return "HIGH";
-  if (status === "NEEDS_ATTENTION") return "MEDIUM";
+  if (status === "UNVERIFIED" || status === "NOT_FOUND") return "UNKNOWN";
+  if (
+    status === "COMPROMISED" ||
+    status === "HIGH_RISK" ||
+    status === "RECALLED" ||
+    status === "REVOKED" ||
+    score < 50
+  ) {
+    return "HIGH";
+  }
+  if (status === "SUSPICIOUS" || status === "NEEDS_ATTENTION") return "MEDIUM";
   return "LOW";
 }
 

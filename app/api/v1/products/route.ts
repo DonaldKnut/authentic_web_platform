@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth";
-import { nestErrorMessage, nestJson } from "@/lib/nest";
+import { asList, nestErrorMessage, nestJson } from "@/lib/nest";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -18,24 +18,32 @@ export async function GET() {
   if (!user?.organizationId) {
     return NextResponse.json({ error: "Business account required." }, { status: 403 });
   }
-  const { ok, json, response } = await nestJson<Array<Record<string, unknown>>>("/products");
+  const { ok, json, response } = await nestJson("/products");
   if (!ok) {
     return NextResponse.json(
       { error: nestErrorMessage(json, "Could not load products.") },
       { status: response?.status ?? 503 },
     );
   }
-  const products = (Array.isArray(json) ? json : []).map((product) => ({
-    id: product.id,
-    name: product.name,
-    brand: product.brand,
-    sku: product.sku,
-    category: product.category,
-    _count: {
-      units: product.identityCount ?? 0,
-      batches: product.batchCount ?? 0,
-    },
-  }));
+  const products = asList<Record<string, unknown>>(json).map((product) => {
+    const brand =
+      typeof product.brand === "string"
+        ? product.brand
+        : product.brand && typeof product.brand === "object" && "name" in product.brand
+          ? String((product.brand as { name?: string }).name ?? "")
+          : "";
+    return {
+      id: product.id,
+      name: product.name,
+      brand,
+      sku: product.sku,
+      category: product.category,
+      _count: {
+        units: product.identityCount ?? 0,
+        batches: product.batchCount ?? 0,
+      },
+    };
+  });
   return NextResponse.json({ products });
 }
 

@@ -50,17 +50,17 @@ const demoCodes = [
   {
     code: "A7X82K19",
     label: "A code that should not exist",
-    status: "HIGH_RISK",
+    status: "COMPROMISED",
   },
   {
     code: "AF-NG-AURELIA-2026-G4L91Q2C",
     label: "Something looks off",
-    status: "NEEDS_ATTENTION",
+    status: "SUSPICIOUS",
   },
   {
     code: "AF-NG-NAIJAAUTO-2026-BRK22419",
     label: "A recalled spare part",
-    status: "HIGH_RISK",
+    status: "COMPROMISED",
   },
   {
     code: "9789781234567",

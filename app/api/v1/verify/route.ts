@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { mapVerifyResult } from "@/lib/map-verify";
-import { nestErrorMessage, nestJson } from "@/lib/nest";
+import { nestErrorCode, nestErrorMessage, nestJson } from "@/lib/nest";
 
 const bodySchema = z.object({
   productCode: z.string().optional(),
@@ -52,10 +52,11 @@ export async function POST(request: NextRequest) {
   );
 
   if (!ok) {
-    return NextResponse.json(
-      { error: nestErrorMessage(json, "Verification failed.") },
-      { status: response?.status ?? 503 },
-    );
+    const message = nestErrorMessage(json, "Verification failed.");
+    const code = nestErrorCode(json);
+    return NextResponse.json(code ? { error: message, code } : { error: message }, {
+      status: response?.status ?? 503,
+    });
   }
 
   return NextResponse.json(mapVerifyResult(json, identifier));

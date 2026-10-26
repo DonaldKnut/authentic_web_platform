@@ -1,8 +1,15 @@
 export type TrustStatus =
   | "AUTHENTICATED"
+  | "SUSPICIOUS"
+  | "COMPROMISED"
+  | "RECALLED"
+  | "REVOKED"
+  | "UNVERIFIED"
+  | "NOT_FOUND"
+  /** @deprecated Prefer SUSPICIOUS — kept for local seed / older UI */
   | "NEEDS_ATTENTION"
-  | "HIGH_RISK"
-  | "UNVERIFIED";
+  /** @deprecated Prefer COMPROMISED — kept for local seed / older UI */
+  | "HIGH_RISK";
 
 export type DisplayStatus =
   | "AUTHENTICATED"
@@ -48,6 +55,22 @@ export type VerifyInput = {
   userId?: string | null;
 };
 
+export type VerifyGuidance = {
+  title?: string;
+  body?: string;
+  severity?: string;
+  reportRecommended?: boolean;
+  saveToWallet?: boolean;
+  nextSteps?: string[];
+};
+
+export type CatalogLookup = {
+  found: boolean;
+  title?: string | null;
+  brand?: string | null;
+  source?: string | null;
+};
+
 export type VerifyResult = {
   status: TrustStatus;
   trustScore: number;
@@ -82,6 +105,7 @@ export type VerifyResult = {
   };
   unitStatus?: string;
   reasons: string[];
+  warnings?: string[];
   checks: EvidenceCheck[];
   scanId: string;
   unitId?: string;
@@ -91,9 +115,12 @@ export type VerifyResult = {
     createdAt: string;
     source: string;
   }[];
-  guidance?: {
-    reportRecommended: boolean;
-    saveToWallet: boolean;
-    nextSteps: string[];
+  guidance?: VerifyGuidance;
+  lookup?: CatalogLookup | null;
+  scanMeta?: {
+    decodedFromImage?: boolean;
+    kind?: string | null;
+    canonicalCode?: string | null;
+    checksumValid?: boolean | null;
   };
 };

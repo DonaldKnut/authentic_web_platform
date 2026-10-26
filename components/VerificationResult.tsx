@@ -16,7 +16,10 @@ export function VerificationResult({
   onSaveWallet?: () => void;
 }) {
   const display = resolveDisplayStatus(result);
-  const copy = STATUS_COPY[result.status];
+  const fallback = STATUS_COPY[result.status] ?? STATUS_COPY.UNVERIFIED;
+  const headline = result.guidance?.title ?? fallback.headline;
+  const tone = result.guidance?.body ?? fallback.tone;
+  const catalogOnly = result.status === "UNVERIFIED" && Boolean(result.lookup?.found);
 
   return (
     <div className="grid gap-8">
@@ -26,13 +29,26 @@ export function VerificationResult({
           <h1 className="display mt-5 text-4xl text-ink md:text-5xl">
             {result.product?.name ?? DISPLAY_STATUS[display].label}
           </h1>
-          <p className="mt-3 max-w-xl text-lg text-muted">{copy.headline}</p>
-          <p className="mt-2 max-w-xl text-sm text-muted">{copy.tone}</p>
+          <p className="mt-3 max-w-xl text-lg text-muted">{headline}</p>
+          <p className="mt-2 max-w-xl text-sm text-muted">{tone}</p>
+          {catalogOnly ? (
+            <p className="mt-3 max-w-xl rounded-2xl border border-line bg-soft px-4 py-3 text-sm text-muted">
+              This matched a public catalog entry
+              {result.lookup?.source ? ` (${result.lookup.source})` : ""}. It is{" "}
+              <span className="font-semibold text-ink">not</span> a unique AUTHENTIC unit
+              identity.
+            </p>
+          ) : null}
           <div className="mt-8 flex flex-wrap items-center gap-8">
             <TrustScore score={result.trustScore} status={display} />
             <dl className="grid gap-2 text-sm text-muted">
-              <div>Manufacturer: <span className="text-ink">{result.manufacturer?.name ?? "—"}</span></div>
-              <div>Serial: <span className="font-mono text-ink">{result.serial ?? "—"}</span></div>
+              <div>
+                Manufacturer:{" "}
+                <span className="text-ink">{result.manufacturer?.name ?? "—"}</span>
+              </div>
+              <div>
+                Serial: <span className="font-mono text-ink">{result.serial ?? "—"}</span>
+              </div>
               <div>Made: {formatDate(result.batch?.manufacturedAt)}</div>
               <div>Origin: {result.product?.countryOfManufacture ?? "—"}</div>
             </dl>
@@ -44,8 +60,8 @@ export function VerificationResult({
       <Card>
         <h2 className="display text-2xl">Evidence</h2>
         <p className="mt-2 max-w-2xl text-sm text-muted">
-          AUTHENTIC evaluates multiple signals before returning a result. This is not a
-          proprietary algorithm dump — it is the evidence available for this identity.
+          AUTHENTIC evaluates multiple signals before returning a result. The backend is
+          the source of truth — this page only displays what came back.
         </p>
         <ul className="mt-6 grid gap-3">
           {result.checks.map((check) => (
@@ -63,6 +79,11 @@ export function VerificationResult({
         <div className="mt-6 space-y-2 text-sm text-muted">
           {result.reasons.map((reason) => (
             <p key={reason}>{reason}</p>
+          ))}
+          {(result.warnings ?? []).map((warning) => (
+            <p key={warning} className="text-attention">
+              {warning}
+            </p>
           ))}
         </div>
       </Card>
@@ -99,13 +120,15 @@ export function VerificationResult({
       ) : null}
 
       <div className="flex flex-wrap gap-3">
-        <Button
-          href={`/report?code=${encodeURIComponent(result.authenticId ?? result.identifier)}`}
-          variant="secondary"
-        >
-          Report product
-        </Button>
-        {result.unitId && onSaveWallet ? (
+        {(result.guidance?.reportRecommended ?? true) ? (
+          <Button
+            href={`/report?code=${encodeURIComponent(result.authenticId ?? result.identifier)}`}
+            variant="secondary"
+          >
+            Report product
+          </Button>
+        ) : null}
+        {result.unitId && onSaveWallet && (result.guidance?.saveToWallet ?? true) ? (
           <Button onClick={onSaveWallet} variant="navy">
             Save to wallet
           </Button>

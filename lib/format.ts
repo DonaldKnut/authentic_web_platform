@@ -9,20 +9,45 @@ export const STATUS_COPY: Record<
     headline: "This product identity checks out.",
     tone: "The identity was issued by the manufacturer and the verification data is valid. This reduces risk — it does not make physical counterfeiting impossible.",
   },
+  SUSPICIOUS: {
+    title: "Suspicious",
+    headline: "The identity matched, but risk signals showed up.",
+    tone: "Treat this as a risk signal, not a final verdict. Review the evidence before relying on the product.",
+  },
   NEEDS_ATTENTION: {
     title: "Needs attention",
     headline: "The identity exists, but unusual activity was detected.",
     tone: "Treat this as a risk signal, not a final verdict. Review the evidence before relying on the product.",
+  },
+  COMPROMISED: {
+    title: "Compromised",
+    headline: "Clone or credential abuse is suspected.",
+    tone: "Do not rely on this identity. Contact the manufacturer or retailer before use or resale.",
   },
   HIGH_RISK: {
     title: "Do not rely on this identity",
     headline: "AUTHENTIC found high-risk signals on this product identity.",
     tone: "Consider contacting the manufacturer or retailer before use or resale.",
   },
+  RECALLED: {
+    title: "Recalled",
+    headline: "This batch or identity is under recall.",
+    tone: "Follow the manufacturer recall guidance. Do not use or sell this unit.",
+  },
+  REVOKED: {
+    title: "Revoked",
+    headline: "The manufacturer revoked this product identity.",
+    tone: "This identity is no longer valid for authenticity claims.",
+  },
   UNVERIFIED: {
     title: "Unverified",
     headline: "AUTHENTIC cannot currently establish authenticity.",
-    tone: "A missing result is not proof of a counterfeit. It means there is not enough evidence.",
+    tone: "A missing result is not proof of a counterfeit. It means there is not enough evidence for a unique AUTHENTIC unit.",
+  },
+  NOT_FOUND: {
+    title: "Not found",
+    headline: "We could not verify this code.",
+    tone: "No AUTHENTIC product identity matched. That is not the same as calling the product fake.",
   },
 };
 
