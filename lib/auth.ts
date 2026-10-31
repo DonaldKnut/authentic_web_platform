@@ -12,16 +12,37 @@ export type OrganizationSummary = {
 export type AppUser = SessionUser & {
   organization: OrganizationSummary | null;
   organizations: OrganizationSummary[];
+  platformRole: string;
+  email: string;
 };
 
-function roleFromProfile(profile: {
-  user?: { platformRole?: string };
+const PLATFORM_ADMIN_EMAIL = (
+  process.env.PLATFORM_ADMIN_EMAIL?.trim() ||
+  "theauthentic.ng@gmail.com"
+).toLowerCase();
+
+export function resolveAppRole(profile: {
+  user?: { email?: string; platformRole?: string };
   organizations?: OrganizationSummary[];
-}) {
-  if (profile.user?.platformRole === "ADMIN" || profile.user?.platformRole === "SUPER_ADMIN") {
+}): "ADMIN" | "BUSINESS" | "CONSUMER" {
+  const platform = (profile.user?.platformRole ?? "").toUpperCase();
+  const email = (profile.user?.email ?? "").toLowerCase();
+  if (
+    platform === "ADMIN" ||
+    platform === "SUPER_ADMIN" ||
+    email === PLATFORM_ADMIN_EMAIL
+  ) {
     return "ADMIN";
   }
   return profile.organizations?.length ? "BUSINESS" : "CONSUMER";
+}
+
+export function isPlatformAdmin(user: { role?: string; platformRole?: string; email?: string } | null) {
+  if (!user) return false;
+  if (user.role === "ADMIN") return true;
+  const platform = (user.platformRole ?? "").toUpperCase();
+  if (platform === "ADMIN" || platform === "SUPER_ADMIN") return true;
+  return (user.email ?? "").toLowerCase() === PLATFORM_ADMIN_EMAIL;
 }
 
 export async function getSession(): Promise<SessionUser | null> {
@@ -53,15 +74,16 @@ export async function getCurrentUser(): Promise<AppUser | null> {
   const selected = store.get(ORG_COOKIE)?.value;
   const org =
     organizations.find((item) => item.id === selected) ?? organizations[0] ?? null;
-  const role = roleFromProfile(json);
+  const role = resolveAppRole(json);
   return {
     id: json.user.id,
     email: json.user.email,
     name: `${json.user.firstName} ${json.user.lastName}`.trim(),
-    role: role === "ADMIN" ? "BUSINESS" : role,
+    role,
     organizationId: org?.id ?? null,
     organization: org,
     organizations,
+    platformRole: json.user.platformRole ?? "USER",
   };
 }
 

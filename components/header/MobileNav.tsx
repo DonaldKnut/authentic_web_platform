@@ -15,6 +15,7 @@ import {
   LogIn,
   LogOut,
   ScanLine,
+  ShieldCheck,
   Waypoints,
   type LucideIcon,
 } from "lucide-react";
@@ -51,7 +52,7 @@ export function MobileNav({
   onLogout,
 }: {
   open: boolean;
-  user?: { name: string; role: string } | null;
+  user?: { name: string; email?: string; role: string } | null;
   onClose: () => void;
   onLogout: () => void;
 }) {
@@ -88,7 +89,7 @@ export function MobileNav({
         aria-label="Site menu"
         inert={!open ? true : undefined}
         className={cn(
-          "mobile-nav-sheet fixed bottom-0 right-0 top-24 z-[70] flex w-full max-w-[22.5rem] flex-col bg-elev shadow-[-24px_0_60px_-28px_rgba(10,37,64,0.45)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:top-28",
+          "mobile-nav-sheet fixed bottom-0 right-0 top-[5.75rem] z-[70] flex w-full max-w-[22.5rem] flex-col bg-elev shadow-[-24px_0_60px_-28px_rgba(10,37,64,0.45)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:top-[7rem]",
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -142,9 +143,26 @@ export function MobileNav({
         <div className="border-t border-line bg-elev px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3">
           {user ? (
             <div className="grid gap-2">
-              {user.role === "BUSINESS" ? (
-                <MobileLink href={routes.dashboard} icon={LayoutDashboard} onClose={onClose}>
-                  Dashboard
+              <p className="px-3 text-xs text-muted">
+                Signed in as <span className="font-bold text-ink">{user.email ?? user.name}</span>
+              </p>
+              <MobileLink
+                href={routes.dashboard}
+                icon={LayoutDashboard}
+                onClose={onClose}
+                hint={
+                  user.role === "BUSINESS" || user.role === "ADMIN"
+                    ? "Products, IDs, risk, team"
+                    : "Wallet, history, checks"
+                }
+              >
+                {user.role === "BUSINESS" || user.role === "ADMIN"
+                  ? "Business dashboard"
+                  : "My dashboard"}
+              </MobileLink>
+              {user.role === "ADMIN" ? (
+                <MobileLink href={routes.admin} icon={ShieldCheck} onClose={onClose} hint="Full platform control">
+                  Admin dashboard
                 </MobileLink>
               ) : null}
               <button

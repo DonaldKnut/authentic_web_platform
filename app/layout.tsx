@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { AmbientMesh } from "@/components/AmbientMesh";
+import { CookieConsent } from "@/components/CookieConsent";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ToastProvider } from "@/components/ui/Toast";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { LOGO_URL } from "@/lib/brand";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, siteUrl } from "@/lib/site";
 
+/** Single brand face for UI, headlines, and body — matches the home hero. */
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-});
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  weight: ["700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -34,11 +33,9 @@ export const metadata: Metadata = {
   keywords: [
     "product authentication",
     "product verification",
-    "digital product identity",
-    "product passport",
+    "check if product is real",
+    "counterfeit check",
     "brand protection",
-    "supply chain verification",
-    "counterfeit detection",
   ],
   authors: [{ name: SITE_NAME }],
   openGraph: {
@@ -70,7 +67,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${bricolage.variable} ${geistMono.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${plusJakarta.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-bg text-ink">
@@ -79,7 +77,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <ThemeProvider>{children}</ThemeProvider>
+        <AmbientMesh />
+        <ThemeProvider>
+          <ToastProvider>
+            {children}
+            <CookieConsent />
+            <WhatsAppFloat />
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

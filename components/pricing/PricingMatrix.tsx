@@ -206,7 +206,7 @@ export function PricingMatrix({ plans = defaultPlans }: { plans?: PlanData[] }) 
 
               <div>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-2xl font-bold text-ink">{plan.name}</h3>
+                  <h3 className="display text-2xl font-bold text-ink">{plan.name}</h3>
                   <span className="rounded-md bg-soft px-2.5 py-1 text-[10px] font-mono font-bold text-muted uppercase">
                     {plan.code}
                   </span>
@@ -218,7 +218,7 @@ export function PricingMatrix({ plans = defaultPlans }: { plans?: PlanData[] }) 
 
                 <div className="mt-6 border-y border-line/60 py-4">
                   <div className="flex items-baseline gap-1">
-                    <span className="font-serif text-4xl font-extrabold text-ink">{displayPrice}</span>
+                    <span className="display text-4xl font-extrabold text-ink">{displayPrice}</span>
                     <span className="text-xs text-muted font-medium">
                       {plan.monthlyNgn != null ? (billingCycle === "annual" ? "/ month (billed annually)" : "/ month") : ""}
                     </span>
@@ -286,7 +286,7 @@ export function PricingMatrix({ plans = defaultPlans }: { plans?: PlanData[] }) 
 
           <div className="rounded-2xl border border-blue/20 bg-soft p-4 text-right">
             <span className="text-[10px] text-muted font-bold uppercase block">Recommended Plan</span>
-            <span className="font-serif text-lg font-bold text-blue">{est.planName}</span>
+            <span className="display text-lg font-bold text-blue">{est.planName}</span>
             <span className="text-xs text-muted block mt-0.5">Est. {est.perUnit} per unit</span>
           </div>
         </div>
@@ -317,15 +317,15 @@ export function PricingMatrix({ plans = defaultPlans }: { plans?: PlanData[] }) 
           <div className="grid gap-4 sm:grid-cols-3 rounded-2xl bg-soft p-5 text-xs">
             <div>
               <span className="text-muted block mb-1">Monthly Platform Cost</span>
-              <span className="font-serif text-2xl font-bold text-ink">₦{est.cost.toLocaleString("en-NG")}</span>
+              <span className="display text-2xl font-bold text-ink">₦{est.cost.toLocaleString("en-NG")}</span>
             </div>
             <div>
               <span className="text-muted block mb-1">Unit Passport Cost</span>
-              <span className="font-serif text-2xl font-bold text-emerald-600 dark:text-emerald-400">{est.perUnit}</span>
+              <span className="display text-2xl font-bold text-emerald-600 dark:text-emerald-400">{est.perUnit}</span>
             </div>
             <div>
               <span className="text-muted block mb-1">Estimated Counterfeit Savings</span>
-              <span className="font-serif text-2xl font-bold text-blue">↑ 94% Intercept Rate</span>
+              <span className="display text-2xl font-bold text-blue">↑ 94% Intercept Rate</span>
             </div>
           </div>
         </div>

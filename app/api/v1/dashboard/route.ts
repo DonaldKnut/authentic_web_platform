@@ -1,12 +1,8 @@
-import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { NextRequest } from "next/server";
 import { proxyGet } from "@/lib/api-route";
 
-export async function GET() {
-  const user = await getCurrentUser();
-  if (!user?.organizationId) {
-    return NextResponse.json({ error: "Business account required." }, { status: 403 });
-  }
-
-  return proxyGet("/analytics/dashboard", "Could not load dashboard.");
+export async function GET(request: NextRequest) {
+  const qs = request.nextUrl.searchParams.toString();
+  const path = qs ? `/analytics/dashboard?${qs}` : "/analytics/dashboard";
+  return proxyGet(path, "Could not load dashboard.");
 }

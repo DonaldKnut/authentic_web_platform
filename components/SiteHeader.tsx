@@ -3,11 +3,20 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Building2, HelpCircle, Layers, Menu, ShieldCheck, X } from "lucide-react";
 import { BrandMark } from "./BrandMark";
-import { MegaFooter, MegaItem, MegaPanel, MegaTrigger, NavLink } from "./header/MegaMenu";
+import { AccountMenu } from "./header/AccountMenu";
+import {
+  headerActionClass,
+  MegaFeatured,
+  MegaFooter,
+  MegaItem,
+  MegaPanel,
+  MegaTrigger,
+} from "./header/MegaMenu";
 import { MobileNav } from "./header/MobileNav";
 import { ThemeToggle } from "./theme/ThemeToggle";
+import { useToast } from "@/components/ui/Toast";
 import { useHeaderChrome } from "@/hooks/useHeaderChrome";
 import { cn } from "@/lib/format";
 import { productItems, resourceItems, solutionItems } from "@/lib/navigation";
@@ -18,9 +27,10 @@ type MenuId = "product" | "solutions" | "resources";
 export function SiteHeader({
   user,
 }: {
-  user?: { name: string; role: string } | null;
+  user?: { name: string; email?: string; role: string } | null;
 }) {
   const router = useRouter();
+  const toast = useToast();
   const { pathname, theme, mobileOpen, setMobileOpen, isTopHeader, isDarkTop } = useHeaderChrome();
   const [active, setActive] = useState<MenuId | null>(null);
   const closeTimer = useRef<number | null>(null);
@@ -30,7 +40,6 @@ export function SiteHeader({
     setActive(null);
   }, [pathname]);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = "hidden";
@@ -48,7 +57,7 @@ export function SiteHeader({
   }
 
   function delayClose() {
-    closeTimer.current = window.setTimeout(() => setActive(null), 140);
+    closeTimer.current = window.setTimeout(() => setActive(null), 220);
   }
 
   useEffect(() => {
@@ -71,48 +80,76 @@ export function SiteHeader({
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
-    router.push(routes.home);
+    toast.info("Signed out.");
+    router.push(routes.login);
     router.refresh();
   }
+
+  const actionBtn = cn(
+    headerActionClass,
+    "hidden h-10 items-center rounded-full px-3.5 transition md:inline-flex",
+  );
 
   return (
     <header
       ref={rootRef}
       className={cn(
-        "relative sticky top-0 z-50 transition-all duration-300",
-        mobileOpen && "z-[80]",
+        "sticky top-0 z-[100] transition-all duration-300",
+        mobileOpen && "z-[120]",
         isTopHeader
           ? theme === "dark"
-            ? "bg-[#070d19] border-b border-white/10 text-white shadow-none"
-            : "bg-slate-50/90 border-b border-slate-200/80 text-slate-900 shadow-none backdrop-blur-md"
-          : "site-header bg-elev/95 text-ink shadow-md backdrop-blur-xl border-b border-line",
+            ? "border-b border-transparent bg-transparent text-white shadow-none"
+            : "border-b border-transparent bg-transparent text-slate-900 shadow-none"
+          : "site-header border-b border-line bg-elev/95 text-ink shadow-sm backdrop-blur-xl",
       )}
     >
-      <div className="mx-auto flex h-24 w-[90%] max-w-[90%] items-center justify-between px-2 md:h-28">
-        <BrandMark inverted={isDarkTop} size="xl" />
+      <div className="mx-auto flex h-[5.75rem] w-[90%] max-w-[90%] items-center justify-between gap-3 px-1 md:h-[7rem] md:px-2">
+        <BrandMark inverted={isDarkTop} size="header" />
 
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           <MegaTrigger
             label="Product"
             open={active === "product"}
-            current={pathname.startsWith(routes.product) || pathname === routes.security || pathname === routes.howItWorks}
+            current={
+              pathname.startsWith(routes.product) ||
+              pathname === routes.security ||
+              pathname === routes.howItWorks
+            }
             onEnter={() => open("product")}
             onLeave={delayClose}
             isDark={isDarkTop}
           />
           <MegaTrigger
-            label="Solutions"
+            label="Who we help"
             open={active === "solutions"}
             current={pathname.startsWith(routes.solutions)}
             onEnter={() => open("solutions")}
             onLeave={delayClose}
             isDark={isDarkTop}
           />
-          <NavLink href={routes.business} current={pathname === routes.business} isDark={isDarkTop}>
-            For Businesses
-          </NavLink>
+          <Link
+            href={routes.business}
+            className={cn(
+              "relative rounded-full px-4 py-2 text-base font-extrabold tracking-tight transition-colors duration-200",
+              isDarkTop
+                ? pathname === routes.business
+                  ? "bg-white/15 text-white"
+                  : "text-white hover:bg-white/10"
+                : pathname === routes.business
+                  ? "bg-soft text-ink"
+                  : "text-ink hover:bg-soft",
+            )}
+          >
+            For businesses
+            <span
+              className={cn(
+                "absolute inset-x-4 -bottom-0.5 h-0.5 origin-left rounded-full bg-blue transition-transform duration-300",
+                pathname === routes.business ? "scale-x-100" : "scale-x-0",
+              )}
+            />
+          </Link>
           <MegaTrigger
-            label="Resources"
+            label="Help"
             open={active === "resources"}
             current={pathname.startsWith(routes.resources) || pathname === routes.platform}
             onEnter={() => open("resources")}
@@ -121,7 +158,7 @@ export function SiteHeader({
           />
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle
             className={
               isDarkTop
@@ -132,50 +169,41 @@ export function SiteHeader({
           <Link
             href={routes.verify}
             className={cn(
-              "hidden h-10 items-center rounded-full px-4 text-sm font-bold transition md:inline-flex",
+              actionBtn,
               isDarkTop
                 ? "border border-white/20 bg-white/10 text-white hover:bg-white/20"
                 : "border border-line bg-elev text-ink-soft hover:border-line-strong hover:bg-soft hover:text-ink",
             )}
           >
-            Verify Product
+            Check a product
           </Link>
           {user ? (
+            <AccountMenu user={user} isDarkTop={isDarkTop} onLogout={logout} />
+          ) : (
             <>
-              {user.role === "BUSINESS" ? (
-                <Link
-                  href={routes.dashboard}
-                  className={cn(
-                    "hidden h-10 items-center rounded-full px-3 text-sm transition lg:inline-flex",
-                    isDarkTop ? "text-slate-300 hover:text-white" : "text-slate-900 font-bold hover:text-black",
-                  )}
-                >
-                  Dashboard
-                </Link>
-              ) : null}
-              <button
-                type="button"
-                onClick={logout}
+              <Link
+                href={routes.login}
                 className={cn(
-                  "hidden h-10 px-3 text-sm transition lg:inline-flex",
-                  isDarkTop ? "text-slate-400 hover:text-white" : "text-slate-700 font-bold hover:text-black",
+                  actionBtn,
+                  "sm:inline-flex",
+                  isDarkTop ? "text-slate-300 hover:text-white" : "text-ink-soft hover:text-ink",
                 )}
               >
-                Sign out
-              </button>
+                Sign in
+              </Link>
+              <Link
+                href={routes.getStarted}
+                className={cn(
+                  actionBtn,
+                  "px-4 text-white shadow-md sm:inline-flex",
+                  isDarkTop
+                    ? "bg-blue-600 shadow-blue-600/30 hover:bg-blue-500"
+                    : "bg-blue-600 shadow-blue-600/20 hover:bg-blue-700",
+                )}
+              >
+                Get started
+              </Link>
             </>
-          ) : (
-            <Link
-              href={routes.getStarted}
-              className={cn(
-                "hidden h-10 items-center rounded-full px-5 text-sm font-bold text-white transition sm:inline-flex shadow-lg",
-                isDarkTop
-                  ? "bg-blue-600 hover:bg-blue-500 shadow-blue-600/30"
-                  : "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20",
-              )}
-            >
-              Get Started
-            </Link>
           )}
           <button
             type="button"
@@ -183,25 +211,26 @@ export function SiteHeader({
               "relative inline-flex h-10 w-10 items-center justify-center rounded-full border transition lg:hidden",
               isDarkTop
                 ? "border-white/20 bg-white/10 text-white hover:bg-white/20"
-                : "border-slate-300 bg-white text-slate-900 hover:border-slate-400 hover:bg-slate-100 shadow-sm",
+                : "border-slate-300 bg-white text-slate-900 shadow-sm hover:border-slate-400 hover:bg-slate-100",
             )}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
             onClick={() => setMobileOpen((value) => !value)}
           >
             <div className="relative h-4 w-4">
               <span
                 className={cn(
-                  "absolute inset-0 grid place-items-center transition-all duration-300 transform",
-                  mobileOpen ? "rotate-90 opacity-100 scale-100" : "rotate-0 opacity-0 scale-75",
+                  "absolute inset-0 grid place-items-center transition-all duration-300",
+                  mobileOpen ? "rotate-90 scale-100 opacity-100" : "rotate-0 scale-75 opacity-0",
                 )}
               >
                 <X className="h-4 w-4" />
               </span>
               <span
                 className={cn(
-                  "absolute inset-0 grid place-items-center transition-all duration-300 transform",
-                  mobileOpen ? "-rotate-90 opacity-0 scale-75" : "rotate-0 opacity-100 scale-100",
+                  "absolute inset-0 grid place-items-center transition-all duration-300",
+                  mobileOpen ? "-rotate-90 scale-75 opacity-0" : "rotate-0 scale-100 opacity-100",
                 )}
               >
                 <Menu className="h-4 w-4" />
@@ -211,37 +240,77 @@ export function SiteHeader({
         </div>
       </div>
 
-      {active === "product" ? (
-        <MegaPanel onEnter={() => open("product")} onLeave={delayClose}>
-          <div className="grid grid-cols-2 gap-2">
-            {productItems.map((item) => (
-              <MegaItem key={item.href} {...item} onClick={() => setActive(null)} />
-            ))}
-          </div>
-          <MegaFooter href={routes.verify} label="Verify a product" />
-        </MegaPanel>
-      ) : null}
+      <MegaPanel
+        open={active === "product"}
+        onEnter={() => open("product")}
+        onLeave={delayClose}
+        featured={
+          <MegaFeatured
+            eyebrow="Start here"
+            title="Is this product real?"
+            body="Scan a code or type a serial. AUTHENTIC checks issuer proof first — on-chain anchors are an extra integrity rail."
+            href={routes.verify}
+            cta="Check a product"
+            icon={ShieldCheck}
+          />
+        }
+      >
+        <div className="grid gap-1 sm:grid-cols-2">
+          {productItems.map((item, index) => (
+            <MegaItem key={item.href} {...item} index={index} onClick={() => setActive(null)} />
+          ))}
+        </div>
+        <MegaFooter href={routes.verify} label="Check a product" />
+      </MegaPanel>
 
-      {active === "solutions" ? (
-        <MegaPanel onEnter={() => open("solutions")} onLeave={delayClose}>
-          <div className="grid grid-cols-2 gap-2">
-            {solutionItems.map((item) => (
-              <MegaItem key={item.href} {...item} onClick={() => setActive(null)} />
-            ))}
-          </div>
-          <MegaFooter href={routes.business} label="See the business platform" />
-        </MegaPanel>
-      ) : null}
+      <MegaPanel
+        open={active === "solutions"}
+        onEnter={() => open("solutions")}
+        onLeave={delayClose}
+        featured={
+          <MegaFeatured
+            eyebrow="For brands"
+            title="Protect every unit you ship"
+            body="Issue unique IDs, watch verifications, and queue counterfeit risk — with optional blockchain commitments."
+            href={routes.business}
+            cta="See business tools"
+            icon={Building2}
+          />
+        }
+      >
+        <div className="grid gap-1 sm:grid-cols-2">
+          {solutionItems.map((item, index) => (
+            <MegaItem key={item.href} {...item} index={index} onClick={() => setActive(null)} />
+          ))}
+        </div>
+        <MegaFooter href={routes.business} label="See business tools" />
+      </MegaPanel>
 
-      {active === "resources" ? (
-        <MegaPanel onEnter={() => open("resources")} onLeave={delayClose} compact>
-          <div className="grid grid-cols-2 gap-1">
-            {resourceItems.map((item) => (
-              <MegaItem key={item.href} {...item} onClick={() => setActive(null)} />
-            ))}
-          </div>
-        </MegaPanel>
-      ) : null}
+      <MegaPanel
+        open={active === "resources"}
+        onEnter={() => open("resources")}
+        onLeave={delayClose}
+        featured={
+          <MegaFeatured
+            eyebrow="Builders"
+            title="Wire AUTHENTIC into your stack"
+            body="Docs, guides, and public APIs for verify, scan, and on-chain proof lookups."
+            href={routes.platform}
+            cta="Open platform"
+            icon={Layers}
+          />
+        }
+      >
+        <div className="grid gap-1 sm:grid-cols-2">
+          {resourceItems.map((item, index) => (
+            <MegaItem key={item.href} {...item} index={index} onClick={() => setActive(null)} />
+          ))}
+        </div>
+        <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-muted">
+          <HelpCircle className="h-4 w-4 text-blue" />
+          Prefer chat? Start from Help center.
+        </div>
+      </MegaPanel>
 
       <MobileNav open={mobileOpen} user={user} onClose={() => setMobileOpen(false)} onLogout={logout} />
     </header>

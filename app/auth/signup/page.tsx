@@ -1,17 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { BrandSpinner } from "@/components/BrandSpinner";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/lib/format";
 import { routes } from "@/lib/routes";
-import { User, Mail, Phone, Building2, ShoppingBag, ArrowRight, AlertCircle } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  Building2,
+  ShoppingBag,
+  Hexagon,
+  ArrowRight,
+  AlertCircle,
+} from "lucide-react";
 
 const signupSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required."),
@@ -27,18 +37,29 @@ const signupSchema = z.object({
 
 type FieldErrors = Record<string, string>;
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const search = useSearchParams();
+  const toast = useToast();
   const [accountType, setAccountType] = useState<"CONSUMER" | "BUSINESS">("CONSUMER");
+  const [wantCrypto, setWantCrypto] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [generalError, setGeneralError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [agreed, setAgreed] = useState(false);
+
+  useEffect(() => {
+    const type = search.get("type");
+    if (type === "business") setAccountType("BUSINESS");
+    if (type === "consumer") setAccountType("CONSUMER");
+    if (search.get("crypto") === "1") {
+      setAccountType("BUSINESS");
+      setWantCrypto(true);
+    }
+  }, [search]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFieldErrors({});
-    setGeneralError(null);
 
     const form = new FormData(event.currentTarget);
     const firstName = String(form.get("firstName") ?? "").trim();
@@ -61,6 +82,7 @@ export default function SignupPage() {
 
     if (accountType === "BUSINESS" && !organizationName) {
       setFieldErrors((prev) => ({ ...prev, organizationName: "Company name is required for business accounts." }));
+      toast.error("Company name is required for business accounts.");
       return;
     }
 
@@ -72,6 +94,7 @@ export default function SignupPage() {
         }
       });
       setFieldErrors(errors);
+      toast.error(validationResult.error.issues[0]?.message ?? "Check the form and try again.");
       return;
     }
 
@@ -80,7 +103,8 @@ export default function SignupPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: [firstName, lastName].filter(Boolean).join(" "),
+        firstName,
+        lastName,
         email,
         phone,
         password,
@@ -90,12 +114,29 @@ export default function SignupPage() {
     });
     const json = await response.json();
     if (!response.ok) {
-      setGeneralError(json.error ?? "Could not create account.");
+      toast.error(json.error ?? "Could not create account.");
+      if (json.code === "EMAIL_IN_USE") {
+        toast.info("Try signing in instead.");
+        router.push(routes.login);
+        return;
+      }
       setBusy(false);
       return;
     }
-    router.push(accountType === "BUSINESS" ? routes.dashboard : routes.verify);
-    router.refresh();
+    if (json.emailDelivered === false) {
+      toast.error("Account created, but we couldn’t send the verification email. Use Resend on the next screen.");
+    } else {
+      toast.success(
+        wantCrypto
+          ? "Account created. Enter the 6-digit email code to verify — then you can queue units for on-chain anchoring."
+          : "Account created. Enter the 6-digit code we emailed you.",
+      );
+    }
+    if (json.debugVerificationCode) {
+      toast.info(`Dev code: ${json.debugVerificationCode}`);
+    }
+    // Never treat register as logged-in — session starts after verify-email.
+    router.push(`${routes.verifyEmail}?email=${encodeURIComponent(email)}`);
   }
 
   return (
@@ -103,24 +144,7 @@ export default function SignupPage() {
       title="Create an account"
       subtitle="Free to check a product. Create an account if you want to keep your history."
     >
-      {/* Account Type Selector Pills */}
-      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-line bg-surface p-1.5 shadow-sm">
-        <button
-          type="button"
-          onClick={() => {
-            setAccountType("CONSUMER");
-            setFieldErrors({});
-          }}
-          className={cn(
-            "flex items-center justify-center gap-2.5 h-12 rounded-xl text-xs font-bold transition-all",
-            accountType === "CONSUMER"
-              ? "bg-blue text-white shadow-md shadow-blue/25 scale-[1.01]"
-              : "text-muted hover:text-ink hover:bg-elev"
-          )}
-        >
-          <ShoppingBag className="h-4 w-4" />
-          <span>I shop</span>
-        </button>
+      <div className="grid gap-3">
         <button
           type="button"
           onClick={() => {
@@ -128,15 +152,90 @@ export default function SignupPage() {
             setFieldErrors({});
           }}
           className={cn(
-            "flex items-center justify-center gap-2.5 h-12 rounded-xl text-xs font-bold transition-all",
+            "flex items-start gap-3 rounded-2xl border p-4 text-left transition",
             accountType === "BUSINESS"
-              ? "bg-blue text-white shadow-md shadow-blue/25 scale-[1.01]"
-              : "text-muted hover:text-ink hover:bg-elev"
+              ? "border-blue bg-soft-blue shadow-sm"
+              : "border-line bg-elev hover:border-line-strong",
           )}
         >
-          <Building2 className="h-4 w-4" />
-          <span>I make or sell</span>
+          <span
+            className={cn(
+              "grid h-11 w-11 shrink-0 place-items-center rounded-xl",
+              accountType === "BUSINESS" ? "bg-blue text-white" : "bg-soft-blue text-blue",
+            )}
+          >
+            <Building2 className="h-5 w-5" />
+          </span>
+          <span>
+            <span className="block text-sm font-extrabold text-ink">I make or sell products</span>
+            <span className="mt-1 block text-xs leading-relaxed text-muted">
+              Create a company account, add products, and issue a unique ID per unit.
+            </span>
+          </span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setAccountType("CONSUMER");
+            setWantCrypto(false);
+            setFieldErrors({});
+          }}
+          className={cn(
+            "flex items-start gap-3 rounded-2xl border p-4 text-left transition",
+            accountType === "CONSUMER"
+              ? "border-blue bg-soft-blue shadow-sm"
+              : "border-line bg-elev hover:border-line-strong",
+          )}
+        >
+          <span
+            className={cn(
+              "grid h-11 w-11 shrink-0 place-items-center rounded-xl",
+              accountType === "CONSUMER" ? "bg-blue text-white" : "bg-soft-blue text-blue",
+            )}
+          >
+            <ShoppingBag className="h-5 w-5" />
+          </span>
+          <span>
+            <span className="block text-sm font-extrabold text-ink">I just want to check a product</span>
+            <span className="mt-1 block text-xs leading-relaxed text-muted">
+              Optional account to keep a history of what you checked. Scanning stays free.
+            </span>
+          </span>
+        </button>
+
+        {accountType === "BUSINESS" ? (
+          <label
+            className={cn(
+              "flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition",
+              wantCrypto ? "border-auth/40 bg-auth/10" : "border-line bg-elev hover:border-line-strong",
+            )}
+          >
+            <span
+              className={cn(
+                "grid h-11 w-11 shrink-0 place-items-center rounded-xl",
+                wantCrypto ? "bg-auth text-white" : "bg-soft-blue text-blue",
+              )}
+            >
+              <Hexagon className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center justify-between gap-3">
+                <span className="text-sm font-extrabold text-ink">Also use crypto proofs</span>
+                <input
+                  type="checkbox"
+                  checked={wantCrypto}
+                  onChange={(event) => setWantCrypto(event.target.checked)}
+                  className="rounded border-line text-blue focus:ring-blue/20"
+                />
+              </span>
+              <span className="mt-1 block text-xs leading-relaxed text-muted">
+                Queue Merkle commitments after mint. On-chain proof never replaces AUTHENTIC verify
+                status — it only proves existence.
+              </span>
+            </span>
+          </label>
+        ) : null}
       </div>
 
       <form onSubmit={submit} className="mt-6 grid gap-4" noValidate>
@@ -265,13 +364,6 @@ export default function SignupPage() {
           )}
         </div>
 
-        {generalError && (
-          <div className="rounded-2xl border border-risk/30 bg-risk/10 p-3 text-xs font-semibold text-risk flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            <span>{generalError}</span>
-          </div>
-        )}
-
         {/* Submit Button */}
         <Button type="submit" disabled={busy} className="h-12 w-full text-sm font-bold shadow-lg shadow-blue/20">
           {busy ? (
@@ -295,5 +387,13 @@ export default function SignupPage() {
         </Link>
       </p>
     </AuthShell>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupForm />
+    </Suspense>
   );
 }

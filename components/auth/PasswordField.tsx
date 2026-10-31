@@ -22,7 +22,7 @@ export function PasswordField({
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }) {
   const [show, setShow] = useState(false);
-  const id = "auth-password";
+  const id = `auth-${name}`;
 
   return (
     <div className="grid gap-1.5">

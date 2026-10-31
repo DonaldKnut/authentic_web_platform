@@ -71,6 +71,31 @@ export type CatalogLookup = {
   source?: string | null;
 };
 
+/** Secondary integrity rail from Nest — never replaces verify `status`. */
+export type BlockchainProofStatus =
+  | "PENDING"
+  | "QUEUED"
+  | "ANCHORED"
+  | "FAILED"
+  | "DISABLED";
+
+export type BlockchainProof = {
+  status: BlockchainProofStatus;
+  commitment?: string | null;
+  chainKey?: string | null;
+  chainId?: number | null;
+  chainName?: string | null;
+  nativeCurrency?: string | null;
+  txHash?: string | null;
+  blockNumber?: string | null;
+  merkleRoot?: string | null;
+  merkleProof?: string[] | null;
+  leafIndex?: number | null;
+  explorerUrl?: string | null;
+  anchoredAt?: string | null;
+  verifiedLocally?: boolean | null;
+};
+
 export type VerifyResult = {
   status: TrustStatus;
   trustScore: number;
@@ -117,6 +142,7 @@ export type VerifyResult = {
   }[];
   guidance?: VerifyGuidance;
   lookup?: CatalogLookup | null;
+  blockchain?: BlockchainProof | null;
   scanMeta?: {
     decodedFromImage?: boolean;
     kind?: string | null;

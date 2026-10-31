@@ -1,5 +1,10 @@
 import { mapTrustStatus, riskFromStatus } from "./status";
-import type { CatalogLookup, VerifyGuidance, VerifyResult } from "./types";
+import type {
+  BlockchainProof,
+  CatalogLookup,
+  VerifyGuidance,
+  VerifyResult,
+} from "./types";
 
 function hue(seed: string) {
   let hash = 0;
@@ -60,6 +65,7 @@ type NestVerify = {
     canonicalCode?: string | null;
     checksumValid?: boolean | null;
   };
+  blockchain?: BlockchainProof | null;
 };
 
 function mapGuidance(guidance?: NestVerify["guidance"]): VerifyGuidance | undefined {
@@ -149,6 +155,10 @@ export function mapVerifyResult(payload: NestVerify, identifier: string): Verify
     previousScans: payload.previousScans ?? [],
     guidance: mapGuidance(payload.guidance),
     lookup,
+    blockchain:
+      payload.blockchain && payload.blockchain.status !== "DISABLED"
+        ? payload.blockchain
+        : null,
     scanMeta: payload.scan
       ? {
           decodedFromImage: payload.scan.decodedFromImage,

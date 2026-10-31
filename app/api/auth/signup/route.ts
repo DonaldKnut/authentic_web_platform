@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { applyAuthCookies, apiBase, nestErrorMessage, unwrapNestPayload } from "@/lib/nest";
+import { nestErrorCode, nestErrorMessage, nestFetch, unwrapNestPayload } from "@/lib/nest";
 
 const schema = z.object({
-  name: z.string().min(2),
+  name: z.string().min(2).optional(),
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
   email: z.string().email(),
   phone: z.string().optional(),
   password: z.string().min(10),
@@ -20,54 +22,82 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const parts = parsed.data.name.trim().split(/\s+/);
-  const firstName = parts[0];
-  const lastName = parts.slice(1).join(" ") || parts[0];
+  let firstName = parsed.data.firstName?.trim();
+  let lastName = parsed.data.lastName?.trim();
+  if (!firstName || !lastName) {
+    const parts = (parsed.data.name ?? "").trim().split(/\s+/).filter(Boolean);
+    firstName = firstName || parts[0];
+    lastName = lastName || parts.slice(1).join(" ") || parts[0];
+  }
+  if (!firstName || !lastName) {
+    return NextResponse.json({ error: "First and last name are required." }, { status: 400 });
+  }
 
   let upstream: Response;
   try {
-    upstream = await fetch(`${apiBase()}/auth/register`, {
+    upstream = await nestFetch("/auth/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: parsed.data.email,
+        email: parsed.data.email.toLowerCase(),
         password: parsed.data.password,
         firstName,
         lastName,
         phone: parsed.data.phone || undefined,
         organizationName:
           parsed.data.accountType === "BUSINESS"
-            ? parsed.data.organizationName?.trim() || `${parsed.data.name}'s brand`
+            ? parsed.data.organizationName?.trim() || undefined
             : undefined,
       }),
     });
   } catch {
     return NextResponse.json(
-      { error: "AUTHENTIC API is unreachable. Check the backend at theauthenticapp-backend.onrender.com." },
+      { error: "AUTHENTIC API is unreachable. Start localhost:3001 or check the live backend." },
       { status: 503 },
     );
   }
 
+  const raw = await upstream.json().catch(() => null);
   const json = unwrapNestPayload<{
-    user: { id: string; email: string; firstName: string; lastName: string };
-    organizations?: Array<{ id: string }>;
-    accessToken: string;
-    refreshToken: string;
-  }>(await upstream.json().catch(() => null));
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      platformRole?: string;
+      emailVerified?: boolean;
+    };
+    organizations?: Array<{ id: string; name?: string; type?: string; role?: string; status?: string }>;
+    emailVerificationRequired?: boolean;
+    emailDelivered?: boolean;
+    emailProvider?: string;
+    message?: string;
+    debugVerificationCode?: string;
+    debugVerificationToken?: string;
+  }>(raw);
+
   if (!upstream.ok) {
+    const code = nestErrorCode(raw) ?? nestErrorCode(json);
     return NextResponse.json(
-      { error: nestErrorMessage(json, "Could not create that account.") },
+      {
+        error:
+          code === "EMAIL_IN_USE"
+            ? "An account with that email already exists."
+            : nestErrorMessage(raw, "Could not create that account."),
+        code,
+      },
       { status: upstream.status },
     );
   }
 
-  const org = json.organizations?.[0] ?? null;
-  const role = org ? "BUSINESS" : "CONSUMER";
-  const response = NextResponse.json({
-    id: json.user.id,
+  // Register never starts a session — tokens come only after verify-email.
+  return NextResponse.json({
     email: json.user.email,
-    name: `${json.user.firstName} ${json.user.lastName}`.trim(),
-    role,
+    emailVerificationRequired: json.emailVerificationRequired ?? true,
+    emailDelivered: json.emailDelivered ?? true,
+    emailProvider: json.emailProvider,
+    message: json.message ?? "Check your email for a 6-digit verification code.",
+    debugVerificationCode: json.debugVerificationCode,
+    debugVerificationToken: json.debugVerificationToken,
+    organizations: json.organizations ?? [],
   });
-  return applyAuthCookies(response, json, org?.id);
 }

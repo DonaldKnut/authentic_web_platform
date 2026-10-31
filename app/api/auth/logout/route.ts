@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { apiBase, clearAuthCookies } from "@/lib/nest";
+import { clearAuthCookies, nestFetch } from "@/lib/nest";
 import { REFRESH_COOKIE } from "@/lib/session";
 
 export async function POST() {
@@ -8,9 +8,8 @@ export async function POST() {
   const refreshToken = store.get(REFRESH_COOKIE)?.value;
   if (refreshToken) {
     try {
-      await fetch(`${apiBase()}/auth/logout`, {
+      await nestFetch("/auth/logout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
       });
     } catch {

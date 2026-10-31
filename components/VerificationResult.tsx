@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DISPLAY_STATUS, formatDate, STATUS_COPY } from "@/lib/format";
 import { resolveDisplayStatus } from "@/lib/status";
 import type { VerifyResult } from "@/lib/types";
+import { BlockchainProofBadge } from "./BlockchainProofBadge";
 import { ProductPassport } from "./ProductPassport";
 import { StatusBadge } from "./StatusBadge";
 import { TrustScore } from "./TrustScore";
@@ -53,6 +54,18 @@ export function VerificationResult({
               <div>Origin: {result.product?.countryOfManufacture ?? "—"}</div>
             </dl>
           </div>
+          {result.blockchain ? (
+            <div className="mt-5">
+              <BlockchainProofBadge
+                proof={result.blockchain}
+                identityId={result.authenticId ?? result.unitId}
+              />
+              <p className="mt-2 max-w-xl text-xs text-muted">
+                On-chain proof is a secondary integrity signal. AUTHENTIC verify status above is still
+                the source of truth for this pack.
+              </p>
+            </div>
+          ) : null}
         </div>
         <ProductPassport result={result} />
       </div>

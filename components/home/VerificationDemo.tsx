@@ -62,16 +62,34 @@ const steps = [
   },
 ];
 
+import { playClickSound, playScanPulseSound, playSuccessChime } from "@/lib/audio";
+
 export function VerificationDemo() {
   const [step, setStep] = useState(0);
   const done = step >= steps.length - 1;
 
   function next() {
-    setStep((value) => Math.min(steps.length - 1, value + 1));
+    const nextStep = Math.min(steps.length - 1, step + 1);
+    setStep(nextStep);
+    if (nextStep >= steps.length - 1) {
+      playSuccessChime();
+    } else {
+      playScanPulseSound();
+    }
   }
 
   function reset() {
+    playClickSound();
     setStep(0);
+  }
+
+  function handleStepClick(index: number) {
+    setStep(index);
+    if (index >= steps.length - 1) {
+      playSuccessChime();
+    } else {
+      playClickSound();
+    }
   }
 
   return (
@@ -83,7 +101,7 @@ export function VerificationDemo() {
             <Sparkles className="h-3.5 w-3.5 animate-pulse" />
             Interactive Verification Sequence
           </div>
-          <h2 className="display mt-4 text-4xl font-extrabold text-ink md:text-5xl font-serif">
+          <h2 className="display mt-4 text-4xl font-extrabold text-ink md:text-5xl">
             Watch the verification engine in real-time.
           </h2>
           <p className="mt-4 text-lg text-muted">
@@ -96,7 +114,7 @@ export function VerificationDemo() {
           <button
             type="button"
             onClick={done ? reset : next}
-            className="group inline-flex items-center gap-2.5 rounded-full bg-blue px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue/20 transition-all hover:bg-blue-hover hover:scale-105 active:scale-95"
+            className="group inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all hover:scale-105 active:scale-95"
           >
             {done ? (
               <>
@@ -124,7 +142,7 @@ export function VerificationDemo() {
               return (
                 <li
                   key={item.label}
-                  onClick={() => setStep(index)}
+                  onClick={() => handleStepClick(index)}
                   className={cn(
                     "cursor-pointer flex items-center justify-between rounded-2xl border p-4 transition-all duration-300",
                     isCurrent
@@ -207,7 +225,7 @@ export function VerificationDemo() {
                     <Radio className="h-3 w-3" /> CAPTURING ENCRYPTED NFC / QR PAYLOAD
                   </span>
 
-                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink font-serif">
+                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink">
                     {steps[0].label}
                   </h3>
                   <p className="text-sm text-muted max-w-md leading-relaxed">
@@ -233,7 +251,7 @@ export function VerificationDemo() {
                     <Database className="h-3 w-3" /> QUERYING IMMUTABLE IDENTITY REGISTER
                   </span>
 
-                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink font-serif">
+                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink">
                     {steps[1].label}
                   </h3>
                   <p className="text-sm text-muted max-w-md leading-relaxed">
@@ -259,7 +277,7 @@ export function VerificationDemo() {
                     <ShieldCheck className="h-3 w-3" /> CRYPTOGRAPHIC SIGNATURE VALIDATED
                   </span>
 
-                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink font-serif">
+                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink">
                     {steps[2].label}
                   </h3>
                   <p className="text-sm text-muted max-w-md leading-relaxed">
@@ -284,7 +302,7 @@ export function VerificationDemo() {
                     <Activity className="h-3 w-3" /> UNIT LIFECYCLE EVALUATION
                   </span>
 
-                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink font-serif">
+                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink">
                     {steps[3].label}
                   </h3>
                   <p className="text-sm text-muted max-w-md leading-relaxed">
@@ -317,7 +335,7 @@ export function VerificationDemo() {
                     <AlertOctagon className="h-3 w-3" /> HEURISTICS & ANOMALY SCAN
                   </span>
 
-                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink font-serif">
+                  <h3 className="display text-2xl sm:text-3xl font-extrabold text-ink">
                     {steps[4].label}
                   </h3>
                   <p className="text-sm text-muted max-w-md leading-relaxed">
@@ -339,7 +357,7 @@ export function VerificationDemo() {
                   </div>
                   <StatusIndicator status="AUTHENTICATED" />
 
-                  <h3 className="display text-3xl sm:text-4xl font-extrabold text-ink font-serif">
+                  <h3 className="display text-3xl sm:text-4xl font-extrabold text-ink">
                     VERDICT: AUTHENTICATED
                   </h3>
 

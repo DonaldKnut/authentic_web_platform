@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   AlertTriangle,
@@ -13,8 +13,47 @@ import {
   RefreshCw,
   ShieldCheck,
   Sparkles,
+  Zap,
 } from "lucide-react";
 import { heroCredential } from "./credential";
+import { playClickSound, playScanPulseSound, playSuccessChime } from "@/lib/audio";
+
+const GLYPHS = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ#@$%&*";
+
+function useScrambleText(finalText: string, trigger: boolean, speed = 30) {
+  const [displayText, setDisplayText] = useState(finalText);
+
+  useEffect(() => {
+    if (!trigger) {
+      setDisplayText(finalText);
+      return;
+    }
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        finalText
+          .split("")
+          .map((char, index) => {
+            if (char === " " || char === "-" || char === "/") return char;
+            if (index < iteration) {
+              return finalText[index];
+            }
+            return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          })
+          .join(""),
+      );
+
+      if (iteration >= finalText.length) {
+        clearInterval(interval);
+      }
+      iteration += 1 / 2;
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [finalText, trigger, speed]);
+
+  return displayText;
+}
 
 export function HeroVisual({ onReplay }: { onReplay: () => void }) {
   const [scanState, setScanState] = useState<"scanning" | "verifying" | "authenticated">("scanning");
@@ -22,19 +61,49 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"visual" | "credential">("visual");
 
+  // 3D Card Tilt State
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState<{ rx: number; ry: number }>({ rx: 0, ry: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rx = ((y - centerY) / centerY) * -7;
+    const ry = ((x - centerX) / centerX) * 7;
+    setTilt({ rx, ry });
+  }
+
+  function handleMouseLeave() {
+    setTilt({ rx: 0, ry: 0 });
+    setIsHovered(false);
+  }
+
   useEffect(() => {
+    playScanPulseSound(0.04);
     const timer1 = setInterval(() => {
       setScanProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer1);
           return 100;
         }
-        return prev + 10;
+        return prev + 12;
       });
-    }, 100);
+    }, 110);
 
-    const timer2 = setTimeout(() => setScanState("verifying"), 1200);
-    const timer3 = setTimeout(() => setScanState("authenticated"), 2400);
+    const timer2 = setTimeout(() => {
+      setScanState("verifying");
+      playScanPulseSound(0.05);
+    }, 1200);
+
+    const timer3 = setTimeout(() => {
+      setScanState("authenticated");
+      playSuccessChime(0.07);
+    }, 2400);
 
     return () => {
       clearInterval(timer1);
@@ -44,58 +113,98 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
   }, []);
 
   function handleCopy() {
+    playClickSound();
     navigator.clipboard?.writeText(heroCredential.serialCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
-  return (
-    <div className="relative mx-auto w-full max-w-none lg:max-w-2xl">
-      <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-r from-blue-500/20 via-indigo-500/15 to-emerald-500/20 blur-2xl transition-all duration-700" />
+  function handleReplayClick() {
+    playClickSound();
+    onReplay();
+  }
 
-      <div className="relative rounded-3xl border border-slate-200/80 bg-white/95 p-5 shadow-2xl backdrop-blur-xl dark:border-white/15 dark:bg-[#0e1726]/90 sm:p-6 transition-colors duration-300">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
-          <div className="flex items-center gap-2">
+  return (
+    <div className="perspective-1000 relative mx-auto w-full max-w-none lg:max-w-2xl select-none">
+      {/* Dynamic ambient back-glow */}
+      <div className="absolute -inset-6 rounded-[3rem] bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-emerald-500/20 blur-3xl transition-all duration-700 pointer-events-none" />
+
+      {/* 3D Tilting Card Container */}
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+          transition: isHovered ? "transform 0.1s ease-out" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+        className="preserve-3d relative cursor-default rounded-3xl border border-line bg-elev/95 p-5 shadow-2xl backdrop-blur-2xl transition-colors duration-300 dark:border-white/15 dark:bg-[#0b1322]/90 sm:p-6"
+      >
+        {/* Header with pill tabs */}
+        <div className="flex items-center justify-between border-b border-line pb-4">
+          <div className="relative flex items-center rounded-xl bg-soft p-1">
             <button
-              onClick={() => setActiveTab("visual")}
-              className={`rounded-xl px-4 py-2 font-syne text-xs sm:text-sm font-extrabold tracking-tight transition-all ${
+              type="button"
+              onClick={() => {
+                playClickSound();
+                setActiveTab("visual");
+              }}
+              className={`relative z-10 cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 sm:text-sm ${
                 activeTab === "visual"
-                  ? "bg-blue-50 text-blue-700 border border-blue-200/90 shadow-sm dark:bg-blue-600/30 dark:text-blue-300 dark:border-blue-500/50"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  ? "bg-elev text-blue shadow-sm"
+                  : "text-muted hover:text-ink"
               }`}
             >
               Interactive Scan
             </button>
             <button
-              onClick={() => setActiveTab("credential")}
-              className={`rounded-xl px-4 py-2 font-syne text-xs sm:text-sm font-extrabold tracking-tight transition-all ${
+              type="button"
+              onClick={() => {
+                playClickSound();
+                setActiveTab("credential");
+              }}
+              className={`relative z-10 cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 sm:text-sm ${
                 activeTab === "credential"
-                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200/90 shadow-sm dark:bg-emerald-600/30 dark:text-emerald-300 dark:border-emerald-500/50"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  ? "bg-elev text-auth shadow-sm"
+                  : "text-muted hover:text-ink"
               }`}
             >
               Serialized Credential
             </button>
           </div>
 
-          {/* Leaner compact Simulate Scan button */}
           <button
-            onClick={onReplay}
+            type="button"
+            onClick={handleReplayClick}
             title="Re-run scan simulation"
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-100/60 px-2.5 py-1 text-[11px] font-medium text-slate-500 hover:bg-slate-200/80 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white transition-all shrink-0"
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-line bg-soft/80 px-2.5 py-1.5 text-[11px] font-semibold text-muted transition-all hover:border-line-strong hover:bg-elev hover:text-ink active:scale-95 shrink-0"
           >
-            <RefreshCw className="h-3 w-3" />
-            <span className="hidden sm:inline">Simulate Scan</span>
+            <RefreshCw className="h-3 w-3 animate-[spin_6s_linear_infinite]" />
+            <span className="hidden sm:inline">Replay Scan</span>
           </button>
         </div>
 
-        {activeTab === "visual" ? <ScanPreview scanState={scanState} scanProgress={scanProgress} /> : null}
-        {activeTab === "credential" ? <CredentialPass copied={copied} onCopy={handleCopy} /> : null}
+        {activeTab === "visual" ? (
+          <ScanPreview
+            scanState={scanState}
+            scanProgress={scanProgress}
+            onReplay={handleReplayClick}
+          />
+        ) : (
+          <CredentialPass copied={copied} onCopy={handleCopy} />
+        )}
 
-        <p className="mt-4 text-center text-[11px] text-slate-400">
-          Interactive demo simulating live scan of{" "}
-          <span className="font-semibold text-slate-700 dark:text-slate-300">{heroCredential.productName}</span> (Batch {heroCredential.batch}).
-        </p>
+        <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-muted">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          <span>
+            Simulating live cryptographic verification of{" "}
+            <span className="font-semibold text-ink">{heroCredential.productName}</span> (Lot {heroCredential.batch}).
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -104,55 +213,69 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
 function ScanPreview({
   scanState,
   scanProgress,
+  onReplay,
 }: {
   scanState: "scanning" | "verifying" | "authenticated";
   scanProgress: number;
+  onReplay: () => void;
 }) {
+  const scrambledCode = useScrambleText(heroCredential.serialCode, scanState !== "authenticated");
+
   return (
     <div className="mt-4 grid gap-5 sm:grid-cols-2">
-      <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-slate-900/90 to-black/90 p-4 shadow-md">
+      {/* Physical Item Box — click to replay */}
+      <button
+        type="button"
+        onClick={onReplay}
+        aria-label="Replay product scan simulation"
+        className="relative cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-slate-900 to-black p-4 text-left shadow-xl transition hover:border-cyan-400/40 hover:shadow-[0_20px_50px_-24px_rgba(34,211,238,0.45)]"
+      >
         <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
-          <span className="flex items-center gap-1">
-            <Lock className="h-3 w-3 text-blue-400" /> Physical Pack
+          <span className="flex items-center gap-1.5 text-blue-400">
+            <Lock className="h-3 w-3" /> PHYSICAL NFC / QR
           </span>
-          <span className="font-mono text-emerald-400">NFC ENCRYPTED</span>
+          <span className="font-mono text-emerald-400 flex items-center gap-1">
+            <Zap className="h-3 w-3" /> HARDWARE LOCKED
+          </span>
         </div>
 
         <div className="relative mx-auto mt-3 h-48 w-full overflow-hidden rounded-xl border border-white/10 bg-[#f7f3ea]">
           <Image
             src="/images/indomie_super_pack.jpg"
-            alt="Indomie Super Pack Chicken Flavour 120g"
+            alt="Product Under Inspection"
             fill
             className="object-contain object-center p-2"
             priority
           />
 
           {scanState !== "authenticated" ? (
-            <div className="absolute inset-0 bg-blue-950/30">
-              <div className="hero-scan absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#22d3ee]" />
+            <div className="absolute inset-0 bg-blue-950/40">
+              {/* Laser scan beam */}
+              <div className="laser-beam absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_20px_#22d3ee]" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="radar-rotate h-28 w-28 rounded-full border border-cyan-400/30 border-t-cyan-400" />
+                <div className="radar-rotate h-28 w-28 rounded-full border border-cyan-400/30 border-t-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]" />
               </div>
             </div>
           ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.5)]">
-                <CheckCircle2 className="h-7 w-7" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[3px] transition-all duration-500">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/20 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.7)] animate-bounce">
+                <CheckCircle2 className="h-8 w-8" />
               </div>
               <span className="mt-2 text-xs font-bold uppercase tracking-widest text-emerald-300">
-                Scan Complete
+                Identity Sealed · click to replay
               </span>
             </div>
           )}
         </div>
 
-        <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-2.5">
+        {/* Status progress bar */}
+        <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3">
           <div className="flex items-center justify-between text-[11px]">
-            <span className="text-slate-400">Scan Status</span>
+            <span className="text-slate-400">Telemetry Status</span>
             <span className="font-mono text-xs font-bold text-blue-300">
-              {scanState === "scanning" && "Scanning optical NFC tag..."}
-              {scanState === "verifying" && "Checking crypto proof..."}
-              {scanState === "authenticated" && "Identity Confirmed"}
+              {scanState === "scanning" && "Scanning optical signature..."}
+              {scanState === "verifying" && "Checking consensus proof..."}
+              {scanState === "authenticated" && "Cryptographic Pass"}
             </span>
           </div>
           <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
@@ -162,63 +285,72 @@ function ScanPreview({
             />
           </div>
         </div>
-      </div>
+      </button>
 
-      <div className="hologram-sheen-effect relative overflow-hidden rounded-2xl border border-slate-300/80 bg-gradient-to-br from-white via-slate-50 to-slate-100 p-4 text-slate-900 shadow-xl dark:border-white/20 dark:from-slate-900/90 dark:via-slate-900 dark:to-slate-950 dark:text-white">
+      {/* Hologram passport preview */}
+      <div className="hologram-sheen-effect relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-elev via-soft to-elev p-5 shadow-xl">
         <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">
-            Product Check
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue">
+            <Sparkles className="h-3 w-3" /> Product Record
           </span>
-          <span className="font-mono text-[10px] text-slate-500 dark:text-slate-400">{heroCredential.serialCode}</span>
+          <span className="font-mono text-[11px] font-bold text-ink-soft">
+            {scrambledCode}
+          </span>
         </div>
 
         <div className="mt-3">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Product Identity</p>
-          <h3 className="font-syne text-xl font-bold text-slate-900 dark:text-white leading-tight">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-muted">
+            Verified Commodity
+          </p>
+          <h3 className="display text-xl font-bold text-ink leading-tight mt-0.5">
             {heroCredential.productName}
           </h3>
         </div>
 
-        <dl className="mt-4 grid gap-2 border-t border-slate-200 dark:border-white/10 pt-3 text-xs">
+        <dl className="mt-4 grid gap-2.5 border-t border-line pt-3 text-xs">
           <div className="flex justify-between items-center">
-            <dt className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
-              <Building2 className="h-3 w-3 text-slate-400" /> Issuer
+            <dt className="text-muted flex items-center gap-1.5 font-medium">
+              <Building2 className="h-3.5 w-3.5 text-muted" /> Issuer
             </dt>
-            <dd className="font-bold text-slate-800 dark:text-white">{heroCredential.issuer}</dd>
+            <dd className="font-bold text-ink">{heroCredential.issuer}</dd>
           </div>
           <div className="flex justify-between items-center">
-            <dt className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
-              <Layers className="h-3 w-3 text-slate-400" /> Batch
+            <dt className="text-muted flex items-center gap-1.5 font-medium">
+              <Layers className="h-3.5 w-3.5 text-muted" /> Batch No.
             </dt>
-            <dd className="font-mono font-bold text-slate-900 dark:text-white bg-slate-200/80 dark:bg-white/10 px-1.5 py-0.5 rounded text-[11px]">
+            <dd className="font-mono font-bold text-ink bg-soft px-2 py-0.5 rounded text-[11px] border border-line">
               {heroCredential.batch}
             </dd>
           </div>
           <div className="flex justify-between items-center">
-            <dt className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
-              <AlertTriangle className="h-3 w-3 text-slate-400" /> Recall
+            <dt className="text-muted flex items-center gap-1.5 font-medium">
+              <AlertTriangle className="h-3.5 w-3.5 text-muted" /> Safety Recall
             </dt>
-            <dd className="font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/30">
+            <dd className="font-bold text-auth bg-auth/10 px-2 py-0.5 rounded border border-auth/30 text-[11px]">
               {heroCredential.recall}
             </dd>
           </div>
         </dl>
 
-        <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-900 p-3 text-white shadow-inner">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-slate-950 font-bold">
+        <div className="mt-4 flex items-center justify-between rounded-xl bg-navy p-3 text-white shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-auth text-navy font-bold">
               ✓
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Scan Result</p>
-              <p className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
+              <p className="text-[9px] uppercase tracking-wider text-slate-300 font-semibold">
+                Consensus Verdict
+              </p>
+              <p className="text-xs font-bold text-emerald-300 uppercase tracking-wide">
                 {heroCredential.status}
               </p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[9px] uppercase tracking-wider text-slate-400 font-medium">Trust Score</p>
-            <p className="font-mono text-base font-extrabold text-blue-400">
+            <p className="text-[9px] uppercase tracking-wider text-slate-300 font-semibold">
+              Trust Score
+            </p>
+            <p className="font-mono text-base font-extrabold text-blue-300">
               {heroCredential.trustScore}
               <span className="text-xs text-slate-400">/100</span>
             </p>
@@ -231,10 +363,10 @@ function ScanPreview({
 
 function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => void }) {
   return (
-    <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 p-5 text-white shadow-2xl">
+    <div className="mt-4 rounded-2xl border border-auth/30 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 p-5 text-white shadow-2xl">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
@@ -246,51 +378,52 @@ function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => voi
                 LIVE PASSPORT
               </span>
             </div>
-            <h4 className="text-lg font-bold text-white">Cryptographic Certificate</h4>
+            <h4 className="text-lg font-bold text-white tracking-tight">Cryptographic Certificate</h4>
           </div>
         </div>
 
         <button
+          type="button"
           onClick={onCopy}
-          className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-xs text-slate-200 transition hover:bg-white/10 font-bold"
+          className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-xs font-bold text-slate-200 transition hover:bg-white/10 active:scale-95"
         >
           <span>{heroCredential.serialCode}</span>
           {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-slate-400" />}
         </button>
       </div>
 
-      <div className="mt-5 grid gap-4 text-xs sm:grid-cols-2">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+      <div className="mt-5 grid gap-3 text-xs sm:grid-cols-2">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Product Identity</span>
-          <p className="mt-1 font-syne text-base font-bold text-white">{heroCredential.productName}</p>
-          <p className="text-slate-400 text-[11px]">{heroCredential.category}</p>
+          <p className="mt-1 text-base font-bold text-white">{heroCredential.productName}</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">{heroCredential.category}</p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Issuer Verification</span>
-          <p className="mt-1 font-bold text-emerald-300 flex items-center gap-1">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" /> {heroCredential.issuer}
+          <p className="mt-1 font-bold text-emerald-300 flex items-center gap-1.5">
+            <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> {heroCredential.issuer}
           </p>
-          <p className="text-slate-400 text-[11px]">Origin: {heroCredential.manufacturedCountry}</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">Origin: {heroCredential.manufacturedCountry}</p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Batch Inspection</span>
           <p className="mt-1 font-mono text-base font-bold text-blue-300">{heroCredential.batch}</p>
-          <p className="text-slate-400 text-[11px]">Quality Clearance Passed</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">Quality Clearance Confirmed</p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Recall Registry</span>
-          <p className="mt-1 font-bold text-emerald-400 flex items-center gap-1">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> {heroCredential.recall} (Clear)
+          <p className="mt-1 font-bold text-emerald-400 flex items-center gap-1.5">
+            <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" /> {heroCredential.recall} (Clear)
           </p>
-          <p className="text-slate-400 text-[11px]">0 Active Safety Notices</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">0 Active Safety Flags</p>
         </div>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/10 bg-black/40 px-3.5 py-2 text-[11px] text-slate-400">
         <span className="flex items-center gap-1.5 font-mono">
-          <Sparkles className="h-3.5 w-3.5 text-amber-400" /> Ledger Hash: {heroCredential.cryptographicHash}
+          <Sparkles className="h-3.5 w-3.5 text-amber-400" /> Hash: {heroCredential.cryptographicHash}
         </span>
-        <span className="font-bold text-emerald-400">Verified & Immutable</span>
+        <span className="font-bold text-emerald-400">Ed25519 Signed & Immutable</span>
       </div>
     </div>
   );

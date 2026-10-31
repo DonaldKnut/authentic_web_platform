@@ -1,6 +1,6 @@
 import { PageHero } from "@/components/PageHero";
 import { PrivacyPortal } from "@/components/legal/PrivacyPortal";
-import { apiBase, unwrapNestPayload } from "@/lib/nest";
+import { nestJson } from "@/lib/nest";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -12,12 +12,8 @@ export const metadata = pageMetadata({
 type Privacy = { version: string; summary: string; retention: string };
 
 async function loadPrivacy(): Promise<Privacy | null> {
-  try {
-    const response = await fetch(`${apiBase()}/public/legal/privacy`, { cache: "no-store" });
-    return unwrapNestPayload<Privacy>(await response.json());
-  } catch {
-    return null;
-  }
+  const { ok, json } = await nestJson<Privacy>("/public/legal/privacy");
+  return ok ? json : null;
 }
 
 export default async function PrivacyPage() {

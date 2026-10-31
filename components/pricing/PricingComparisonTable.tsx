@@ -70,7 +70,7 @@ export function PricingComparisonTable() {
       <div className="overflow-x-auto rounded-3xl border border-line bg-panel shadow-xl">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="border-b border-line bg-soft/80 font-serif text-sm">
+            <tr className="border-b border-line bg-soft/80 font-bold text-sm">
               <th className="p-4 md:p-6 text-ink font-bold">Feature Capability</th>
               <th className="p-4 md:p-6 text-ink font-bold w-1/4">Starter Brand</th>
               <th className="p-4 md:p-6 text-blue font-bold w-1/4 bg-blue-500/5">Growth Enterprise</th>

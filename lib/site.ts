@@ -3,7 +3,7 @@ import { routes } from "./routes";
 export const SITE_NAME = "AUTHENTIC";
 export const SITE_TAGLINE = "Know if a product is real.";
 export const SITE_DESCRIPTION =
-  "AUTHENTIC lets you scan a product and see who made it, where it came from, and whether it looks safe to trust.";
+  "Scan a code on the pack. AUTHENTIC shows who made it, where it came from, and if it looks safe to trust.";
 
 function originFrom(value: string | undefined) {
   const raw = value?.trim().replace(/\/$/, "");

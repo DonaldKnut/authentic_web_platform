@@ -34,7 +34,7 @@ export function PricingFaq() {
       <div className="flex items-center gap-2 mb-6">
         <Sparkles className="h-5 w-5 text-amber-500" />
         <div>
-          <h3 className="font-serif text-2xl font-bold text-ink">Frequently Asked Questions</h3>
+          <h3 className="display text-2xl font-bold text-ink">Frequently Asked Questions</h3>
           <p className="text-xs text-muted">Clear answers about billing, trial terms, and enterprise licensing.</p>
         </div>
       </div>

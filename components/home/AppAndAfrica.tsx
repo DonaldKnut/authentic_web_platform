@@ -40,7 +40,7 @@ export function AppAndAfrica() {
               <span>AUTHENTIC MOBILE</span>
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
             </div>
-            <p className="mt-6 font-serif text-2xl font-bold">Scan to Verify</p>
+            <p className="mt-6 display text-2xl font-extrabold">Scan to Verify</p>
 
             <div className="relative mt-6 overflow-hidden rounded-2xl border border-white/15 bg-slate-900 p-6 text-center">
               <div className="hero-scan absolute inset-x-0 h-1 bg-cyan-400 shadow-[0_0_15px_#22d3ee]" />

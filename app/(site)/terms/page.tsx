@@ -1,6 +1,6 @@
 import { PageHero } from "@/components/PageHero";
 import { TermsPortal } from "@/components/legal/TermsPortal";
-import { apiBase, unwrapNestPayload } from "@/lib/nest";
+import { nestJson } from "@/lib/nest";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -17,12 +17,8 @@ type Terms = {
 };
 
 async function loadTerms(): Promise<Terms | null> {
-  try {
-    const response = await fetch(`${apiBase()}/public/legal/terms`, { cache: "no-store" });
-    return unwrapNestPayload<Terms>(await response.json());
-  } catch {
-    return null;
-  }
+  const { ok, json } = await nestJson<Terms>("/public/legal/terms");
+  return ok ? json : null;
 }
 
 export default async function TermsPage() {

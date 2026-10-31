@@ -69,7 +69,7 @@ export function ProductPassport({
         <p className="text-xs uppercase tracking-[0.2em] font-semibold text-muted">
           {brand}
         </p>
-        <h3 className="display mt-1 text-2xl sm:text-3xl font-bold text-ink tracking-tight font-serif">
+        <h3 className="display mt-1 text-2xl sm:text-3xl font-bold text-ink tracking-tight">
           {productName}
         </h3>
       </div>

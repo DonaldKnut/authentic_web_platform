@@ -24,7 +24,8 @@ export function useHeaderChrome() {
       return;
     }
     function onScroll() {
-      setScrolled(window.scrollY > 20);
+      // Solid chrome as soon as the user starts scrolling.
+      setScrolled(window.scrollY > 8);
     }
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });

@@ -127,7 +127,7 @@ export function VerifyBrandAd() {
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <p className="text-[11px] uppercase tracking-wider text-slate-400">Example line</p>
-          <p className="mt-2 font-serif text-2xl text-white">{heroCredential.productName}</p>
+          <p className="mt-2 display text-2xl font-bold text-white">{heroCredential.productName}</p>
           <p className="mt-1 text-xs text-slate-400">{heroCredential.issuer} · {heroCredential.category}</p>
           <dl className="mt-4 grid gap-2 text-xs">
             <div className="flex justify-between rounded-xl bg-black/30 px-3 py-2">

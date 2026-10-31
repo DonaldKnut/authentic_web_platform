@@ -29,6 +29,7 @@ import {
   VerifySafetyAd,
 } from "@/components/verify/Advertising";
 import { GlobalComplianceTicker } from "@/components/home/AdvertisingBanners";
+import { playClickSound } from "@/lib/audio";
 
 // Zod validation schema for product verification code
 const verifyCodeSchema = z
@@ -94,6 +95,7 @@ function VerifyForm() {
   function go(value: string) {
     const next = value.trim();
     if (!next || busy) return;
+    playClickSound();
     setBusy(true);
     router.push(`/verify/${encodeURIComponent(next)}`);
   }

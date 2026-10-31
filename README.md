@@ -10,7 +10,7 @@ npm run db:setup
 npm run dev
 ```
 
-Set `API_URL` (see `.env.example`) to the Nest API. Default production backend: `https://theauthenticapp-backend.onrender.com/api/v1` ([health](https://theauthenticapp-backend.onrender.com/health)).
+Local Nest is the default API: `http://127.0.0.1:3001/api/v1` (see `.env.example`). Live Render is only used when you set `API_FORCE_LIVE=true` or `API_ALLOW_LIVE_FALLBACK=true`. Docs: `http://localhost:3001/docs`.
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -24,10 +24,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Role | Email | Password |
 | --- | --- | --- |
+| Platform admin | `theauthentic.ng@gmail.com` | Nest account (local: `PIMB2026`) |
 | Consumer | `ibrahim@authentic.ng` | `authentic` |
 | Brand (Aurelia Beauty) | `ada@aurelia.ng` | `authentic` |
 
-If your Nest seed uses different credentials, use those instead.
+Platform admin opens `/admin` after sign-in. Nest must mark the user `SUPER_ADMIN` with a verified email (see `backend/scripts/promote-platform-admin.mjs`). If your Nest seed uses different credentials, use those instead.
 
 ## API
 

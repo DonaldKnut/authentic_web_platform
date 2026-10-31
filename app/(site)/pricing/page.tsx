@@ -5,7 +5,7 @@ import { PricingMatrix, PlanData } from "@/components/pricing/PricingMatrix";
 import { PricingComparisonTable } from "@/components/pricing/PricingComparisonTable";
 import { PricingFaq } from "@/components/pricing/PricingFaq";
 import { GlobalComplianceTicker } from "@/components/home/AdvertisingBanners";
-import { apiBase, unwrapNestPayload } from "@/lib/nest";
+import { nestJson } from "@/lib/nest";
 import { pageMetadata } from "@/lib/seo";
 import { ShieldCheck, Zap, ArrowRight } from "lucide-react";
 
@@ -34,13 +34,8 @@ type Catalog = {
 };
 
 async function loadCatalog(): Promise<Catalog | null> {
-  try {
-    const response = await fetch(`${apiBase()}/public/pricing`, { cache: "no-store" });
-    const json = unwrapNestPayload<Catalog>(await response.json());
-    return json;
-  } catch {
-    return null;
-  }
+  const { ok, json } = await nestJson<Catalog>("/public/pricing");
+  return ok ? json : null;
 }
 
 export default async function PricingPage() {

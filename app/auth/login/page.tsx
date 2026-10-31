@@ -9,8 +9,10 @@ import { PasswordField } from "@/components/auth/PasswordField";
 import { BrandSpinner } from "@/components/BrandSpinner";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useToast } from "@/components/ui/Toast";
+import { homeForRole } from "@/lib/home";
 import { routes } from "@/lib/routes";
-import { Mail, ArrowRight, AlertCircle } from "lucide-react";
+import { Mail, ArrowRight } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().trim().min(1, "Email is required.").email("Please enter a valid email address."),
@@ -22,29 +24,27 @@ type FieldErrors = Record<string, string>;
 function LoginForm() {
   const router = useRouter();
   const search = useSearchParams();
+  const toast = useToast();
   const [email, setEmail] = useState("");
+  const [remember, setRemember] = useState(true);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [generalError, setGeneralError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFieldErrors({});
-    setGeneralError(null);
 
     const form = new FormData(event.currentTarget);
     const password = String(form.get("password") ?? "");
 
-    // Zod validation check
     const validation = loginSchema.safeParse({ email, password });
     if (!validation.success) {
       const errors: FieldErrors = {};
       validation.error.issues.forEach((issue) => {
-        if (issue.path[0]) {
-          errors[String(issue.path[0])] = issue.message;
-        }
+        if (issue.path[0]) errors[String(issue.path[0])] = issue.message;
       });
       setFieldErrors(errors);
+      toast.error(validation.error.issues[0]?.message ?? "Check the form and try again.");
       return;
     }
 
@@ -55,15 +55,28 @@ function LoginForm() {
       body: JSON.stringify({
         email: validation.data.email,
         password: validation.data.password,
+        remember,
       }),
     });
     const json = await response.json();
     if (!response.ok) {
-      setGeneralError(json.error ?? "Invalid email or password.");
+      toast.error(json.error ?? "Email or password is incorrect.");
+      if (json.code === "EMAIL_NOT_VERIFIED" && validation.data.email) {
+        const resend = await fetch("/api/auth/resend-verification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: validation.data.email }),
+        });
+        if (resend.ok) toast.info("We sent a new 6-digit code to your email.");
+        router.push(`${routes.verifyEmail}?email=${encodeURIComponent(validation.data.email)}`);
+        return;
+      }
       setBusy(false);
       return;
     }
-    router.push(search.get("next") ?? (json.role === "BUSINESS" ? routes.dashboard : routes.verify));
+    toast.success("Signed in.");
+    const next = search.get("next");
+    router.push(next || homeForRole(json.role));
     router.refresh();
   }
 
@@ -88,22 +101,25 @@ function LoginForm() {
           error={fieldErrors.email}
         />
         <PasswordField
-          error={fieldErrors.password || (generalError ?? undefined)}
+          error={fieldErrors.password}
           onChange={() => {
             if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: "" }));
-            if (generalError) setGeneralError(null);
           }}
         />
-        <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
-          <input type="checkbox" className="rounded border-line text-blue focus:ring-blue/20" />
-          <span>Keep me signed in on this device.</span>
-        </label>
-        {generalError && (
-          <div className="rounded-2xl border border-risk/30 bg-risk/10 p-3 text-xs font-semibold text-risk flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            <span>{generalError}</span>
-          </div>
-        )}
+        <div className="flex items-center justify-between gap-3">
+          <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(event) => setRemember(event.target.checked)}
+              className="rounded border-line text-blue focus:ring-blue/20"
+            />
+            <span>Keep me signed in on this device</span>
+          </label>
+          <Link href={routes.forgotPassword} className="text-xs font-bold text-blue hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         <Button type="submit" disabled={busy} className="h-12 w-full text-sm font-bold shadow-lg shadow-blue/20">
           {busy ? (
             <>
@@ -118,22 +134,14 @@ function LoginForm() {
           )}
         </Button>
       </form>
-      <p className="mt-6 text-xs text-center text-muted">
+      <p className="mt-6 text-center text-xs text-muted">
         New here?{" "}
-        <Link href={routes.signup} className="font-bold text-blue hover:text-blue-hover underline underline-offset-4 decoration-blue/40 hover:decoration-blue transition-all">
+        <Link
+          href={routes.signup}
+          className="font-bold text-blue underline underline-offset-4 decoration-blue/40 hover:decoration-blue"
+        >
           Create an account
         </Link>
-      </p>
-      <p className="mt-4 text-[11px] leading-relaxed text-center text-muted">
-        By continuing, you agree to our{" "}
-        <Link href={routes.terms} className="font-bold text-blue hover:text-blue-hover underline underline-offset-4 decoration-blue/40 hover:decoration-blue transition-all">
-          Terms of use
-        </Link>{" "}
-        and{" "}
-        <Link href={routes.privacy} className="font-bold text-blue hover:text-blue-hover underline underline-offset-4 decoration-blue/40 hover:decoration-blue transition-all">
-          Privacy notice
-        </Link>
-        .
       </p>
     </AuthShell>
   );

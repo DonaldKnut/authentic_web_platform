@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { BrandMark } from "./BrandMark";
+import { useToast } from "@/components/ui/Toast";
 import { routes } from "@/lib/routes";
 import {
   ShieldCheck,
@@ -12,22 +13,18 @@ import {
   Lock,
   ArrowRight,
   Mail,
-  Sparkles,
-  Layers,
-  Cpu
 } from "lucide-react";
 
 function FooterLink({ href, children, isBold = false, isHighlight = false }: { href: string; children: React.ReactNode; isBold?: boolean; isHighlight?: boolean }) {
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-1.5 transition-all duration-200 ${
-        isHighlight
+      className={`group inline-flex items-center gap-1.5 transition-all duration-200 ${isHighlight
           ? "text-emerald-400 font-bold hover:text-emerald-300"
           : isBold
-          ? "text-white font-bold hover:text-blue-300"
-          : "text-slate-300 hover:text-white font-medium"
-      }`}
+            ? "text-white font-bold hover:text-blue-300"
+            : "text-slate-300 hover:text-white font-medium"
+        }`}
     >
       <span className="transition-transform duration-200 group-hover:translate-x-1">{children}</span>
       <ArrowRight className="h-3 w-3 text-blue-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
@@ -36,16 +33,36 @@ function FooterLink({ href, children, isBold = false, isHighlight = false }: { h
 }
 
 export function SiteFooter() {
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
-    if (email) {
+    if (!email.trim() || busy) return;
+    setBusy(true);
+    try {
+      const response = await fetch("/api/v1/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "web_footer" }),
+      });
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        toast.error(json.error ?? "Could not subscribe.");
+        setBusy(false);
+        return;
+      }
       setSubscribed(true);
       setEmail("");
+      toast.success("You’re on the list — short updates only.");
+    } catch {
+      toast.error("Network error. Try again.");
+    } finally {
+      setBusy(false);
     }
-  };
+  }
 
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-gradient-to-b from-slate-900/90 via-[#070d18] to-[#040810] text-white">
@@ -60,56 +77,64 @@ export function SiteFooter() {
           {/* Brand Info - Matching header logo size */}
           <div className="lg:col-span-6 space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-400">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>AUTHENTIC Telemetry Engine · Live & Active</span>
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+              <span>Live product checks</span>
             </div>
 
-            <div className="mt-2">
-              <BrandMark size="header" inverted />
+            <div className="mt-3">
+              <BrandMark size="footer" inverted />
             </div>
 
-            <p className="max-w-lg text-sm text-slate-300 leading-relaxed font-sans">
-              The cryptographic trust layer behind physical goods. Binding genuine products to immutable digital passports from factory floor to end consumer.
+            <p className="max-w-lg font-sans text-sm leading-relaxed text-slate-300">
+              AUTHENTIC helps people check if a pack is real — from the factory to the shop to your hands.
             </p>
           </div>
 
-          {/* Newsletter Box */}
-          <div className="lg:col-span-6 rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur-xl">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur-xl lg:col-span-6">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-300">
-              <Sparkles className="h-4 w-4 text-blue-400" />
-              <span>Product Intelligence Dispatch</span>
+              <Mail className="h-4 w-4 text-blue-400" />
+              <span>Stay informed</span>
             </div>
-            <h4 className="mt-1 text-lg font-bold text-white">Subscribe to Anti-Counterfeit Telemetry Reports</h4>
+            <h4 className="mt-1 text-lg font-bold text-white">Get simple updates by email</h4>
             <p className="mt-1 text-xs text-slate-300">
-              Get monthly updates on global supply chain security, EU DPP standards, and counterfeit threat intelligence.
+              Short notes on fake goods, product safety, and how AUTHENTIC helps. No spam.
             </p>
 
-            <form onSubmit={handleSubscribe} className="mt-4 flex flex-col sm:flex-row gap-2">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your corporate email address..."
-                className="flex-1 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:border-blue-400 focus:outline-none backdrop-blur-sm"
-              />
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-500 transition-all shadow-md shrink-0"
-              >
-                {subscribed ? (
-                  <>
-                    <CheckCircle2 className="h-4 w-4 text-emerald-300" />
-                    <span>Subscribed!</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Subscribe</span>
-                    <Send className="h-3.5 w-3.5" />
-                  </>
-                )}
-              </button>
-            </form>
+            {subscribed ? (
+              <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-xs font-semibold text-emerald-300">
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                You’re subscribed. Watch your inbox for short safety notes.
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="mt-4 flex flex-col gap-2 sm:flex-row">
+                <label className="sr-only" htmlFor="footer-newsletter-email">
+                  Email
+                </label>
+                <input
+                  id="footer-newsletter-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@email.com"
+                  className="flex-1 cursor-text rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-xs text-white placeholder-slate-400 backdrop-blur-sm focus:border-blue-400 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 shrink-0"
+                >
+                  {busy ? (
+                    <span>Saving…</span>
+                  ) : (
+                    <>
+                      <span>Subscribe</span>
+                      <Send className="h-3.5 w-3.5" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
@@ -124,26 +149,26 @@ export function SiteFooter() {
           </p>
           <ul className="space-y-3 text-xs">
             <li>
-              <FooterLink href={routes.product}>Product Infrastructure</FooterLink>
+              <FooterLink href={routes.product}>What AUTHENTIC does</FooterLink>
             </li>
             <li>
-              <Link href={routes.howItWorks} className="group inline-flex items-center gap-1.5 text-slate-300 hover:text-white transition-all duration-200">
-                <span className="group-hover:translate-x-1 transition-transform duration-200">How It Works</span>
+              <Link href={routes.howItWorks} className="group inline-flex items-center gap-1.5 text-slate-300 transition-all duration-200 hover:text-white">
+                <span className="transition-transform duration-200 group-hover:translate-x-1">How it works</span>
                 <span className="rounded bg-blue-500/20 px-1.5 py-0.5 text-[9px] font-bold text-blue-300">NEW</span>
-                <ArrowRight className="h-3 w-3 text-blue-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
+                <ArrowRight className="h-3 w-3 shrink-0 -translate-x-2 text-blue-400 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
               </Link>
             </li>
             <li>
-              <FooterLink href={`${routes.product}#passport`}>Product Passport</FooterLink>
+              <FooterLink href={`${routes.product}#passport`}>Product story</FooterLink>
             </li>
             <li>
-              <FooterLink href={`${routes.product}#trust-score`}>Trust Score Engine</FooterLink>
+              <FooterLink href={`${routes.product}#trust-score`}>Trust score</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.security}>Security & Encryption</FooterLink>
+              <FooterLink href={routes.security}>Security</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.verify} isHighlight>Verify a Product →</FooterLink>
+              <FooterLink href={routes.verify} isHighlight>Check a product →</FooterLink>
             </li>
           </ul>
         </div>
@@ -156,22 +181,22 @@ export function SiteFooter() {
           </p>
           <ul className="space-y-3 text-xs">
             <li>
-              <FooterLink href={routes.business} isBold>For Businesses & Issuers</FooterLink>
+              <FooterLink href={routes.business} isBold>For businesses</FooterLink>
             </li>
             <li>
-              <FooterLink href={`${routes.solutions}#manufacturers`}>Manufacturers</FooterLink>
+              <FooterLink href={`${routes.solutions}#manufacturers`}>Makers</FooterLink>
             </li>
             <li>
-              <FooterLink href={`${routes.solutions}#retailers`}>Retailers & Point-of-Sale</FooterLink>
+              <FooterLink href={`${routes.solutions}#retailers`}>Shops</FooterLink>
             </li>
             <li>
-              <FooterLink href={`${routes.solutions}#distributors`}>Distributors & Custody</FooterLink>
+              <FooterLink href={`${routes.solutions}#distributors`}>Distributors</FooterLink>
             </li>
             <li>
-              <FooterLink href={`${routes.solutions}#marketplaces`}>Marketplaces & E-Commerce</FooterLink>
+              <FooterLink href={`${routes.solutions}#marketplaces`}>Online sellers</FooterLink>
             </li>
             <li>
-              <FooterLink href={`${routes.solutions}#regulators`}>Regulators & Compliance</FooterLink>
+              <FooterLink href={`${routes.solutions}#regulators`}>Regulators</FooterLink>
             </li>
           </ul>
         </div>
@@ -180,102 +205,96 @@ export function SiteFooter() {
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4 flex items-center gap-1.5">
             <Lock className="h-4 w-4 text-rose-400" />
-            <span>Risk Signals</span>
+            <span>Problems we help with</span>
           </p>
           <ul className="space-y-3 text-xs">
             <li>
-              <FooterLink href={routes.risks} isBold>All Risk Signals Index</FooterLink>
+              <FooterLink href={routes.risks} isBold>All problems</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.counterfeitInundation}>Counterfeit Protection</FooterLink>
+              <FooterLink href={routes.counterfeitInundation}>Fake goods</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.lostSupplyChain}>Chain of Custody</FooterLink>
+              <FooterLink href={routes.lostSupplyChain}>Lost product story</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.unverifiableWarranties}>Digital Warranties</FooterLink>
+              <FooterLink href={routes.unverifiableWarranties}>Weak warranties</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.delayedRecallAlerts}>Instant Recalls</FooterLink>
+              <FooterLink href={routes.delayedRecallAlerts}>Slow recalls</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.opaqueProductOrigin}>Verified Origin</FooterLink>
+              <FooterLink href={routes.opaqueProductOrigin}>Unknown origin</FooterLink>
             </li>
           </ul>
         </div>
 
-        {/* Column 4: Resources */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4">
-            Resources
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-blue-400">
+            Help
           </p>
           <ul className="space-y-3 text-xs">
             <li>
-              <FooterLink href={routes.resources}>Resource Center</FooterLink>
+              <FooterLink href={routes.resources}>Resources</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.docs}>Documentation</FooterLink>
+              <FooterLink href={routes.docs}>Docs</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.platform} isBold>Verification API Docs</FooterLink>
+              <FooterLink href={routes.platform} isBold>For developers</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.guides}>Product Guides</FooterLink>
+              <FooterLink href={routes.guides}>Guides</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.help}>Help Center</FooterLink>
+              <FooterLink href={routes.help}>Help center</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.blog}>Engineering Blog</FooterLink>
+              <FooterLink href={routes.blog}>Blog</FooterLink>
             </li>
           </ul>
         </div>
 
-        {/* Column 5: Company */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-blue-400">
             Company
           </p>
           <ul className="space-y-3 text-xs">
             <li>
-              <FooterLink href={routes.about}>About AUTHENTIC</FooterLink>
+              <FooterLink href={routes.about}>About us</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.getStarted} isBold>Get Started</FooterLink>
+              <FooterLink href={routes.getStarted} isBold>Get started</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.pricing}>Pricing & Enterprise</FooterLink>
+              <FooterLink href={routes.pricing}>Pricing</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.privacy}>Privacy Policy</FooterLink>
+              <FooterLink href={routes.privacy}>Privacy</FooterLink>
             </li>
             <li>
-              <FooterLink href={routes.terms}>Terms of Service</FooterLink>
+              <FooterLink href={routes.terms}>Terms</FooterLink>
             </li>
           </ul>
         </div>
       </div>
 
-      {/* Compliance Standard Badges Bar */}
       <div className="border-t border-white/10 bg-white/[0.01] py-6">
-        <div className="mx-auto w-[90%] max-w-[90%] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="mx-auto flex w-[90%] max-w-[90%] flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
-              NAFDAC Standard Compliant
+            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+              Built for Nigeria
             </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
-              EU DPP 2026/2027 Ready
+            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+              Ready for global standards
             </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
-              GS1 Digital Link Standard
-            </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-mono font-semibold text-slate-200 border border-white/10">
-              ECC-256 Cryptographic Signature
+            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+              Secure product checks
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-slate-300 font-medium">
-            <span>Built with pride in Lagos & Abuja, Nigeria 🇳🇬</span>
+          <div className="flex items-center gap-2 font-medium text-slate-300">
+            <span>Made in Lagos & Abuja</span>
           </div>
         </div>
       </div>

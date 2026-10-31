@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/duhpqf0ax/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/dyaetoldv/**",
+      },
     ],
   },
   serverExternalPackages: ["@prisma/client", "prisma", "bcryptjs", "qrcode"],
@@ -23,7 +28,11 @@ const nextConfig: NextConfig = {
       { source: "/business/analytics", destination: "/dashboard/risk", permanent: false },
       { source: "/developers", destination: "/platform", permanent: false },
       { source: "/signup", destination: "/auth/signup", permanent: false },
+      { source: "/register", destination: "/auth/signup", permanent: false },
       { source: "/login", destination: "/auth/login", permanent: false },
+      { source: "/verify-email", destination: "/auth/verify-email", permanent: false },
+      { source: "/forgot-password", destination: "/auth/forgot-password", permanent: false },
+      { source: "/reset-password", destination: "/auth/reset-password", permanent: false },
     ];
   },
 };

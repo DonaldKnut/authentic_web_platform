@@ -16,6 +16,7 @@ export default function IdentitiesPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [issued, setIssued] = useState<Array<{ authenticId: string; serial: string }>>([]);
+  const [blockchainNote, setBlockchainNote] = useState<string | null>(null);
   const [qr, setQr] = useState<string | null>(null);
 
   const products = useQuery({
@@ -50,7 +51,14 @@ export default function IdentitiesPage() {
       return;
     }
     setIssued(json.units ?? []);
-    toast.push("Identities issued.");
+    setBlockchainNote(
+      json.blockchain?.enabled
+        ? `Units queued for on-chain anchoring${
+            json.blockchain?.chain?.key ? ` on ${json.blockchain.chain.key}` : ""
+          }${json.blockchain?.chain?.nativeCurrency ? ` (${json.blockchain.chain.nativeCurrency} gas)` : ""}.`
+        : null,
+    );
+    toast.success("Identities issued.");
     queryClient.invalidateQueries({ queryKey: ["units"] });
   }
 
@@ -89,6 +97,11 @@ export default function IdentitiesPage() {
       {issued.length > 0 ? (
         <section className="mt-8 rounded-2xl border border-line bg-elev p-6">
           <h2 className="font-semibold">Just issued</h2>
+          {blockchainNote ? (
+            <p className="mt-2 rounded-xl border border-blue/20 bg-soft-blue px-3 py-2 text-sm text-blue">
+              {blockchainNote} On-chain proof is secondary — verify status stays off-chain.
+            </p>
+          ) : null}
           {issued.map((unit) => (
             <div key={unit.authenticId} className="mt-3 flex items-center justify-between font-mono text-sm">
               <span>{unit.authenticId}</span>

@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { HomeStorySlider } from "@/components/home/HomeStorySlider";
 import { HowItWorks, ProblemSection } from "@/components/home/ProblemAndHow";
 import { VerificationDemo } from "@/components/home/VerificationDemo";
 import {
@@ -28,8 +29,9 @@ export const metadata = pageMetadata({
 
 export default function HomePage() {
   return (
-    <>
+    <div className="home-breath">
       <Hero />
+      <HomeStorySlider />
       <GlobalComplianceTicker />
       <ProblemSection />
       <HowItWorks />
@@ -43,6 +45,6 @@ export default function HomePage() {
       <PublicVerifyBand />
       <AppAndAfrica />
       <SecurityBand />
-    </>
+    </div>
   );
 }

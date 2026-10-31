@@ -1,42 +1,50 @@
-"use client";
-
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
-import { useApiQuery } from "@/hooks/useApiQuery";
+import { getCurrentUser } from "@/lib/auth";
+import { isOrgRole } from "@/lib/home";
+import { routes } from "@/lib/routes";
+import { redirect } from "next/navigation";
+import { OrgBillingCard } from "@/components/dashboard/OrgBillingCard";
 
-export default function SettingsPage() {
-  const { data } = useApiQuery<{ plan?: { name?: string }; status?: string }>(
-    "billing",
-    "/api/v1/billing",
-    "Could not load billing.",
-  );
+export default async function SettingsPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/auth/login?next=/dashboard/settings");
+  const orgUser = isOrgRole(user.role);
 
   return (
     <div>
       <h1 className="display text-4xl">Settings</h1>
-      <p className="mt-2 text-muted">Organization, plan, and legal acceptance.</p>
+      <p className="mt-2 text-muted">
+        {orgUser
+          ? "Organization, plan, and legal acceptance."
+          : "Your account preferences and legal documents."}
+      </p>
+
       <Card className="mt-8">
-        <p className="text-sm text-muted">Plan</p>
-        <p className="mt-2 font-serif text-3xl">{data?.plan?.name ?? "—"}</p>
-        <p className="mt-2 text-sm text-muted">Status {data?.status ?? "unknown"}</p>
-        <Button href="/dashboard/billing" className="mt-6">
-          Manage billing
-        </Button>
+        <p className="text-sm text-muted">Signed in as</p>
+        <p className="mt-2 text-xl font-extrabold text-ink">{user.name || user.email}</p>
+        <p className="mt-1 text-sm text-muted">{user.email}</p>
+        <p className="mt-3 inline-flex rounded-full bg-soft-blue px-3 py-1 text-xs font-bold uppercase tracking-wide text-blue">
+          {user.role}
+        </p>
       </Card>
+
+      {orgUser ? <OrgBillingCard /> : null}
+
       <Card className="mt-4">
         <p className="font-medium">Documents</p>
         <p className="mt-2 text-sm text-muted">
-          <a className="underline" href="/terms">
+          <Link className="underline" href={routes.terms}>
             Terms of use
-          </a>
+          </Link>
           {" · "}
-          <a className="underline" href="/privacy">
+          <Link className="underline" href={routes.privacy}>
             Privacy
-          </a>
+          </Link>
           {" · "}
-          <a className="underline" href="/pricing">
+          <Link className="underline" href={routes.pricing}>
             Pricing
-          </a>
+          </Link>
         </p>
       </Card>
     </div>

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Card";
 import { Input, Textarea } from "@/components/ui/Input";
+import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/lib/format";
 import {
   AlertCircle,
@@ -74,16 +75,15 @@ const types = [
 
 function ReportForm() {
   const search = useSearchParams();
+  const toast = useToast();
   const [done, setDone] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [generalError, setGeneralError] = useState<string | null>(null);
   const [type, setType] = useState<string>("COUNTERFEIT");
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFieldErrors({});
-    setGeneralError(null);
 
     const form = new FormData(event.currentTarget);
     const identifier = String(form.get("identifier") ?? "").trim();
@@ -100,6 +100,7 @@ function ReportForm() {
         }
       });
       setFieldErrors(errors);
+      toast.error(validation.error.issues[0]?.message ?? "Check the form and try again.");
       return;
     }
 
@@ -107,18 +108,20 @@ function ReportForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        type,
-        notes: validation.data.notes,
-        identifier: validation.data.identifier,
+        reason: type,
+        description: validation.data.notes,
+        code: validation.data.identifier,
         city: validation.data.city,
         country: "NG",
       }),
     });
     const json = await response.json();
     if (!response.ok) {
-      setGeneralError(json.error ?? "Could not submit report.");
+      toast.error(json.error ?? "Could not submit report.");
       return;
     }
+    const ticket = json.id ?? json.report?.id;
+    toast.success(ticket ? `Report submitted (${ticket}).` : "Report submitted.");
     setDone(true);
   }
 
@@ -307,13 +310,6 @@ function ReportForm() {
                 </div>
               )}
             </div>
-
-            {generalError && (
-              <div className="rounded-2xl border border-risk/30 bg-risk/10 p-3.5 text-xs font-semibold text-risk flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <span>{generalError}</span>
-              </div>
-            )}
 
             <Button type="submit" className="h-12 w-full text-sm font-bold shadow-lg shadow-blue/20 mt-2">
               Submit Report to Brand Security

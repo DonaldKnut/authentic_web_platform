@@ -22,7 +22,18 @@ export async function POST(request: NextRequest) {
 
   const { ok, json, response } = await nestJson<{
     count: number;
-    identities: Array<{ publicId: string; serialNumber: string }>;
+    identities: Array<{
+      publicId: string;
+      serialNumber: string;
+      verifyUrl?: string;
+      labelUrl?: string;
+      blockchainUrl?: string;
+    }>;
+    blockchain?: {
+      enabled?: boolean;
+      liveSubmit?: boolean;
+      chain?: { key?: string; nativeCurrency?: string };
+    };
   }>("/product-identities/generate", {
     method: "POST",
     body: JSON.stringify({
@@ -43,6 +54,10 @@ export async function POST(request: NextRequest) {
     units: (json.identities ?? []).map((identity) => ({
       serial: identity.serialNumber,
       authenticId: identity.publicId,
+      verifyUrl: identity.verifyUrl,
+      labelUrl: identity.labelUrl,
+      blockchainUrl: identity.blockchainUrl,
     })),
+    blockchain: json.blockchain ?? null,
   });
 }
