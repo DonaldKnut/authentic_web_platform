@@ -10,7 +10,8 @@ export function useHeaderChrome() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isHomePage = pathname === "/";
-  const isTopHeader = isHomePage && !scrolled && !mobileOpen;
+  // Transparent chrome at the top of every marketing page; solid only after scroll (or while mobile menu is open).
+  const isTopHeader = !scrolled && !mobileOpen;
   const isDarkTop = isTopHeader && theme === "dark";
 
   useEffect(() => {
@@ -19,18 +20,13 @@ export function useHeaderChrome() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!isHomePage) {
-      setScrolled(true);
-      return;
-    }
     function onScroll() {
-      // Solid chrome as soon as the user starts scrolling.
       setScrolled(window.scrollY > 8);
     }
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isHomePage]);
+  }, [pathname]);
 
   return {
     pathname,

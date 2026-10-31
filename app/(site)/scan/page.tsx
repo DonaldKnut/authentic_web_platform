@@ -85,7 +85,11 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="relative isolate overflow-hidden bg-bg">
+    <div className="page-hero-band relative isolate overflow-hidden bg-bg">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-50 via-slate-50/80 to-bg dark:from-[#060b14] dark:via-[#08101e] dark:to-bg"
+      />
       <div className="page-wash-glow pointer-events-none absolute inset-0" aria-hidden />
 
       <Container className="relative py-12 md:py-16">

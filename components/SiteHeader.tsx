@@ -208,34 +208,19 @@ export function SiteHeader({
           <button
             type="button"
             className={cn(
-              "relative inline-flex h-10 w-10 items-center justify-center rounded-full border transition lg:hidden",
-              isDarkTop
-                ? "border-white/20 bg-white/10 text-white hover:bg-white/20"
-                : "border-slate-300 bg-white text-slate-900 shadow-sm hover:border-slate-400 hover:bg-slate-100",
+              "relative z-[130] inline-flex h-11 w-11 items-center justify-center rounded-full border transition lg:hidden",
+              mobileOpen
+                ? "border-blue/40 bg-elev text-ink shadow-lg shadow-blue/20 ring-2 ring-blue/25"
+                : isDarkTop
+                  ? "border-white/25 bg-white/15 text-white hover:bg-white/25"
+                  : "border-slate-300 bg-white text-slate-900 shadow-sm hover:border-slate-400 hover:bg-slate-100",
             )}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             onClick={() => setMobileOpen((value) => !value)}
           >
-            <div className="relative h-4 w-4">
-              <span
-                className={cn(
-                  "absolute inset-0 grid place-items-center transition-all duration-300",
-                  mobileOpen ? "rotate-90 scale-100 opacity-100" : "rotate-0 scale-75 opacity-0",
-                )}
-              >
-                <X className="h-4 w-4" />
-              </span>
-              <span
-                className={cn(
-                  "absolute inset-0 grid place-items-center transition-all duration-300",
-                  mobileOpen ? "-rotate-90 scale-75 opacity-0" : "rotate-0 scale-100 opacity-100",
-                )}
-              >
-                <Menu className="h-4 w-4" />
-              </span>
-            </div>
+            {mobileOpen ? <X className="h-5 w-5" strokeWidth={2.5} /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>

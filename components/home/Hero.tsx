@@ -13,7 +13,7 @@ export function Hero() {
   return (
     <section
       aria-label="AUTHENTIC product verification"
-      className="hero-stage relative -mt-[5.75rem] overflow-hidden pt-[5.75rem] text-slate-900 transition-colors duration-300 selection:bg-blue-500/30 md:-mt-[7rem] md:pt-[7rem] dark:text-white"
+      className="hero-stage page-hero-band relative overflow-hidden text-slate-900 transition-colors duration-300 selection:bg-blue-500/30 dark:text-white"
     >
       {/* Same light/dark plane as transparent header until scroll */}
       <div

@@ -17,6 +17,7 @@ import {
   ScanLine,
   ShieldCheck,
   Waypoints,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/format";
@@ -93,11 +94,21 @@ export function MobileNav({
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="border-b border-line px-5 py-4">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">Menu</p>
-          <p className="mt-0.5 text-lg font-extrabold tracking-tight text-ink">
-            {user ? `Hi, ${firstName(user.name)}` : "What do you need?"}
-          </p>
+        <div className="flex items-start justify-between gap-3 border-b border-line px-5 py-4">
+          <div className="min-w-0">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">Menu</p>
+            <p className="mt-0.5 text-lg font-extrabold tracking-tight text-ink">
+              {user ? `Hi, ${firstName(user.name)}` : "What do you need?"}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close menu"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-soft text-ink shadow-sm transition hover:border-blue/40 hover:bg-soft-blue hover:text-blue active:scale-95"
+          >
+            <X className="h-5 w-5" strokeWidth={2.5} />
+          </button>
         </div>
 
         <nav className="flex-1 overflow-y-auto overscroll-contain px-4 py-4" aria-label="Mobile">

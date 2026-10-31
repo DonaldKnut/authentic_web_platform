@@ -220,6 +220,19 @@ h3.display {
   backdrop-filter: blur(14px);
 }
 
+/* Shared underlap so page heroes sit behind the transparent header until scroll */
+.page-hero-band {
+  margin-top: -5.75rem;
+  padding-top: 5.75rem;
+}
+
+@media (min-width: 768px) {
+  .page-hero-band {
+    margin-top: -7rem;
+    padding-top: 7rem;
+  }
+}
+
 .page-wash {
   background-image:
     radial-gradient(

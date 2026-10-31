@@ -45,20 +45,20 @@ const toneStyles: Record<
   { wrap: string; icon: string; Icon: typeof CheckCircle2; label: string }
 > = {
   success: {
-    wrap: "border-auth/25 bg-elev text-ink shadow-[0_18px_50px_-28px_rgba(15,157,110,0.55)]",
-    icon: "bg-auth/15 text-auth",
+    wrap: "border-auth/35 bg-white/45 text-ink shadow-[0_18px_50px_-24px_rgba(15,157,110,0.45)] dark:border-auth/40 dark:bg-emerald-950/35",
+    icon: "bg-auth/20 text-auth backdrop-blur-sm",
     Icon: CheckCircle2,
     label: "Success",
   },
   error: {
-    wrap: "border-risk/30 bg-elev text-ink shadow-[0_18px_50px_-28px_rgba(217,45,32,0.5)]",
-    icon: "bg-risk/15 text-risk",
+    wrap: "border-risk/40 bg-white/45 text-ink shadow-[0_18px_50px_-24px_rgba(217,45,32,0.4)] dark:border-risk/45 dark:bg-rose-950/35",
+    icon: "bg-risk/20 text-risk backdrop-blur-sm",
     Icon: AlertCircle,
     label: "Error",
   },
   info: {
-    wrap: "border-blue/25 bg-elev text-ink shadow-[0_18px_50px_-28px_rgba(29,78,216,0.45)]",
-    icon: "bg-soft-blue text-blue",
+    wrap: "border-blue/35 bg-white/45 text-ink shadow-[0_18px_50px_-24px_rgba(29,78,216,0.4)] dark:border-blue/40 dark:bg-blue-950/35",
+    icon: "bg-blue/15 text-blue backdrop-blur-sm",
     Icon: Info,
     label: "Notice",
   },
@@ -89,7 +89,7 @@ function ToastViewport({
             key={toast.id}
             role={toast.tone === "error" ? "alert" : "status"}
             className={cn(
-              "pointer-events-auto flex w-full max-w-[22rem] items-start gap-3 rounded-2xl border px-3.5 py-3 backdrop-blur-md sm:w-[22rem]",
+              "pointer-events-auto flex w-full max-w-[22rem] items-start gap-3 rounded-2xl border px-3.5 py-3 shadow-lg backdrop-blur-2xl supports-[backdrop-filter]:bg-white/35 dark:supports-[backdrop-filter]:bg-slate-950/40 sm:w-[22rem]",
               style.wrap,
               toast.leaving ? "animate-toast-out" : "animate-toast-in",
             )}
