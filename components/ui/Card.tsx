@@ -23,7 +23,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em]",
+        "inline-flex max-w-full items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.1em] max-[360px]:tracking-[0.06em] sm:px-2.5 sm:text-[11px] sm:tracking-[0.14em]",
         tones[tone],
         className,
       )}
@@ -45,7 +45,7 @@ export function Card({
   return (
     <Tag
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-line bg-elev p-6 shadow-[var(--shadow)] transition-all duration-300 hover:border-line-strong hover:shadow-xl",
+        "relative overflow-hidden rounded-2xl border border-line bg-elev p-4 shadow-[var(--shadow)] transition-all duration-300 hover:border-line-strong hover:shadow-xl max-[360px]:rounded-xl sm:p-6",
         className,
       )}
     >
@@ -112,7 +112,11 @@ export function Container({
 }) {
   const max =
     width === "narrow" ? "max-w-3xl" : width === "wide" ? "max-w-7xl" : "max-w-6xl";
-  return <div className={cn("mx-auto w-full px-5", max, className)}>{children}</div>;
+  return (
+    <div className={cn("mx-auto w-full min-w-0 px-3 max-[360px]:px-2.5 sm:px-5", max, className)}>
+      {children}
+    </div>
+  );
 }
 
 export function Section({
@@ -129,7 +133,7 @@ export function Section({
   const bg =
     tone === "soft" ? "bg-soft" : tone === "navy" ? "bg-navy text-white" : "bg-bg";
   return (
-    <section id={id} className={cn("py-20 md:py-28", bg, className)}>
+    <section id={id} className={cn("py-12 max-[360px]:py-10 sm:py-16 md:py-28", bg, className)}>
       {children}
     </section>
   );

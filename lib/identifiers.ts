@@ -24,12 +24,21 @@ export function detectIdentifierType(
 }
 
 export function extractCodeFromUrl(raw: string) {
+  const trimmed = raw.replace(/^AUTHENTIC\s+/i, "").trim();
   try {
-    const url = new URL(raw);
+    const url = new URL(trimmed);
     const parts = url.pathname.split("/").filter(Boolean);
     const vIndex = parts.findIndex((p) => p.toLowerCase() === "v");
     if (vIndex >= 0 && parts[vIndex + 1]) {
       return decodeURIComponent(parts[vIndex + 1]);
+    }
+    const verifyIndex = parts.findIndex((p) => p.toLowerCase() === "verify");
+    if (verifyIndex >= 0 && parts[verifyIndex + 1]) {
+      return decodeURIComponent(parts[verifyIndex + 1]);
+    }
+    for (const key of ["code", "id", "serial", "pid"]) {
+      const value = url.searchParams.get(key);
+      if (value?.trim()) return value.trim();
     }
     const gtinIndex = parts.findIndex((p) => p === "01");
     const serialIndex = parts.findIndex((p) => p === "21");
@@ -37,7 +46,20 @@ export function extractCodeFromUrl(raw: string) {
       return parts[serialIndex + 1] ?? parts[gtinIndex + 1];
     }
   } catch {
-    // not a URL
+    // not a URL — maybe path-only payload like /v/SN-…
+    const pathMatch = trimmed.match(/\/(?:v|verify)\/([^/?#]+)/i);
+    if (pathMatch?.[1]) {
+      try {
+        return decodeURIComponent(pathMatch[1]);
+      } catch {
+        return pathMatch[1];
+      }
+    }
   }
-  return raw.replace(/^AUTHENTIC\s+/i, "").trim();
+  return trimmed;
+}
+
+/** Normalize a camera/typed payload into a short code safe for /verify/[code]. */
+export function normalizeScanPayload(raw: string) {
+  return extractCodeFromUrl(raw).trim();
 }

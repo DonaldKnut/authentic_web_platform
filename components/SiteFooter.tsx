@@ -72,37 +72,37 @@ export function SiteFooter() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:36px_36px]" />
 
       {/* Top Banner: Newsletter & Brand Hero */}
-      <div className="border-b border-white/10 bg-white/[0.02] backdrop-blur-md py-12">
-        <div className="mx-auto w-[90%] max-w-[90%] grid gap-10 lg:grid-cols-12 lg:items-center">
+      <div className="border-b border-white/10 bg-white/[0.02] py-8 backdrop-blur-md sm:py-12">
+        <div className="mx-auto grid w-[min(100%,90%)] max-w-[90%] gap-8 max-[360px]:w-[calc(100%-1rem)] max-[360px]:max-w-none lg:grid-cols-12 lg:items-center lg:gap-10">
           {/* Brand Info - Matching header logo size */}
-          <div className="lg:col-span-6 space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-400">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-              <span>Live product checks</span>
+          <div className="space-y-4 lg:col-span-6">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[10px] font-semibold text-emerald-400 sm:px-3.5 sm:text-xs">
+              <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-400" />
+              <span className="truncate">Live product checks</span>
             </div>
 
-            <div className="mt-3">
+            <div className="mt-3 min-w-0">
               <BrandMark size="footer" inverted />
             </div>
 
-            <p className="max-w-lg font-sans text-sm leading-relaxed text-slate-300">
+            <p className="max-w-lg font-sans text-xs leading-relaxed text-slate-300 sm:text-sm">
               AUTHENTIC helps people check if a pack is real — from the factory to the shop to your hands.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur-xl lg:col-span-6">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-300">
-              <Mail className="h-4 w-4 text-blue-400" />
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-2xl backdrop-blur-xl max-[360px]:rounded-xl sm:rounded-3xl sm:p-6 lg:col-span-6">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-blue-300 sm:text-xs">
+              <Mail className="h-4 w-4 shrink-0 text-blue-400" />
               <span>Stay informed</span>
             </div>
-            <h4 className="mt-1 text-lg font-bold text-white">Get simple updates by email</h4>
-            <p className="mt-1 text-xs text-slate-300">
+            <h4 className="mt-1 text-base font-bold text-white sm:text-lg">Get simple updates by email</h4>
+            <p className="mt-1 text-[11px] text-slate-300 sm:text-xs">
               Short notes on fake goods, product safety, and how AUTHENTIC helps. No spam.
             </p>
 
             {subscribed ? (
-              <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-xs font-semibold text-emerald-300">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <div className="mt-4 flex items-start gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-3 text-[11px] font-semibold text-emerald-300 sm:px-4 sm:text-xs">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
                 You’re subscribed. Watch your inbox for short safety notes.
               </div>
             ) : (
@@ -117,12 +117,12 @@ export function SiteFooter() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@email.com"
-                  className="flex-1 cursor-text rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-xs text-white placeholder-slate-400 backdrop-blur-sm focus:border-blue-400 focus:outline-none"
+                  className="min-w-0 flex-1 cursor-text rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-xs text-white placeholder-slate-400 backdrop-blur-sm focus:border-blue-400 focus:outline-none sm:px-4"
                 />
                 <button
                   type="submit"
                   disabled={busy}
-                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 shrink-0"
+                  className="inline-flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                 >
                   {busy ? (
                     <span>Saving…</span>
@@ -140,7 +140,7 @@ export function SiteFooter() {
       </div>
 
       {/* Main 5-Column Navigation Grid with Animated Arrows */}
-      <div className="mx-auto w-[90%] max-w-[90%] grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mx-auto grid w-[min(100%,90%)] max-w-[90%] gap-8 py-10 max-[360px]:w-[calc(100%-1rem)] max-[360px]:max-w-none sm:grid-cols-2 sm:gap-10 sm:py-14 lg:grid-cols-5">
         {/* Column 1: Product */}
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-4 flex items-center gap-1.5">
@@ -279,49 +279,49 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 bg-white/[0.01] py-6">
-        <div className="mx-auto flex w-[90%] max-w-[90%] flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+      <div className="border-t border-white/10 bg-white/[0.01] py-5 sm:py-6">
+        <div className="mx-auto flex w-[min(100%,90%)] max-w-[90%] flex-col gap-3 text-xs text-slate-400 max-[360px]:w-[calc(100%-1rem)] max-[360px]:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-slate-200 sm:px-3 sm:text-[11px]">
               Built for Nigeria
             </span>
-            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+            <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-slate-200 sm:px-3 sm:text-[11px]">
               Ready for global standards
             </span>
-            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+            <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-slate-200 sm:px-3 sm:text-[11px]">
               Secure product checks
             </span>
           </div>
 
-          <div className="flex items-center gap-2 font-medium text-slate-300">
+          <div className="flex items-center gap-2 text-[11px] font-medium text-slate-300 sm:text-xs">
             <span>Made in Lagos & Abuja</span>
           </div>
         </div>
       </div>
 
       {/* Bottom Bar: Copyright & Social Links */}
-      <div className="border-t border-white/10 bg-black/40 py-6">
-        <div className="mx-auto w-[90%] max-w-[90%] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-2">
-            <p>© {new Date().getFullYear()} AUTHENTIC Technologies Ltd. All rights reserved.</p>
+      <div className="border-t border-white/10 bg-black/40 py-5 sm:py-6">
+        <div className="mx-auto flex w-[min(100%,90%)] max-w-[90%] flex-col items-start justify-between gap-4 text-[11px] text-slate-400 max-[360px]:w-[calc(100%-1rem)] max-[360px]:max-w-none sm:text-xs md:flex-row md:items-center">
+          <div className="min-w-0">
+            <p className="leading-relaxed">© {new Date().getFullYear()} AUTHENTIC Technologies Ltd. All rights reserved.</p>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3 sm:gap-6">
             <FooterLink href={routes.privacy}>Privacy</FooterLink>
             <FooterLink href={routes.terms}>Terms</FooterLink>
             <FooterLink href={routes.security}>Security</FooterLink>
 
-            <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="text-slate-400 hover:text-white transition-colors">
+            <div className="flex items-center gap-3 border-l border-white/10 pl-4">
+              <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="text-slate-400 transition-colors hover:text-white">
                 <XIcon className="h-4 w-4" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-slate-400 hover:text-white transition-colors">
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-slate-400 transition-colors hover:text-white">
                 <LinkedinIcon className="h-4 w-4" />
               </a>
-              <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-slate-400 hover:text-white transition-colors">
+              <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-slate-400 transition-colors hover:text-white">
                 <GithubIcon className="h-4 w-4" />
               </a>
-              <a href="mailto:support@authentic.ng" aria-label="Email" className="text-slate-400 hover:text-white transition-colors">
+              <a href="mailto:support@authentic.ng" aria-label="Email" className="text-slate-400 transition-colors hover:text-white">
                 <Mail className="h-4 w-4" />
               </a>
             </div>

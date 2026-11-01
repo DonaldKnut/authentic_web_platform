@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { MobileSidebarDrawer } from "@/components/ui/MobileSidebarDrawer";
 import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/lib/format";
 import { homeForRole, isAdminRole, isOrgRole } from "@/lib/home";
@@ -121,6 +122,10 @@ export function DashboardShell({
     if (blocked) router.replace(homeForRole(role));
   }, [orgUser, pathname, role, router]);
 
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   async function switchOrg(organizationId: string) {
     await fetch("/api/auth/organization", {
       method: "POST",
@@ -213,18 +218,70 @@ export function DashboardShell({
         </div>
       </aside>
 
+      <MobileSidebarDrawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        className="md:hidden"
+        title={orgUser ? "Organization" : "Your space"}
+        subtitle={orgUser ? orgName ?? "Workspace" : "Personal dashboard"}
+        headerExtra={<BrandMark size="sm" />}
+        footer={
+          <div className="flex items-center justify-between gap-2 text-sm">
+            <div className="min-w-0">
+              <p className="truncate font-semibold text-ink">{userName}</p>
+              {userEmail ? <p className="truncate text-xs text-muted">{userEmail}</p> : null}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  void logout();
+                }}
+                className="mt-2 inline-flex items-center gap-1.5 text-muted hover:text-ink"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Sign out
+              </button>
+            </div>
+            <ThemeToggle />
+          </div>
+        }
+      >
+        {orgUser && organizations.length > 1 ? (
+          <label className="mb-4 block px-1 text-xs text-muted">
+            Switch organization
+            <select
+              className="mt-1 w-full rounded-lg border border-line bg-elev px-2 py-2 text-sm text-ink"
+              value={currentOrgId ?? ""}
+              onChange={(event) => void switchOrg(event.target.value)}
+            >
+              {organizations.map((org) => (
+                <option key={org.id} value={org.id}>
+                  {org.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+        {nav}
+      </MobileSidebarDrawer>
+
       <div className="flex min-h-screen min-w-0 flex-col">
         <header className="sticky top-0 z-30 border-b border-line bg-elev/95 backdrop-blur-xl">
           <div className="flex items-center justify-between gap-3 px-4 py-3 md:px-8">
             <div className="flex min-w-0 items-center gap-3">
               <button
                 type="button"
-                className="grid h-10 w-10 place-items-center rounded-full border border-line md:hidden"
+                className={cn(
+                  "grid h-11 w-11 place-items-center rounded-full border transition md:hidden",
+                  mobileOpen
+                    ? "border-blue/40 bg-soft-blue text-blue shadow-md ring-2 ring-blue/20"
+                    : "border-line bg-elev text-ink hover:bg-soft",
+                )}
                 aria-expanded={mobileOpen}
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
                 onClick={() => setMobileOpen((value) => !value)}
               >
-                {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                {mobileOpen ? <X className="h-5 w-5" strokeWidth={2.5} /> : <Menu className="h-5 w-5" />}
               </button>
               <div className="min-w-0 md:hidden">
                 <BrandMark size="sm" />
@@ -251,7 +308,6 @@ export function DashboardShell({
               <ThemeToggle className="md:hidden" />
             </div>
           </div>
-          {mobileOpen ? <div className="border-t border-line px-4 py-4 md:hidden">{nav}</div> : null}
         </header>
         <div className="flex-1 p-5 md:p-8 lg:p-10">{children}</div>
       </div>

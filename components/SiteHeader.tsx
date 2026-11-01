@@ -103,8 +103,8 @@ export function SiteHeader({
           : "site-header border-b border-line bg-elev/95 text-ink shadow-sm backdrop-blur-xl",
       )}
     >
-      <div className="mx-auto flex h-[5.75rem] w-[90%] max-w-[90%] items-center justify-between gap-3 px-1 md:h-[7rem] md:px-2">
-        <BrandMark inverted={isDarkTop} size="header" />
+      <div className="mx-auto flex h-16 w-[min(100%,90%)] max-w-[90%] min-w-0 items-center justify-between gap-2 px-1 max-[360px]:h-14 max-[360px]:w-[calc(100%-0.75rem)] max-[360px]:max-w-none sm:h-[5.75rem] sm:gap-3 md:h-[7rem] md:px-2">
+        <BrandMark inverted={isDarkTop} size="header" className="min-w-0 shrink" />
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           <MegaTrigger
@@ -208,7 +208,7 @@ export function SiteHeader({
           <button
             type="button"
             className={cn(
-              "relative z-[130] inline-flex h-11 w-11 items-center justify-center rounded-full border transition lg:hidden",
+              "relative z-[130] inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition max-[360px]:h-8 max-[360px]:w-8 sm:h-11 sm:w-11 lg:hidden",
               mobileOpen
                 ? "border-blue/40 bg-elev text-ink shadow-lg shadow-blue/20 ring-2 ring-blue/25"
                 : isDarkTop
@@ -220,7 +220,11 @@ export function SiteHeader({
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             onClick={() => setMobileOpen((value) => !value)}
           >
-            {mobileOpen ? <X className="h-5 w-5" strokeWidth={2.5} /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? (
+              <X className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
+            ) : (
+              <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
+            )}
           </button>
         </div>
       </div>

@@ -16,9 +16,9 @@ const variants = {
 } as const;
 
 const sizes = {
-  sm: "h-9 px-3.5 text-xs font-bold tracking-tight",
-  md: "h-11 px-5 text-sm font-bold tracking-tight",
-  lg: "h-12 px-6 text-[15px] font-bold tracking-tight",
+  sm: "min-h-9 px-3 text-xs font-bold tracking-tight max-[360px]:px-2.5",
+  md: "min-h-11 px-4 text-sm font-bold tracking-tight sm:px-5",
+  lg: "min-h-12 px-4 text-sm font-bold tracking-tight sm:px-6 sm:text-[15px]",
 } as const;
 
 type Props = {
@@ -41,7 +41,7 @@ export function Button({
   ...props
 }: Props) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl font-bold transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 select-none",
+    "inline-flex max-w-full min-w-0 items-center justify-center gap-2 rounded-xl font-bold transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 select-none whitespace-normal text-center break-words",
     variants[variant],
     sizes[size],
     className,

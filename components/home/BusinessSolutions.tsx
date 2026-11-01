@@ -62,26 +62,26 @@ const audiences = [
 
 export function BusinessSolutions() {
   return (
-    <Section id="business" className="py-24">
+    <Section id="business" className="py-12 sm:py-16 md:py-24">
       <Container>
         <div className="text-center">
           <p className="eyebrow">Enterprise Solutions</p>
-          <h2 className="display mt-4 max-w-3xl text-4xl font-bold text-ink md:text-5xl mx-auto">
+          <h2 className="display mx-auto mt-4 max-w-3xl text-2xl font-bold text-ink max-[360px]:text-[1.45rem] sm:text-3xl md:text-4xl lg:text-5xl">
             Built for the enterprises that shape the physical world.
           </h2>
-          <p className="mt-4 max-w-xl text-lg text-muted mx-auto">
+          <p className="mx-auto mt-3 max-w-xl text-sm text-muted sm:mt-4 sm:text-base md:text-lg">
             Tailored workflow solutions for manufacturers, supply chain partners, and platforms.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:mt-14 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {audiences.map((audience) => {
             const Icon = audience.icon;
             return (
               <article
                 key={audience.id}
                 id={audience.id}
-                className="lift group relative flex flex-col justify-between rounded-3xl border border-line bg-elev p-7 shadow-sm transition-all hover:border-blue/40 hover:shadow-xl"
+                className="lift group relative flex flex-col justify-between rounded-2xl border border-line bg-elev p-4 shadow-sm transition-all hover:border-blue/40 hover:shadow-xl max-[360px]:rounded-xl sm:rounded-3xl sm:p-7"
               >
                 <div>
                   <div className="flex items-center justify-between">

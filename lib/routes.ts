@@ -32,6 +32,7 @@ export const routes = {
   dashboardHistory: "/dashboard/history",
   dashboardReport: "/dashboard/report",
   admin: "/admin",
+  adminDashboard: "/admin/dashboard",
   privacy: "/privacy",
   terms: "/terms",
   risks: "/risks",

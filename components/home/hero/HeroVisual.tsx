@@ -139,18 +139,18 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
           transition: isHovered ? "transform 0.1s ease-out" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        className="preserve-3d relative cursor-default rounded-3xl border border-line bg-elev/95 p-5 shadow-2xl backdrop-blur-2xl transition-colors duration-300 dark:border-white/15 dark:bg-[#0b1322]/90 sm:p-6"
+        className="preserve-3d relative min-w-0 cursor-default rounded-2xl border border-line bg-elev/95 p-3 shadow-2xl backdrop-blur-2xl transition-colors duration-300 max-[360px]:rounded-xl dark:border-white/15 dark:bg-[#0b1322]/90 sm:rounded-3xl sm:p-6"
       >
         {/* Header with pill tabs */}
-        <div className="flex items-center justify-between border-b border-line pb-4">
-          <div className="relative flex items-center rounded-xl bg-soft p-1">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-3 sm:pb-4">
+          <div className="relative flex min-w-0 max-w-full flex-wrap items-center rounded-xl bg-soft p-1">
             <button
               type="button"
               onClick={() => {
                 playClickSound();
                 setActiveTab("visual");
               }}
-              className={`relative z-10 cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 sm:text-sm ${
+              className={`relative z-10 cursor-pointer rounded-lg px-2.5 py-1.5 text-[11px] font-bold tracking-tight transition-all duration-200 sm:px-3.5 sm:text-sm ${
                 activeTab === "visual"
                   ? "bg-elev text-blue shadow-sm"
                   : "text-muted hover:text-ink"
@@ -164,13 +164,13 @@ export function HeroVisual({ onReplay }: { onReplay: () => void }) {
                 playClickSound();
                 setActiveTab("credential");
               }}
-              className={`relative z-10 cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-bold tracking-tight transition-all duration-200 sm:text-sm ${
+              className={`relative z-10 cursor-pointer rounded-lg px-2.5 py-1.5 text-[11px] font-bold tracking-tight transition-all duration-200 sm:px-3.5 sm:text-sm ${
                 activeTab === "credential"
                   ? "bg-elev text-auth shadow-sm"
                   : "text-muted hover:text-ink"
               }`}
             >
-              Serialized Credential
+              Credential
             </button>
           </div>
 
@@ -222,7 +222,7 @@ function ScanPreview({
   const scrambledCode = useScrambleText(heroCredential.serialCode, scanState !== "authenticated");
 
   return (
-    <div className="mt-4 grid gap-5 sm:grid-cols-2">
+    <div className="mt-4 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:gap-5">
       {/* Physical Item Box — click to replay */}
       <button
         type="button"
@@ -392,7 +392,7 @@ function CredentialPass({ copied, onCopy }: { copied: boolean; onCopy: () => voi
         </button>
       </div>
 
-      <div className="mt-5 grid gap-3 text-xs sm:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-3 text-xs min-[400px]:grid-cols-2">
         <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Product Identity</span>
           <p className="mt-1 text-base font-bold text-white">{heroCredential.productName}</p>

@@ -90,14 +90,14 @@ export function HomeStorySlider() {
         ))}
       </div>
 
-      <div className="relative mx-auto w-[90%] max-w-[90%]">
+      <div className="relative mx-auto w-[min(100%,90%)] max-w-[90%] min-w-0 max-[360px]:w-[calc(100%-1rem)] max-[360px]:max-w-none">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-xl">
-            <p className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-blue-200">
-              <Sparkles className="h-3.5 w-3.5" />
-              What AUTHENTIC does
+          <div className="min-w-0 max-w-xl">
+            <p className="inline-flex max-w-full items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.12em] text-blue-200 max-[360px]:tracking-[0.08em] sm:text-[11px] sm:tracking-[0.18em]">
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">What AUTHENTIC does</span>
             </p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-5xl">
+            <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-white max-[360px]:text-[1.45rem] sm:text-3xl md:text-5xl">
               Plain terms. Real checks.
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-white/75 md:text-base">
@@ -105,7 +105,7 @@ export function HomeStorySlider() {
               scenes slide behind you.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {slides.map((slide, i) => (
               <button
                 key={slide.id}
@@ -121,7 +121,7 @@ export function HomeStorySlider() {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid grid-cols-1 gap-3 max-[360px]:mt-6 sm:mt-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
           {stories.map((story, i) => {
             const Icon = story.icon;
             const active = i === index % stories.length;
@@ -129,7 +129,7 @@ export function HomeStorySlider() {
               <article
                 key={story.id}
                 className={cn(
-                  "group relative overflow-hidden rounded-[1.75rem] border p-5 transition-all duration-500",
+                  "group relative min-w-0 overflow-hidden rounded-2xl border p-4 transition-all duration-500 max-[360px]:rounded-xl sm:rounded-[1.75rem] sm:p-5",
                   active
                     ? "border-white/35 bg-white/14 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.85)] backdrop-blur-xl translate-y-0"
                     : "border-white/15 bg-white/8 backdrop-blur-md hover:-translate-y-1 hover:border-white/30 hover:bg-white/12",

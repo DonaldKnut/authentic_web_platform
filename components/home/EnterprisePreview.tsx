@@ -72,32 +72,32 @@ export function EnterprisePreview() {
   }, [activeIndex, pausedUntil]);
 
   return (
-    <Section tone="soft" className="py-24">
+    <Section tone="soft" className="py-14 sm:py-20 md:py-24">
       <Container>
         <div className="text-center">
           <p className="eyebrow">Operating System for Physical Goods</p>
-          <h2 className="display mx-auto mt-4 max-w-3xl text-4xl font-bold text-ink md:text-5xl">
+          <h2 className="display mx-auto mt-4 max-w-3xl text-2xl font-bold text-ink max-[360px]:text-[1.45rem] sm:text-3xl md:text-4xl lg:text-5xl">
             One platform for product identity lifecycle.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-muted">
+          <p className="mx-auto mt-4 max-w-xl text-sm text-muted sm:text-base md:text-lg">
             Watch the workspace cycle through every module — or click any link to jump ahead.
           </p>
         </div>
 
-        <div className="enterprise-shell mt-12 overflow-hidden rounded-3xl border border-line bg-elev shadow-2xl">
-          <div className="flex items-center justify-between border-b border-line bg-soft px-6 py-4">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex gap-1.5">
-                <span className="h-3 w-3 rounded-full bg-rose-500/80" />
-                <span className="h-3 w-3 rounded-full bg-amber-500/80" />
-                <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+        <div className="enterprise-shell mt-8 overflow-hidden rounded-2xl border border-line bg-elev shadow-2xl max-[360px]:rounded-xl sm:mt-12 sm:rounded-3xl">
+          <div className="flex items-center justify-between gap-2 border-b border-line bg-soft px-3 py-3 sm:px-6 sm:py-4">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <div className="flex shrink-0 gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80 sm:h-3 sm:w-3" />
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 sm:h-3 sm:w-3" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 sm:h-3 sm:w-3" />
               </div>
               <span
                 key={activeModule}
-                className="enterprise-path truncate font-mono text-xs text-muted"
+                className="enterprise-path truncate font-mono text-[10px] text-muted sm:text-xs"
               >
-                AUTHENTIC Enterprise · dashboard.authentic.app /{" "}
-                {activeModule.toLowerCase().replace(/\s+/g, "-")}
+                <span className="hidden sm:inline">AUTHENTIC Enterprise · </span>
+                dashboard…/{activeModule.toLowerCase().replace(/\s+/g, "-")}
               </span>
             </div>
             <div className="hidden items-center gap-2 text-xs text-muted sm:flex">
@@ -106,14 +106,14 @@ export function EnterprisePreview() {
             </div>
           </div>
 
-          <div className="flex min-h-[420px] flex-col md:flex-row">
-            <div className="relative w-full border-r border-line bg-soft/60 p-4 md:w-60 md:p-5">
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-muted">
+          <div className="flex min-h-[320px] flex-col sm:min-h-[380px] md:min-h-[420px] md:flex-row">
+            <div className="relative w-full border-r border-line bg-soft/60 p-3 sm:p-4 md:w-60 md:p-5">
+              <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-muted sm:mb-3">
                 Workspace Modules
               </p>
               <div
                 ref={navRef}
-                className="relative grid grid-cols-2 gap-1.5 md:grid-cols-1"
+                className="relative grid grid-cols-1 gap-1.5 min-[360px]:grid-cols-2 md:grid-cols-1"
               >
                 <span
                   aria-hidden
@@ -150,7 +150,7 @@ export function EnterprisePreview() {
               </div>
             </div>
 
-            <div className="enterprise-panel-frame relative flex-1 overflow-hidden bg-panel p-6 sm:p-8">
+            <div className="enterprise-panel-frame relative flex-1 overflow-hidden bg-panel p-3 max-[360px]:p-2.5 sm:p-6 md:p-8">
               <div key={panelKey} className="enterprise-panel-enter">
                 <ModulePreview name={activeModule} />
               </div>

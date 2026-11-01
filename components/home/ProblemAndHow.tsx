@@ -77,13 +77,13 @@ const problems = [
 export function ProblemSection() {
   return (
     <Section className="relative overflow-hidden py-16 md:py-24">
-      <Container className="w-[90%] max-w-[90%] mx-auto">
+      <Container className="mx-auto w-[min(100%,90%)] max-w-[90%] max-[360px]:w-full max-[360px]:max-w-none">
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-3.5 py-1 text-xs font-bold text-rose-500">
-            <ShieldAlert className="h-3.5 w-3.5" />
+          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 text-[10px] font-bold text-rose-500 sm:px-3.5 sm:text-xs">
+            <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
             <span>Why this matters</span>
           </div>
-          <h2 className="display mt-4 mx-auto max-w-3xl text-center text-3xl font-bold text-ink md:text-5xl">
+          <h2 className="display mx-auto mt-4 max-w-3xl text-center text-2xl font-bold text-ink max-[360px]:text-[1.45rem] sm:text-3xl md:text-5xl">
             It is still too easy to copy a pack. And too hard to check one.
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
@@ -108,7 +108,7 @@ export function ProblemSection() {
               <Link
                 key={item.title}
                 href={item.href}
-                className={`breath-card snap-center shrink-0 w-[82vw] sm:w-auto group relative flex flex-col justify-between rounded-3xl border p-6 shadow-md transition-all duration-500 hover:shadow-2xl active:scale-[0.98] sm:hover:-translate-y-2 ${item.tone}`}
+                className={`breath-card group relative flex w-[min(82vw,18rem)] shrink-0 snap-center flex-col justify-between rounded-2xl border p-4 shadow-md transition-all duration-500 hover:shadow-2xl active:scale-[0.98] max-[360px]:w-[calc(100vw-2.5rem)] sm:w-auto sm:rounded-3xl sm:p-6 sm:hover:-translate-y-2 ${item.tone}`}
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -144,8 +144,8 @@ export function ProblemSection() {
         </div>
 
         {/* Solution Callout Banner */}
-        <div className="mt-10 rounded-3xl border border-blue/30 bg-gradient-to-r from-blue/10 via-elev to-emerald-500/10 p-6 sm:p-8 text-center backdrop-blur-sm shadow-lg">
-          <p className="display text-base font-bold leading-relaxed text-ink sm:text-xl">
+        <div className="mt-10 rounded-2xl border border-blue/30 bg-gradient-to-r from-blue/10 via-elev to-emerald-500/10 p-4 text-center shadow-lg backdrop-blur-sm max-[360px]:rounded-xl sm:rounded-3xl sm:p-8">
+          <p className="display text-sm font-bold leading-relaxed text-ink sm:text-base md:text-xl">
             AUTHENTIC links every real pack to a digital ID you can check in seconds.
           </p>
         </div>
@@ -187,25 +187,25 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <Section tone="soft" id="how-it-works" className="py-20">
-      <Container className="mx-auto w-[90%] max-w-[90%]">
+    <Section tone="soft" id="how-it-works" className="py-12 sm:py-16 md:py-20">
+      <Container className="mx-auto w-[min(100%,90%)] max-w-[90%] max-[360px]:w-full max-[360px]:max-w-none">
         <div className="text-center">
           <p className="eyebrow">How it works</p>
-          <h2 className="display mx-auto mt-4 max-w-3xl text-center text-3xl font-bold text-ink md:text-5xl">
+          <h2 className="display mx-auto mt-4 max-w-3xl text-center text-2xl font-bold text-ink max-[360px]:text-[1.45rem] sm:text-3xl md:text-5xl">
             Four simple steps. From factory to your hands.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base text-muted">
+          <p className="mx-auto mt-4 max-w-xl text-sm text-muted sm:text-base">
             From the pack to a clear answer in a few seconds.
           </p>
         </div>
 
-        <ol className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-8 grid gap-4 sm:mt-14 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((step) => {
             const Icon = step.icon;
             return (
               <li
                 key={step.n}
-                className="breath-card lift group relative flex flex-col justify-between rounded-3xl border border-line bg-elev p-7 shadow-sm transition-all duration-500 hover:border-blue/40 hover:shadow-xl"
+                className="breath-card lift group relative flex flex-col justify-between rounded-2xl border border-line bg-elev p-4 shadow-sm transition-all duration-500 hover:border-blue/40 hover:shadow-xl max-[360px]:rounded-xl sm:rounded-3xl sm:p-7"
               >
                 <div>
                   <div className="flex items-center justify-between">

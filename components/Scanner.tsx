@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Camera, CheckCircle2, ScanLine } from "lucide-react";
+import { Camera, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { playClickSound, playSuccessChime } from "@/lib/audio";
+import { normalizeScanPayload } from "@/lib/identifiers";
 
 type Status = "idle" | "starting" | "looking" | "found" | "error";
 
 export function Scanner({ onDetected }: { onDetected: (text: string) => void }) {
   const regionId = "authentic-scanner";
-  const instanceRef = useRef<{ stop: () => Promise<void> } | null>(null);
+  const regionRef = useRef<HTMLDivElement>(null);
+  const instanceRef = useRef<{ stop: () => Promise<void>; clear?: () => void } | null>(null);
   const onDetectedRef = useRef(onDetected);
   const locked = useRef(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -22,9 +24,26 @@ export function Scanner({ onDetected }: { onDetected: (text: string) => void }) 
 
   useEffect(() => {
     return () => {
-      instanceRef.current?.stop().catch(() => undefined);
+      const instance = instanceRef.current;
+      instanceRef.current = null;
+      instance?.stop().catch(() => undefined);
+      try {
+        instance?.clear?.();
+      } catch {
+        /* ignore */
+      }
     };
   }, []);
+
+  /** html5-qrcode sometimes injects a file picker — hide it; we only use live camera. */
+  function scrubFileInputs() {
+    const root = regionRef.current;
+    if (!root) return;
+    root.querySelectorAll("input[type='file']").forEach((node) => {
+      (node as HTMLElement).style.display = "none";
+      node.setAttribute("aria-hidden", "true");
+    });
+  }
 
   async function startCamera() {
     if (status === "starting" || status === "looking") return;
@@ -35,8 +54,18 @@ export function Scanner({ onDetected }: { onDetected: (text: string) => void }) 
     setStatus("starting");
 
     try {
+      if (instanceRef.current) {
+        await instanceRef.current.stop().catch(() => undefined);
+        try {
+          instanceRef.current.clear?.();
+        } catch {
+          /* ignore */
+        }
+        instanceRef.current = null;
+      }
+
       const { Html5Qrcode } = await import("html5-qrcode");
-      const instance = new Html5Qrcode(regionId);
+      const instance = new Html5Qrcode(regionId, /* verbose */ false);
       instanceRef.current = instance;
       await instance.start(
         { facingMode: "environment" },
@@ -44,16 +73,24 @@ export function Scanner({ onDetected }: { onDetected: (text: string) => void }) 
         (decoded) => {
           if (locked.current || !decoded) return;
           locked.current = true;
-          setFoundCode(decoded);
+          const code = normalizeScanPayload(decoded);
+          setFoundCode(code);
           setStatus("found");
           playSuccessChime(0.08);
-          instance.stop().catch(() => undefined);
-          onDetectedRef.current(decoded);
+          instance
+            .stop()
+            .catch(() => undefined)
+            .finally(() => {
+              scrubFileInputs();
+              onDetectedRef.current(code);
+            });
         },
         () => undefined,
       );
+      scrubFileInputs();
       setStatus("looking");
     } catch {
+      scrubFileInputs();
       setStatus("error");
       setError("The camera did not open. Allow camera access, or type the code instead.");
     }
@@ -71,8 +108,9 @@ export function Scanner({ onDetected }: { onDetected: (text: string) => void }) 
     <div className="scan-stage overflow-hidden rounded-3xl border border-line bg-[#070d19] shadow-2xl">
       <div className="relative min-h-[300px] w-full bg-black">
         <div
+          ref={regionRef}
           id={regionId}
-          className="min-h-[300px] w-full [&_video]:h-full [&_video]:w-full [&_video]:object-cover"
+          className="min-h-[300px] w-full [&_video]:h-full [&_video]:w-full [&_video]:object-cover [&_input[type=file]]:hidden"
         />
 
         {/* Viewfinder Reticle Corners when looking */}

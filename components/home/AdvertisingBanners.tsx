@@ -51,31 +51,31 @@ export function BrandProtectionAd() {
       <div className="glow-drift-bg pointer-events-none absolute right-10 top-10 h-80 w-80 rounded-full bg-emerald-500/15 blur-[110px]" />
 
       <Container>
-        <div className="relative overflow-hidden rounded-3xl border border-line bg-elev/95 p-8 sm:p-12 shadow-2xl backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-2xl border border-line bg-elev/95 p-4 shadow-2xl backdrop-blur-xl max-[360px]:rounded-xl sm:rounded-3xl sm:p-8 md:p-12">
           {/* Decorative grid pattern */}
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,120,120,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,120,120,0.05)_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-          <div className="relative z-10 grid gap-10 lg:grid-cols-12 lg:items-center">
+          <div className="relative z-10 grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-10">
             {/* Left Copy Column */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-blue/25 bg-blue/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-blue backdrop-blur-md">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse text-blue" />
-                EU DPP 2026/2027 COMPLIANT PLATFORM
+            <div className="min-w-0 space-y-5 lg:col-span-7 sm:space-y-6">
+              <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-blue/25 bg-blue/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-blue backdrop-blur-md max-[360px]:tracking-normal sm:px-4 sm:text-xs sm:tracking-wider">
+                <Sparkles className="h-3.5 w-3.5 shrink-0 animate-pulse text-blue" />
+                <span className="min-w-0 truncate">EU DPP 2026/2027 COMPLIANT</span>
               </div>
 
-              <h2 className="display text-3xl font-extrabold text-ink sm:text-4xl md:text-5xl leading-tight">
+              <h2 className="display text-2xl font-extrabold leading-tight text-ink max-[360px]:text-[1.45rem] sm:text-3xl sm:text-4xl md:text-5xl">
                 Protect Your Brand. <br />
                 <span className="bg-gradient-to-r from-blue via-indigo-600 to-emerald-500 bg-clip-text text-transparent dark:from-blue dark:via-sky-400 dark:to-emerald-400">
                   Empower Your Customers.
                 </span>
               </h2>
 
-              <p className="text-base text-muted sm:text-lg leading-relaxed max-w-xl">
-                Over <strong className="text-ink font-semibold">$4.2 Trillion</strong> in physical goods are threatened by counterfeits annually. AUTHENTIC gives every manufactured unit an unforgeable digital identity, automated warranty tracking, and real-time threat intelligence.
+              <p className="max-w-xl text-sm leading-relaxed text-muted sm:text-base sm:text-lg">
+                Over <strong className="font-semibold text-ink">$4.2 Trillion</strong> in physical goods are threatened by counterfeits annually. AUTHENTIC gives every manufactured unit an unforgeable digital identity, automated warranty tracking, and real-time threat intelligence.
               </p>
 
               {/* Animated Key Highlights Grid */}
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 gap-3 pt-2 max-[360px]:gap-2 min-[400px]:grid-cols-2 sm:gap-4">
                 {/* 99.9% Intercept Rate */}
                 <div className="group relative flex items-start gap-3 rounded-2xl border border-line/80 bg-soft/70 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-elev hover:shadow-xl hover:shadow-emerald-500/10 cursor-default">
                   <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 transition-transform group-hover:scale-110">
@@ -134,29 +134,29 @@ export function BrandProtectionAd() {
               </div>
 
               {/* Action Buttons with Spring Micro-Compression and Sound */}
-              <div className="flex flex-wrap items-center gap-4 pt-4">
+              <div className="flex flex-col items-stretch gap-3 pt-4 min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-center sm:gap-4">
                 <Link
                   href={routes.getStarted}
                   onClick={() => playClickSound()}
-                  className="shimmer-bg group inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all duration-200 hover:scale-[1.03] hover:shadow-blue-600/50 active:scale-[0.98]"
+                  className="shimmer-bg group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-4 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all duration-200 hover:scale-[1.03] hover:shadow-blue-600/50 active:scale-[0.98] sm:w-auto sm:gap-2.5 sm:px-7"
                 >
                   <span>Start Free Trial</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
                   href={routes.business}
                   onClick={() => playClickSound()}
-                  className="group inline-flex items-center gap-2 rounded-xl border border-line bg-elev/80 px-6 py-3.5 text-sm font-bold text-ink backdrop-blur-md transition-all duration-200 hover:border-blue/50 hover:bg-soft hover:text-blue hover:scale-[1.02] active:scale-[0.98]"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-elev/80 px-4 py-3.5 text-sm font-bold text-ink backdrop-blur-md transition-all duration-200 hover:scale-[1.02] hover:border-blue/50 hover:bg-soft hover:text-blue active:scale-[0.98] sm:w-auto sm:px-6"
                 >
-                  <span>Explore Enterprise Solutions</span>
-                  <ChevronRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-1 group-hover:text-blue" />
+                  <span className="text-center">Explore Enterprise Solutions</span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:text-blue" />
                 </Link>
               </div>
             </div>
 
             {/* Right Visual Interactive Card */}
             <div className="lg:col-span-5">
-              <div className="hologram-sheen-effect relative rounded-3xl border border-line bg-gradient-to-b from-elev via-soft to-elev p-6 sm:p-7 shadow-2xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-blue-500/10">
+              <div className="hologram-sheen-effect relative rounded-2xl border border-line bg-gradient-to-b from-elev via-soft to-elev p-4 shadow-2xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-blue-500/10 max-[360px]:rounded-xl sm:rounded-3xl sm:p-7">
                 {/* Live Telemetry Ticker Header */}
                 <div className="flex items-center justify-between border-b border-line pb-4">
                   <div className="flex items-center gap-2">
@@ -304,19 +304,19 @@ export function ConsumerPerksAd() {
               For Smart Consumers
             </div>
 
-            <h2 className="display text-3xl font-extrabold text-ink sm:text-4xl md:text-5xl leading-tight">
+            <h2 className="display text-2xl font-extrabold leading-tight text-ink max-[360px]:text-[1.45rem] sm:text-3xl sm:text-4xl md:text-5xl">
               Why scan with AUTHENTIC? <br />
               <span className="bg-gradient-to-r from-blue via-indigo-600 to-emerald-500 bg-clip-text text-transparent dark:from-blue dark:via-sky-400 dark:to-emerald-400">
                 More than authentication.
               </span>
             </h2>
 
-            <p className="text-base text-muted leading-relaxed max-w-xl">
+            <p className="max-w-xl text-sm leading-relaxed text-muted sm:text-base">
               Scanning an AUTHENTIC identity tag gives you complete confidence in what you buy and unlocks rewards directly from verified brand manufacturers.
             </p>
 
             {/* Interactive Perks Grid */}
-            <div className="grid sm:grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 gap-3 pt-2 min-[400px]:grid-cols-2 sm:gap-4">
               {perks.map((perk) => (
                 <div
                   key={perk.title}
@@ -339,7 +339,7 @@ export function ConsumerPerksAd() {
               <Link
                 href="/verify"
                 onClick={() => playClickSound()}
-                className="shimmer-bg group inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all duration-200 hover:scale-[1.03] hover:shadow-blue-600/50 active:scale-[0.98]"
+                className="shimmer-bg group inline-flex w-full max-w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-4 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all duration-200 hover:scale-[1.03] hover:shadow-blue-600/50 active:scale-[0.98] sm:w-auto sm:gap-2.5 sm:px-7"
               >
                 <span>Try Scanning a Demo Product</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
@@ -349,7 +349,7 @@ export function ConsumerPerksAd() {
 
           {/* Right Interactive Mockup Card */}
           <div className="lg:col-span-6">
-            <div className="hologram-sheen-effect relative rounded-3xl border border-line bg-gradient-to-b from-elev via-soft/50 to-elev p-6 sm:p-8 shadow-2xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-blue-500/10">
+            <div className="hologram-sheen-effect relative rounded-2xl border border-line bg-gradient-to-b from-elev via-soft/50 to-elev p-4 shadow-2xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-blue-500/10 max-[360px]:rounded-xl sm:rounded-3xl sm:p-8">
               {/* Product Authenticated Header */}
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
                 <div className="flex items-center gap-3">
@@ -480,31 +480,31 @@ export function ConsumerPerksAd() {
 
 export function GlobalComplianceTicker() {
   return (
-    <div className="border-y border-line bg-soft/80 py-4 backdrop-blur-md">
+    <div className="border-y border-line bg-soft/80 py-3 backdrop-blur-md sm:py-4">
       <Container>
-        <div className="flex flex-wrap items-center justify-between gap-6 text-xs font-mono text-muted">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-ink font-bold">1,482,900</span>
-            <span>Identities Active</span>
+        <div className="flex flex-wrap items-center justify-start gap-x-4 gap-y-2 text-[11px] font-mono text-muted max-[360px]:gap-x-3 max-[360px]:text-[10px] sm:justify-between sm:gap-6 sm:text-xs">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 animate-ping" />
+            <span className="font-bold text-ink">1,482,900</span>
+            <span className="truncate">Identities</span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-blue" />
-            <span className="text-ink font-bold">99.94%</span>
+          <div className="hidden items-center gap-2 sm:flex">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-blue" />
+            <span className="font-bold text-ink">99.94%</span>
             <span>Verification Success Rate</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-2">
-            <Globe2 className="h-4 w-4 text-purple-500" />
-            <span className="text-ink font-bold">45+</span>
+          <div className="hidden items-center gap-2 md:flex">
+            <Globe2 className="h-4 w-4 shrink-0 text-purple-500" />
+            <span className="font-bold text-ink">45+</span>
             <span>Countries Monitored</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-amber-500" />
-            <span className="text-ink font-bold">EU DPP 2026</span>
-            <span>Standard Ready</span>
+          <div className="flex min-w-0 items-center gap-2">
+            <Building2 className="h-4 w-4 shrink-0 text-amber-500" />
+            <span className="font-bold text-ink">EU DPP</span>
+            <span className="truncate">Ready</span>
           </div>
         </div>
       </Container>

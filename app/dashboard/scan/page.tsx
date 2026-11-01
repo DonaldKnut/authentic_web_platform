@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { DashboardHeader } from "@/components/dashboard/ui";
 import { useToast } from "@/components/ui/Toast";
+import { normalizeScanPayload } from "@/lib/identifiers";
 import { routes } from "@/lib/routes";
 
 const scanCodeSchema = z
@@ -47,7 +48,7 @@ function DashboardScanInner() {
 
   const verify = useCallback(
     async (raw: string, source: "CAMERA" | "MANUAL" = "MANUAL") => {
-      const parsed = scanCodeSchema.safeParse(raw);
+      const parsed = scanCodeSchema.safeParse(normalizeScanPayload(raw));
       if (!parsed.success) {
         setValidationError(parsed.error.issues[0].message);
         toast.error(parsed.error.issues[0].message);

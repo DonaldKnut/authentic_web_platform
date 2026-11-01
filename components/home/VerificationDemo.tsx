@@ -93,47 +93,47 @@ export function VerificationDemo() {
   }
 
   return (
-    <Section id="demo" className="py-24 bg-bg border-y border-line">
+    <Section id="demo" className="border-y border-line bg-bg py-12 sm:py-16 md:py-24">
       <Container>
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue/20 bg-blue/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-blue">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-            Interactive Verification Sequence
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-blue/20 bg-blue/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-blue sm:px-3.5 sm:text-xs sm:tracking-wider">
+            <Sparkles className="h-3.5 w-3.5 shrink-0 animate-pulse" />
+            <span className="truncate">Interactive Verification Sequence</span>
           </div>
-          <h2 className="display mt-4 text-4xl font-extrabold text-ink md:text-5xl">
+          <h2 className="display mt-4 text-2xl font-extrabold text-ink max-[360px]:text-[1.45rem] sm:text-3xl md:text-4xl lg:text-5xl">
             Watch the verification engine in real-time.
           </h2>
-          <p className="mt-4 text-lg text-muted">
+          <p className="mt-3 text-sm text-muted sm:mt-4 sm:text-base md:text-lg">
             Step through the 6 cryptographic inspection phases AUTHENTIC executes when a physical product tag is scanned.
           </p>
         </div>
 
         {/* Action Controls */}
-        <div className="mt-8 flex items-center justify-center gap-4">
+        <div className="mt-6 flex items-center justify-center sm:mt-8">
           <button
             type="button"
             onClick={done ? reset : next}
-            className="group inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all hover:scale-105 active:scale-95"
+            className="group inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition-all hover:scale-105 active:scale-95 sm:w-auto sm:gap-2.5 sm:px-7"
           >
             {done ? (
               <>
-                <RotateCcw className="h-4 w-4 transition-transform group-hover:-rotate-90" />
-                <span>Replay Verification Sequence</span>
+                <RotateCcw className="h-4 w-4 shrink-0 transition-transform group-hover:-rotate-90" />
+                <span>Replay sequence</span>
               </>
             ) : (
               <>
-                <span>{step === 0 ? "Start Verification Engine" : "Next Step"}</span>
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <span>{step === 0 ? "Start engine" : "Next step"}</span>
+                <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
               </>
             )}
           </button>
         </div>
 
         {/* Workspace Layout */}
-        <div className="mt-12 grid gap-8 lg:grid-cols-12 lg:items-stretch">
+        <div className="mt-8 grid gap-5 sm:mt-12 sm:gap-8 lg:grid-cols-12 lg:items-stretch">
           {/* Step Selector List (Left Column) */}
-          <ol className="lg:col-span-5 grid gap-3">
+          <ol className="grid gap-2 sm:gap-3 lg:col-span-5">
             {steps.map((item, index) => {
               const Icon = item.icon;
               const isCurrent = index === step;
@@ -144,40 +144,40 @@ export function VerificationDemo() {
                   key={item.label}
                   onClick={() => handleStepClick(index)}
                   className={cn(
-                    "cursor-pointer flex items-center justify-between rounded-2xl border p-4 transition-all duration-300",
+                    "flex cursor-pointer items-center justify-between gap-2 rounded-xl border p-3 transition-all duration-300 sm:rounded-2xl sm:p-4",
                     isCurrent
-                      ? "border-blue bg-soft-blue/60 shadow-md scale-[1.02] ring-1 ring-blue/30"
+                      ? "scale-[1.01] border-blue bg-soft-blue/60 shadow-md ring-1 ring-blue/30 sm:scale-[1.02]"
                       : isPassed
                       ? "border-emerald-500/30 bg-emerald-500/5 text-ink"
                       : "border-line bg-elev text-muted hover:border-line-strong hover:bg-soft/40"
                   )}
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex min-w-0 items-center gap-2.5 sm:gap-3.5">
                     <div
                       className={cn(
-                        "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all",
+                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all sm:h-11 sm:w-11",
                         isCurrent
                           ? "bg-blue text-white shadow-md shadow-blue/30"
                           : isPassed
                           ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
-                          : "bg-soft text-muted border border-line"
+                          : "border border-line bg-soft text-muted"
                       )}
                     >
-                      {isPassed ? <CheckCircle2 className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
+                      {isPassed ? <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Icon className="h-4 w-4 sm:h-5 sm:w-5" />}
                     </div>
 
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-muted">{item.number}</span>
-                        <p className="font-bold text-ink text-sm sm:text-base">{item.label}</p>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <span className="font-mono text-[10px] font-bold text-muted sm:text-xs">{item.number}</span>
+                        <p className="text-xs font-bold text-ink sm:text-sm md:text-base">{item.label}</p>
                       </div>
-                      <p className="text-xs text-muted mt-0.5 line-clamp-1">{item.desc}</p>
+                      <p className="mt-0.5 line-clamp-1 text-[11px] text-muted sm:text-xs">{item.desc}</p>
                     </div>
                   </div>
 
                   <span className={cn(
-                    "h-2 w-2 rounded-full transition-all",
-                    isCurrent ? "bg-blue animate-pulse" : isPassed ? "bg-emerald-500" : "bg-line"
+                    "h-2 w-2 shrink-0 rounded-full transition-all",
+                    isCurrent ? "animate-pulse bg-blue" : isPassed ? "bg-emerald-500" : "bg-line"
                   )} />
                 </li>
               );
@@ -185,17 +185,17 @@ export function VerificationDemo() {
           </ol>
 
           {/* Interactive Screen Display Output (Right Column - Centered Illustrations) */}
-          <div className="lg:col-span-7 relative overflow-hidden rounded-3xl border border-line bg-elev p-6 sm:p-10 shadow-2xl flex flex-col justify-between items-center text-center">
+          <div className="relative flex flex-col items-center justify-between overflow-hidden rounded-2xl border border-line bg-elev p-4 text-center shadow-2xl max-[360px]:rounded-xl sm:rounded-3xl sm:p-6 md:p-10 lg:col-span-7">
             {/* Background Glow */}
             <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue/10 blur-3xl" />
             <div className="pointer-events-none absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
 
             {/* Top Control Status Bar */}
-            <div className="w-full flex items-center justify-between border-b border-line pb-4 text-xs font-semibold uppercase tracking-wider text-muted">
-              <span className="flex items-center gap-1.5 text-blue font-bold">
-                <Lock className="h-3.5 w-3.5" /> Engine Telemetry
+            <div className="flex w-full flex-wrap items-center justify-between gap-2 border-b border-line pb-3 text-[10px] font-semibold uppercase tracking-wide text-muted sm:pb-4 sm:text-xs sm:tracking-wider">
+              <span className="flex items-center gap-1.5 font-bold text-blue">
+                <Lock className="h-3.5 w-3.5 shrink-0" /> Engine Telemetry
               </span>
-              <span className="font-mono bg-soft px-3 py-1 rounded-full border border-line text-ink">
+              <span className="rounded-full border border-line bg-soft px-2.5 py-1 font-mono text-ink sm:px-3">
                 Stage {step + 1} of {steps.length}
               </span>
             </div>
@@ -214,7 +214,7 @@ export function VerificationDemo() {
               {/* Step 0: Scan Physical Tag */}
               {step === 0 && (
                 <div className="reveal flex flex-col items-center text-center space-y-5">
-                  <div className="relative flex h-28 w-28 items-center justify-center rounded-3xl border-2 border-blue/40 bg-soft-blue/50 p-4 shadow-xl">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-blue/40 bg-soft-blue/50 p-3 shadow-xl sm:h-28 sm:w-28 sm:rounded-3xl sm:p-4">
                     <QrCode className="h-16 w-16 text-blue" />
                     {/* Scanning Laser Beam */}
                     <div className="absolute inset-x-2 h-1 bg-gradient-to-r from-transparent via-blue to-transparent shadow-[0_0_12px_#1d4ed8] animate-pulse" style={{ top: '45%' }} />
@@ -242,7 +242,7 @@ export function VerificationDemo() {
               {/* Step 1: Identity Lookup */}
               {step === 1 && (
                 <div className="reveal flex flex-col items-center text-center space-y-5">
-                  <div className="relative flex h-28 w-28 items-center justify-center rounded-3xl border-2 border-indigo-500/40 bg-indigo-500/10 p-4 shadow-xl">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border-2 sm:h-28 sm:w-28 sm:rounded-3xl border-indigo-500/40 bg-indigo-500/10 p-3 shadow-xl sm:p-4">
                     <Database className="h-16 w-16 text-indigo-500" />
                     <Cpu className="absolute -bottom-2 -left-2 h-7 w-7 text-blue animate-pulse" />
                   </div>
@@ -268,7 +268,7 @@ export function VerificationDemo() {
               {/* Step 2: Credential Validation */}
               {step === 2 && (
                 <div className="reveal flex flex-col items-center text-center space-y-5">
-                  <div className="relative flex h-28 w-28 items-center justify-center rounded-3xl border-2 border-emerald-500/40 bg-emerald-500/10 p-4 shadow-xl">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border-2 sm:h-28 sm:w-28 sm:rounded-3xl border-emerald-500/40 bg-emerald-500/10 p-3 shadow-xl sm:p-4">
                     <ShieldCheck className="h-16 w-16 text-emerald-500" />
                     <Lock className="absolute -top-2 -right-2 h-7 w-7 text-emerald-600 dark:text-emerald-400" />
                   </div>
@@ -294,7 +294,7 @@ export function VerificationDemo() {
               {/* Step 3: Lifecycle & Recall Check */}
               {step === 3 && (
                 <div className="reveal flex flex-col items-center text-center space-y-5">
-                  <div className="relative flex h-28 w-28 items-center justify-center rounded-3xl border-2 border-purple-500/40 bg-purple-500/10 p-4 shadow-xl">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border-2 sm:h-28 sm:w-28 sm:rounded-3xl border-purple-500/40 bg-purple-500/10 p-3 shadow-xl sm:p-4">
                     <Activity className="h-16 w-16 text-purple-500" />
                   </div>
 
@@ -326,7 +326,7 @@ export function VerificationDemo() {
               {/* Step 4: Risk Signal Assessment */}
               {step === 4 && (
                 <div className="reveal flex flex-col items-center text-center space-y-5">
-                  <div className="relative flex h-28 w-28 items-center justify-center rounded-3xl border-2 border-amber-500/40 bg-amber-500/10 p-4 shadow-xl">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border-2 sm:h-28 sm:w-28 sm:rounded-3xl border-amber-500/40 bg-amber-500/10 p-3 shadow-xl sm:p-4">
                     <MapPin className="h-16 w-16 text-amber-500" />
                     <AlertOctagon className="absolute -top-2 -right-2 h-7 w-7 text-emerald-500" />
                   </div>
@@ -357,7 +357,7 @@ export function VerificationDemo() {
                   </div>
                   <StatusIndicator status="AUTHENTICATED" />
 
-                  <h3 className="display text-3xl sm:text-4xl font-extrabold text-ink">
+                  <h3 className="display text-xl font-extrabold text-ink max-[360px]:text-lg sm:text-3xl md:text-4xl">
                     VERDICT: AUTHENTICATED
                   </h3>
 

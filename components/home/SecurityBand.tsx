@@ -12,29 +12,29 @@ const securityItems = [
 
 export function SecurityBand() {
   return (
-    <Section tone="navy" className="py-24 text-white">
+    <Section tone="navy" className="py-12 text-white sm:py-16 md:py-24">
       <Container>
         <div className="text-center">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-blue-200">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-200 sm:text-[11px] sm:tracking-[0.22em]">
             Security Architecture
           </p>
-          <h2 className="display mt-4 max-w-3xl text-4xl font-bold md:text-5xl mx-auto">
+          <h2 className="display mx-auto mt-4 max-w-3xl text-2xl font-bold max-[360px]:text-[1.45rem] sm:text-3xl md:text-4xl lg:text-5xl">
             Security embedded directly at the physical identity layer.
           </h2>
-          <p className="mt-4 max-w-2xl text-slate-300 text-lg mx-auto">
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:mt-4 sm:text-base md:text-lg">
             Combining tamper-proof cryptographic signatures with distributed verification nodes.
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-8 grid gap-3 sm:mt-14 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {securityItems.map((item) => {
             const Icon = item.icon;
             return (
-              <li key={item.title} className="lift flex items-center gap-4 rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                  <Icon className="h-6 w-6" />
+              <li key={item.title} className="lift flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 p-4 backdrop-blur-md sm:gap-4 sm:rounded-2xl sm:p-6">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-500/20 text-blue-300 sm:h-12 sm:w-12">
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
-                <span className="font-semibold text-white text-base">{item.title}</span>
+                <span className="text-sm font-semibold text-white sm:text-base">{item.title}</span>
               </li>
             );
           })}
