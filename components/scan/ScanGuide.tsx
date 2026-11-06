@@ -132,8 +132,8 @@ export function ScanGuide() {
               aria-modal="true"
               aria-labelledby="scan-guide-title"
               className={cn(
-                "absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-line bg-elev shadow-2xl transition-transform duration-300 ease-out max-[360px]:max-w-none",
-                entered ? "translate-x-0" : "translate-x-full",
+                "absolute inset-y-0 left-0 flex w-full max-w-md flex-col border-r border-line bg-elev shadow-2xl transition-transform duration-300 ease-out max-[360px]:max-w-none",
+                entered ? "translate-x-0" : "-translate-x-full",
               )}
             >
               <header className="flex shrink-0 items-start justify-between gap-3 border-b border-line px-4 py-4 sm:px-5">
@@ -172,13 +172,13 @@ export function ScanGuide() {
                     type="button"
                     onClick={() => selectTab(id)}
                     className={cn(
-                      "inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-bold transition",
+                      "inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-bold transition max-[360px]:px-1 max-[360px]:text-[11px]",
                       tab === id
                         ? "bg-blue text-white shadow-sm"
                         : "text-muted hover:bg-soft hover:text-ink",
                     )}
                   >
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
+                    <Icon className="h-3.5 w-3.5 shrink-0 max-[360px]:hidden" />
                     <span>{label}</span>
                   </button>
                 ))}
@@ -249,14 +249,14 @@ export function ScanGuide() {
   return (
     <>
       {showHint && !open ? (
-        <div className="pointer-events-none fixed bottom-[4.75rem] right-4 z-[61] max-w-[14rem] rounded-2xl border border-blue/25 bg-elev/95 px-3 py-2 text-[11px] font-medium text-ink shadow-xl backdrop-blur-md max-[360px]:right-3 sm:bottom-[5.5rem] sm:right-6 sm:max-w-[16rem] sm:text-xs">
+        <div className="pointer-events-none fixed bottom-[4.75rem] left-4 z-[61] max-w-[14rem] rounded-2xl border border-blue/25 bg-elev/95 px-3 py-2 text-[11px] font-medium text-ink shadow-xl backdrop-blur-md max-[360px]:left-3 sm:bottom-[5.5rem] sm:left-6 sm:max-w-[16rem] sm:text-xs">
           Need help finding the code? Open the tour guide anytime.
         </div>
       ) : null}
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-4 z-[60] inline-flex items-center gap-2 rounded-full border border-blue/30 bg-elev/95 px-3.5 py-2.5 text-xs font-bold text-ink shadow-xl backdrop-blur-md transition hover:border-blue hover:bg-soft-blue hover:text-blue active:scale-[0.98] max-[360px]:bottom-4 max-[360px]:right-3 max-[360px]:px-3 sm:bottom-8 sm:right-6 sm:px-4 sm:py-3 sm:text-sm"
+        className="fixed bottom-5 left-4 z-[60] inline-flex items-center gap-2 rounded-full border border-blue/30 bg-elev/95 px-3.5 py-2.5 text-xs font-bold text-ink shadow-xl backdrop-blur-md transition hover:border-blue hover:bg-soft-blue hover:text-blue active:scale-[0.98] max-[360px]:bottom-4 max-[360px]:left-3 max-[360px]:px-3 sm:bottom-8 sm:left-6 sm:px-4 sm:py-3 sm:text-sm"
         aria-haspopup="dialog"
         aria-expanded={open}
       >
@@ -266,7 +266,7 @@ export function ScanGuide() {
         </span>
         <span className="text-left leading-tight">
           <span className="block">Tour guide</span>
-          <span className="block text-[10px] font-medium text-muted sm:text-[11px]">
+          <span className="block text-[10px] font-medium text-muted max-[360px]:hidden sm:text-[11px]">
             Steps · where · help
           </span>
         </span>
